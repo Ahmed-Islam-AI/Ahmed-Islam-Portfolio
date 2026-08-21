@@ -12,6 +12,12 @@
   --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
 
+  /* The one place a second family is allowed, and only for machine metadata:
+     repo paths, index numerals, status pills. The system stack, so it costs no
+     font request and no dependency — see the amended type rule in STYLE.md.
+     Archivo still carries every heading and every sentence. */
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
   --color-brand: #f15629;
   --color-brand-bright: #ff6b3d;
   --color-brand-deep: #c7401a;
