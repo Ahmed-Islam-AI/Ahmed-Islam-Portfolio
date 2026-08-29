@@ -186,9 +186,8 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
 
 **Still placeholders** (need Ahmed's real values):
 
-- `data/socials.ts` — Facebook, Instagram, LinkedIn, Upwork URLs. WhatsApp and
-  the hero mail button are real (from the CV). Shared by `SocialRail` and the
-  footer, so fixing them once fixes both.
+- ~~`data/socials.ts` placeholders~~ — **all real as of 2026-08-30.** Nine links,
+  supplied by Ahmed. See the socials note below for the rail/footer split.
 - The footer has no Privacy Policy / Terms links, unlike the reference it's modelled
   on: those pages don't exist, and a dead link is worse than no link.
 - **`Contact.tsx` has no form endpoint.** `FORMSPREE_ID` is an empty string, and
@@ -222,6 +221,40 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
   gallery. That's the one content gap left (see the content rules above).
 
 ---
+
+---
+
+## Socials: the rail shows five, the footer shows nine
+
+`data/socials.ts` holds all nine real links (2026-08-30). **The two consumers
+deliberately render different sets**, which is the thing to preserve:
+
+- **`Footer`** maps `SOCIALS` — all nine: WhatsApp, LinkedIn, GitHub, Upwork,
+  Medium, LeetCode, X, Instagram, Facebook.
+- **`SocialRail`** maps `RAIL_SOCIALS` — the five flagged `rail: true`
+  (WhatsApp, LinkedIn, GitHub, Upwork, Instagram).
+
+Two reasons, and the second is measured:
+
+1. STYLE.md's rule for both gutter rails is that they stay quiet at rest and
+   never compete with content. Nine stacked circles is a menu bolted to the edge
+   of the page, not a signpost.
+2. **The rail's length is a layout constraint.** It is `size-11` + `gap-2`,
+   centred on the viewport, so it stands `n * 44 + (n - 1) * 8` px tall. At nine
+   that is 460px, and measured at **1024x600 it overlapped the fixed nav by
+   16px**. At five it is 252px and clears the nav by 88px at that same size.
+   A `import.meta.env.DEV` check in `socials.ts` warns if that stops holding.
+
+Adding a link means adding it to `SOCIALS` only. **Five is the tested ceiling —
+don't flag a sixth `rail: true` without re-measuring at 1024x600** — put it in
+the footer, which is where the complete set belongs.
+
+**Icon sources are mixed, and that is forced.** The four added in 2026-08
+(GitHub, Medium, LeetCode, X) come from `simple-icons` as named imports, like
+`TechIcon.tsx`. The other five keep hand-written paths because **`siLinkedin`
+does not exist in simple-icons v16** — dropped for trademark reasons, exactly
+like OpenAI/AWS/Azure. With LinkedIn permanently hand-drawn there is no version
+of the file that is purely one or the other. Check a slug exists before assuming.
 
 ## Icons
 
