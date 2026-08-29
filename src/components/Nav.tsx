@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const LINKS = [
   { label: 'About', href: '#about' },
@@ -15,6 +16,18 @@ const linkClass =
 
 export default function Nav({ active }: { active?: string }) {
   const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  /**
+   * Every link in this nav is a bare hash (`#about`), which is correct on `/`
+   * and dead anywhere else — on `/projects` the browser resolves it to
+   * `/projects#about`, an anchor that doesn't exist, and the click does nothing.
+   *
+   * So off the home route the hash gets a leading `/`, which navigates home and
+   * then jumps to the section. On `/` it stays bare, keeping the native smooth
+   * scroll that `scroll-behavior` in index.css already provides.
+   */
+  const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
 
   // Fixed, not sticky — it overlays the hero background instead of sitting above
   // it in flow, which is what left the white strip behind the pill.
@@ -29,7 +42,7 @@ export default function Nav({ active }: { active?: string }) {
         // pill on an ink background would have no visible edge
         className="mx-auto flex max-w-7xl items-center rounded-2xl bg-ink/95 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md sm:px-5"
       >
-        <a href="#top" className="flex shrink-0 items-center gap-2.5">
+        <a href={to('#top')} className="flex shrink-0 items-center gap-2.5">
           <span aria-hidden className="h-8 w-[3px] rounded-full bg-brand" />
           <span className="type-hero text-[0.8125rem] leading-[1.05] tracking-[0.08em] text-white uppercase">
             Ahmed
@@ -47,7 +60,7 @@ export default function Nav({ active }: { active?: string }) {
               return (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    href={to(link.href)}
                     aria-current={on ? 'true' : undefined}
                     className={`${linkClass} ${
                       on ? 'text-brand-bright' : 'text-white/70 hover:text-white'
@@ -61,7 +74,7 @@ export default function Nav({ active }: { active?: string }) {
           </ul>
 
           <a
-            href="#contact"
+            href={to('#contact')}
             className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-5 py-2.5 text-[0.75rem] font-semibold tracking-[0.12em] whitespace-nowrap text-white uppercase transition hover:brightness-110 lg:block"
           >
             Let&rsquo;s work together
@@ -103,7 +116,7 @@ export default function Nav({ active }: { active?: string }) {
             {LINKS.map((link) => (
               <li key={link.href}>
                 <a
-                  href={link.href}
+                  href={to(link.href)}
                   onClick={() => setOpen(false)}
                   className="block px-2 py-3 text-[0.8125rem] font-semibold tracking-[0.14em] text-white/80 uppercase transition-colors hover:text-white"
                 >
@@ -113,7 +126,7 @@ export default function Nav({ active }: { active?: string }) {
             ))}
           </ul>
           <a
-            href="#contact"
+            href={to('#contact')}
             onClick={() => setOpen(false)}
             className="mt-3 block rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-5 py-3 text-center text-[0.75rem] font-semibold tracking-[0.12em] text-white uppercase"
           >
