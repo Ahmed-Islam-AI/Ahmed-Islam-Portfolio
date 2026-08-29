@@ -1,5 +1,5 @@
 import type { RailSurface } from './SectionRail'
-import { SOCIALS } from '../data/socials'
+import { RAIL_SOCIALS } from '../data/socials'
 
 export default function SocialRail({
   surface = 'light',
@@ -22,6 +22,11 @@ export default function SocialRail({
     // Shows from lg up. Every section reserves a symmetric `lg:px-20` gutter so
     // the rail sits in empty margin rather than on top of content — that gutter
     // is what makes this safe at 1024px, not a wide-screen-only gate.
+    //
+    // Renders RAIL_SOCIALS, NOT the full SOCIALS list. Five entries, on purpose:
+    // the footer carries all nine, and a nine-circle stack here both reads as a
+    // menu bolted to the page edge and measured 460px tall, which overlapped the
+    // nav by 16px at 1024x600. See the note in data/socials.ts.
     <ul
       aria-label="Social profiles"
       // `invisible`, not just `opacity-0` — visibility:hidden also takes the links
@@ -31,7 +36,7 @@ export default function SocialRail({
         hidden ? 'invisible opacity-0' : ''
       }`}
     >
-      {SOCIALS.map((social) => (
+      {RAIL_SOCIALS.map((social) => (
         <li key={social.name}>
           <a
             href={social.href}
