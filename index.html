@@ -10,6 +10,23 @@
     />
     <meta name="theme-color" content="#faf7f4" />
 
+    <script>
+      // Decoder half of the GitHub Pages SPA shim in public/404.html — puts the
+      // real path back before React Router reads the URL. No-op on every other
+      // host, and on Pages for any URL that didn't come through 404.html,
+      // because nothing else produces a `?/` query.
+      if (location.search[1] === '/') {
+        var decoded = location.search
+          .slice(1)
+          .split('&')
+          .map(function (part) {
+            return part.replace(/~and~/g, '&')
+          })
+          .join('?')
+        history.replaceState(null, '', location.pathname.slice(0, -1) + decoded + location.hash)
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
