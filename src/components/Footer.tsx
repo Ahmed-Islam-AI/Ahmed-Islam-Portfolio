@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { SECTIONS } from './SectionRail'
 import { SERVICES } from '../data/services'
 import { SOCIALS } from '../data/socials'
@@ -20,6 +21,15 @@ const linkClass =
  * rails still land in empty margin.
  */
 export default function Footer() {
+  const { pathname } = useLocation()
+
+  /**
+   * Same route-aware hash fix as Nav.tsx. These are bare `#about` anchors,
+   * which are correct on `/` and dead on `/projects` -- the browser resolves
+   * them against the current path and the click does nothing.
+   */
+  const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
+
   return (
     // The negative margin is load-bearing, not decoration. `rounded-t` reveals
     // whatever sits *behind* the footer, and that's the body — `paper` — so the
@@ -68,7 +78,7 @@ export default function Footer() {
             <ul className="mt-5 grid gap-3 lg:grid-cols-2 lg:gap-y-3.5">
               {NAV.map((section) => (
                 <li key={section.id}>
-                  <a href={`#${section.id}`} className={linkClass}>
+                  <a href={to(`#${section.id}`)} className={linkClass}>
                     <span className="mr-2 text-[0.6875rem] text-white/25 tabular-nums">
                       {section.index}
                     </span>
@@ -84,7 +94,7 @@ export default function Footer() {
             <ul className="mt-5 grid gap-3.5">
               {SERVICES.map((service) => (
                 <li key={service.id}>
-                  <a href="#services" className={linkClass}>
+                  <a href={to('#services')} className={linkClass}>
                     {service.title}
                   </a>
                 </li>
