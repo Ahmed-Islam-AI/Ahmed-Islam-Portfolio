@@ -266,8 +266,10 @@ Things that would make this site look generic. Avoid all of them:
 
   **The line is whether a viewer could believe they are looking at the product.**
   A real capture of a real screen is always fine, including its own colours —
-  `segments` is one, and it outranks the single-accent rule because it is
-  evidence rather than decoration. A flat, textless, single-accent *diagram* is
+  `segments` and `flintgrab` are both captures, and they outrank the
+  single-accent rule because they are evidence rather than decoration —
+  Flintgrab's lime `#A8E84D` is that product's own identity, not a second
+  accent chosen for this page. A flat, textless, single-accent *diagram* is
   also fine, and is what the five imageless projects carry (`ProjectMark.tsx`);
   nobody mistakes an orange line drawing for a screenshot. The middle — a
   photo-real render of a product that does not exist — is what got this section
