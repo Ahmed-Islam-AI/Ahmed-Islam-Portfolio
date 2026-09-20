@@ -138,7 +138,7 @@ export default function Work() {
             {/* ── Company switcher ───────────────────────────────
                 Plain buttons with aria-current rather than ARIA tab roles —
                 role="tab" promises arrow-key navigation this doesn't implement. */}
-            <ul className="flex overflow-x-auto border-b border-white/10 lg:flex-col lg:overflow-visible lg:border-r lg:border-b-0">
+            <ul className="no-scrollbar flex overflow-x-auto border-b border-white/10 lg:flex-col lg:overflow-visible lg:border-r lg:border-b-0">
               {EXPERIENCE.map((item, i) => {
                 const on = i === active
                 return (

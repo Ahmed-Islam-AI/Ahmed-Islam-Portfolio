@@ -129,6 +129,67 @@ export const PROJECTS: Project[] = [
     },
   },
   {
+    slug: 'flintgrab',
+    name: 'Flintgrab',
+    /**
+     * Added 2026-09-20 on Ahmed's instruction, taking `ppe-safety`'s place in
+     * `FEATURED` (that project stays in the list, it just isn't featured).
+     *
+     * **`SOURCE`, not `LIVE` — checked, don't "fix" it.** The site's own
+     * `og:url` says `https://flintgrab.com/`, but that domain **does not
+     * resolve**: `nslookup` returns NXDOMAIN and curl can't resolve the host,
+     * for the apex and `www` alike. So the product is built and has a signed
+     * installer, but there is nothing deployed to link a visitor to. The
+     * marketing-site repo IS public (verified HTTP 200), so that is the honest
+     * destination. **The moment flintgrab.com resolves, this becomes `LIVE`
+     * with the site as `href` — that's a strictly better card.**
+     *
+     * The desktop app itself is closed source (`UNLICENSED` in its
+     * package.json, "proprietary" in its README), so there is no app repo to
+     * point at. `Flint-Grab-site` is the public artefact.
+     *
+     * This is also the first **web/desktop** entry in a gallery that was
+     * otherwise all AI/ML — the content gap CLAUDE.md has been flagging, since
+     * `services.ts` sells web development with nothing behind it in the gallery.
+     */
+    status: 'SOURCE',
+    href: 'https://github.com/Ahmed-Islam-AI/Flint-Grab-site',
+    /**
+     * Read off the product's own `index.html` meta description and the app
+     * README's opening line, both written by Ahmed. Not paraphrased loosely —
+     * the "streaming manifests" framing is his, and it is the thing that says
+     * why this is harder than a download button.
+     */
+    summary:
+      'A Windows download manager for social video, which arrives as streaming manifests rather than files. Segmented transfers, pause and resume, and a browser extension that hands off the page session.',
+    /**
+     * Verified against the app's own `package.json`, not inferred: Electron 44
+     * + React 19 + strict TypeScript, Tailwind 4, `better-sqlite3` for the
+     * queue, `webtorrent` for torrents. `WebTorrent` has no `simple-icons` slug,
+     * so it renders the generic cube — that is the documented fallback, not a
+     * missing entry. `Electron` and `TypeScript` were added to `TechIcon.tsx`
+     * for this card.
+     */
+    stack: ['Electron', 'React', 'TypeScript', 'Tailwind CSS', 'SQLite', 'WebTorrent'],
+    /**
+     * A REAL capture of the real running application — its download queue with
+     * live transfers, the throughput graph, and the extension-connected state.
+     * Source: `public/assets/screens/queue.png` in the Flintgrab website repo,
+     * 1102x721, cropped **top-anchored** to 16:10 so the title bar and wordmark
+     * survive (a centred window clipped the top of the logo) and re-encoded to
+     * 880x550 WebP. The 32px it loses off the bottom is the status strip.
+     *
+     * Its lime `#A8E84D` is Flintgrab's own brand accent and breaks this site's
+     * single-accent rule. That is allowed and deliberate: a real capture carries
+     * its own colours because it is evidence rather than decoration, which is
+     * the same licence `segments` uses. See STYLE.md.
+     */
+    image: {
+      src: '/projects/flintgrab.webp',
+      alt: 'The Flintgrab download queue: four active transfers with progress bars, per-file throughput and a live speed graph.',
+    },
+  },
+  {
     slug: 'ppe-safety',
     name: 'Construction Safety System',
     status: 'SOURCE',
@@ -224,15 +285,21 @@ export const PROJECTS: Project[] = [
  *
  * The reasoning, so a future edit is a decision rather than a guess: `padelgpt`
  * and `segments` are both shipped features of a live commercial platform, which
- * is the strongest thing on this list, and `ppe-safety` is the largest build
- * (YOLOv8 + facial recognition + an Arduino/ROS unit). The rest are one click
- * away on `/projects`.
+ * is the strongest thing on this list, and `flintgrab` is a complete product —
+ * a desktop application, a browser extension and a marketing site — and the only
+ * non-AI/ML build here, so it is what backs up the web development `services.ts`
+ * sells. The rest are one click away on `/projects`.
  *
- * `content-moderation` was here until 2026-08-30 and was dropped on Ahmed's
- * instruction when `segments` was added — it is still the only project whose
- * README states a measured result, so it keeps its `metric` on the index page.
+ * Two have been rotated out on Ahmed's instruction, and both are still in
+ * `PROJECTS` — dropping out of `FEATURED` is not deletion:
+ *   - `content-moderation`, 2026-08-30, when `segments` was added. Still the
+ *     only project whose README states a measured result, so it keeps its
+ *     `metric` on the index page.
+ *   - `ppe-safety`, 2026-09-20, when `flintgrab` took its slot. Still the
+ *     largest single build here (YOLOv8 + facial recognition + an Arduino/ROS
+ *     unit).
  */
-export const FEATURED: readonly string[] = ['padelgpt', 'segments', 'ppe-safety']
+export const FEATURED: readonly string[] = ['padelgpt', 'segments', 'flintgrab']
 
 /** The three featured projects, in FEATURED order. */
 export const FEATURED_PROJECTS: Project[] = FEATURED.map(

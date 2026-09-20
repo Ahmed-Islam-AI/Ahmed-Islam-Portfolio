@@ -6,6 +6,7 @@ import {
   siCplusplus,
   siCss,
   siDocker,
+  siElectron,
   siFastapi,
   siFirebase,
   siFlask,
@@ -45,6 +46,7 @@ import {
   siSqlite,
   siStreamlit,
   siTailwindcss,
+  siTypescript,
   siTensorflow,
   siVercel,
   siYolo,
@@ -150,6 +152,11 @@ const ICONS: Record<string, string> = {
   HTML: siHtml5.path,
   CSS: siCss.path,
   React: siReact.path,
+  // Electron and TypeScript are here for `Project.stack` only — Flintgrab is a
+  // desktop app. Neither is in `Stack.tsx`, which is Ahmed's curated skill set
+  // and his to change; a project's stack is a fact about the project. See the
+  // Projects note in CLAUDE.md for why those two lists diverge on purpose.
+  Electron: siElectron.path,
   'Next.js': siNextdotjs.path,
   'Tailwind CSS': siTailwindcss.path,
   Bootstrap: siBootstrap.path,
@@ -185,6 +192,7 @@ const ICONS: Record<string, string> = {
   Python: siPython.path,
   SQL: CONCEPT.db,
   JavaScript: siJavascript.path,
+  TypeScript: siTypescript.path,
   'C++': siCplusplus.path,
 
   // Visualisation
