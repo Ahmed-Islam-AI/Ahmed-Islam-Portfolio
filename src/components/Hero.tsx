@@ -28,9 +28,19 @@ export default function Hero() {
       {/* max-w-6xl, like every other section — at 7xl the hero column started
           128px wider than the rest of the page and nothing lined up down the
           left edge. The nav keeps 7xl on purpose; see Nav.tsx. */}
-      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-20">
-        {/* ── Copy ─────────────────────────────────────────────── */}
-        <div>
+      {/* FOUR grid children, not two: headline, closing line, portrait, pitch.
+          The copy had to be broken apart because the portrait sits *inside* it on
+          a phone (heading → tagline → face → pitch → buttons), and `order` can't
+          express that while they're nested — the portrait has to be their
+          sibling. At lg all four are placed explicitly: column 1 holds headline
+          (row 1), pitch (row 2) and closing line (row 3), column 2 holds the
+          portrait spanning all three. That reproduces the old two-column layout
+          exactly, including the closing line staying at the foot of the column.
+          DOM order and lg visual order therefore differ by one block, which is
+          fine here because nothing reordered is focusable. */}
+      <div className="mx-auto grid max-w-6xl gap-y-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:grid-rows-[auto_auto_1fr] lg:items-start lg:gap-x-20 lg:gap-y-0">
+        {/* ── Headline ─────────────────────────────────────────── */}
+        <div className="lg:col-start-1 lg:row-start-1">
           <p data-reveal>
             <span className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-white to-paper-2 py-2 pr-4 pl-3 shadow-[0_10px_30px_-18px_rgb(20_19_18/0.5)] ring-1 ring-hairline">
               {/* live dot — green reads "available"; orange is the brand accent
@@ -55,68 +65,33 @@ export default function Hero() {
                 stays; the pill above and the lead below carry the specifics. */}
             I build products that work beyond the demo.
           </h1>
-
-          <p
-            data-reveal
-            className="text-lead mt-7 max-w-[44ch] text-muted [--reveal-delay:160ms]"
-          >
-            Ahmed builds production AI systems and the full-stack products around them —
-            LangGraph, MCP and RAG on the back end, React and Next.js on the front.
-          </p>
-
-          {/* The mockup's two icon-only circles gave no hint what they do, so the
-              primary CTA now carries a label. The mail button keeps the circle. */}
-          <div data-reveal className="mt-9 flex flex-wrap items-center gap-3 [--reveal-delay:240ms]">
-            <a
-              href="#projects"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
-            >
-              See the work
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-4 transition-transform group-hover:translate-y-0.5"
-                aria-hidden
-              >
-                <path d="M12 5v14M6 13l6 6 6-6" />
-              </svg>
-            </a>
-
-            <a
-              href="mailto:ahmedislam.official@gmail.com"
-              aria-label="Email Ahmed"
-              className="grid size-12 place-items-center rounded-full border border-heading/15 text-heading transition hover:border-brand hover:text-brand"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-5"
-                aria-hidden
-              >
-                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
-                <path d="M3 7l9 6 9-6" />
-              </svg>
-            </a>
-          </div>
-
-          <p
-            data-reveal
-            className="text-eyebrow mt-10 max-w-[40ch] border-t border-hairline pt-6 text-heading/80 uppercase [--reveal-delay:320ms]"
-          >
-            Full-stack engineering for software that needs to keep working after launch.
-          </p>
         </div>
 
-        {/* ── Portrait ─────────────────────────────────────────── */}
-        <div data-reveal="right" className="relative [--reveal-delay:200ms]">
+        {/* ── The closing line ─────────────────────────────────────
+            DOM position 2, so on a phone it lands between the headline and the
+            portrait. At lg it is placed into row 3 instead, which is still the
+            foot of the copy column — the signature under the CTAs it has always
+            been. Grid placement is what lets one element be second on a phone
+            and last on a desktop without a second copy of it in the markup; the
+            reorder is safe here because nothing in this block is focusable, so
+            tab order is unaffected. */}
+        <p
+          data-reveal
+          className="text-eyebrow max-w-[40ch] border-t border-hairline pt-6 text-heading/80 uppercase lg:col-start-1 lg:row-start-3 lg:mt-10 [--reveal-delay:140ms]"
+        >
+          Full-stack engineering for software that needs to keep working after launch.
+        </p>
+
+        {/* ── Portrait ─────────────────────────────────────────────
+            Third in the DOM so it reads (and is announced) after the headline
+            and its tagline. `self-center` rather than `items-center` on the
+            grid: the copy is the taller column at every lg width, so the
+            portrait centres against it while the copy blocks stay stacked tight
+            in column 1. */}
+        <div
+          data-reveal="right"
+          className="relative lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-center [--reveal-delay:200ms]"
+        >
           <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
             {/* decorative ring, sits behind the card */}
             <span
@@ -171,6 +146,63 @@ export default function Hero() {
                 {cap.label}
               </span>
             ))}
+          </div>
+        </div>
+
+        {/* ── Pitch and CTAs ─────────────────────────────────────
+            `lg:mt-7` restores the gap the lead paragraph used to carry as its
+            own `mt-7`; below lg the grid's `gap-y-10` spaces it off the
+            portrait instead. */}
+        <div className="lg:col-start-1 lg:row-start-2 lg:mt-7">
+          <p
+            data-reveal
+            className="text-lead max-w-[44ch] text-muted [--reveal-delay:160ms]"
+          >
+            Ahmed builds production AI systems and the full-stack products around them —
+            LangGraph, MCP and RAG on the back end, React and Next.js on the front.
+          </p>
+
+          {/* The mockup's two icon-only circles gave no hint what they do, so the
+              primary CTA now carries a label. The mail button keeps the circle. */}
+          <div data-reveal className="mt-9 flex flex-wrap items-center gap-3 [--reveal-delay:240ms]">
+            <a
+              href="#projects"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
+            >
+              See the work
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4 transition-transform group-hover:translate-y-0.5"
+                aria-hidden
+              >
+                <path d="M12 5v14M6 13l6 6 6-6" />
+              </svg>
+            </a>
+
+            <a
+              href="mailto:ahmedislam.official@gmail.com"
+              aria-label="Email Ahmed"
+              className="grid size-12 place-items-center rounded-full border border-heading/15 text-heading transition hover:border-brand hover:text-brand"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+                aria-hidden
+              >
+                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+                <path d="M3 7l9 6 9-6" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
