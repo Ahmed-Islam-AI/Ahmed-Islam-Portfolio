@@ -155,6 +155,24 @@
   mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 93%, transparent 100%);
 }
 
+/* Hides the native scrollbar on the horizontal rails (the Stack category tabs,
+   the Work company switcher, the StatsBar figures). On Windows those render as a
+   permanent grey slab across the bottom of a card rather than the overlay bar
+   macOS draws, which reads as a broken element instead of an affordance.
+
+   Hidden, NOT disabled: the rail still scrolls by swipe, wheel, drag and
+   keyboard, and each one bleeds its content past the padding so the clipped edge
+   is what signals "there's more" — that was always the affordance here, which is
+   why the bleed exists on all three. `scrollbar-width` covers Firefox and
+   Chrome 121+; the pseudo-element covers older WebKit and Safari. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Archivo's width axis, opened up slightly for industrial weight on headlines. */
 @utility type-hero {
   font-family: var(--font-display);
