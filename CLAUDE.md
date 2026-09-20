@@ -115,13 +115,14 @@ inverts the rule above for those two files only, so don't "correct" them back.
 
 The same instruction confirmed Ahmed has **shipped real client websites**. That is
 why `services.ts` sells web development outright rather than hedging. But **none of
-that work is in `data/projects.ts`** — the eight projects there are all AI/ML —
-so the Services section is still the only place the
-site makes the claim, and it deliberately names no client, no site and no number.
-Adding a web project to the gallery is the thing that would let the copy get more
-specific.
+that work is in `data/projects.ts`** — that was true until 2026-09-20, when
+`flintgrab` was added: a Windows desktop app, a browser extension and a
+marketing site, built in Electron/React/TypeScript/Tailwind. It is the first
+non-AI/ML entry in the gallery and the first thing standing behind what
+`services.ts` sells. The Services copy still names no client, no site and no
+number — it now *could* point at Flintgrab, which is Ahmed's call to make.
 
-`data/projects.ts` is **real**, not a seed: eight projects with verbatim URLs.
+`data/projects.ts` is **real**, not a seed: nine projects with verbatim URLs.
 Seven were supplied 2026-08-15; `segments` was added 2026-08-30 and its copy is
 read off the product screen Ahmed supplied rather than invented — but its
 `stack` is the one unverified field on it and carries a `TODO(Ahmed)`.
@@ -216,9 +217,10 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
   and the link row, and the pill does not overflow.
 - ~~`/work/:slug` stub route~~ — **deleted 2026-08-30** with the Projects rebuild.
   `/projects` is the second route now; project cards stay external `<a>`s.
-- No **web** project is in `data/projects.ts`. The seven there are all AI/ML work,
-  so the client websites Services sells still have nothing behind them in the
-  gallery. That's the one content gap left (see the content rules above).
+- ~~No **web** project in `data/projects.ts`~~ — **closed 2026-09-20** by
+  `flintgrab`. The remaining gap is narrower: Flintgrab is Ahmed's own product,
+  not *client* website work, so the client sites Services sells are still
+  unrepresented. A client site would need the client's permission to name.
 
 ---
 
@@ -277,6 +279,11 @@ of the file that is purely one or the other. Check a slug exists before assuming
   no `fill-rule` and sit beside brand paths without looking like a second set.
 - Icons render in brand orange, **never** in their real brand colours — see the
   single-accent rule in STYLE.md.
+- **`Electron` and `TypeScript` were added 2026-09-20 for Flintgrab's card** and
+  are deliberately NOT in `Stack.tsx` — that file is Ahmed's curated skill set and
+  his to change; a project's stack is a fact about the project. `WebTorrent` has
+  no simple-icons slug, so that chip renders the generic cube: the documented
+  fallback, not a missing entry.
 
 Adding a technology: add the string to the right group in `Stack.tsx`, then add a
 `TechIcon` entry. Unmapped names silently fall back to the `cube` glyph.
@@ -558,8 +565,10 @@ budget; with nothing pinned there is no unreachable fold.
   picks the three **by slug, not by array order**, so reordering `PROJECTS` can't
   silently change them. A slug that resolves to nothing throws in dev — same
   `import.meta.env.DEV` guard pattern as `data/testimonials.ts`. Currently
-  `padelgpt`, `segments`, `ppe-safety`; `content-moderation` was dropped from it
-  on Ahmed's instruction when `segments` was added 2026-08-30.
+  `padelgpt`, `segments`, `flintgrab`. Two were rotated out on Ahmed's
+  instruction and **both remain in `PROJECTS`** — leaving `FEATURED` is not
+  deletion: `content-moderation` (2026-08-30, when `segments` arrived) and
+  `ppe-safety` (2026-09-20, when `flintgrab` took its slot).
 - **The featured panel's anchor is its visual; the name sits beside it at
   `text-h2`.** This flipped once, deliberately. While no project had imagery the
   anchor was the name at `text-display` — the right call for a card with nothing
@@ -595,11 +604,12 @@ budget; with nothing pinned there is no unreachable fold.
 
 **`/projects` — `pages/ProjectsPage.tsx`, the full index.**
 
-All eight as **full-width hairline-separated rows**, not a card grid. Two reasons,
+All nine as **full-width hairline-separated rows**, not a card grid. Two reasons,
 both hard: `lg:grid-cols-3` of eight cards is the single most recognisable
 AI-generated layout there is, and reusing the home card would make the two
 surfaces read as the same page twice. A list is also the form that scales — at
-eight a three-across grid already leaves an orphan row.
+nine a three-across grid still reads as a template, and every added project
+makes the list stronger rather than lumpier.
 
 - No index numeral in its eyebrow. `0N /` is the home page's section counter and
   `08` has nothing to count against on a standalone route.
@@ -628,30 +638,36 @@ live site or a public GitHub repo — six repos, two features of one deployed pr
 - `urlLabel(project.href)` prints the **repo name alone** for a GitHub link, and
   the host for the one live site. It used to print host + owner + repo inside
   fake browser chrome, but `github.com/Ahmed-Islam-AI/` is the identical first
-  24 characters on six of the eight cards, so `truncate` ate the only part that
+  24 characters on seven of the nine cards, so `truncate` ate the only part that
   carried information. The GitHub mark beside the label says which host it is.
   It lives in `data/projects.ts` with `isRepo`, since both surfaces need them.
 - `Project` has one `href`, not `link` + `github`. In the source Ahmed supplied,
   six of the original seven had the identical string in both fields and PadelGPT had only a
   live site — a second field would have been the same URL twice.
 
-**Imagery: three supplied images, five drawn marks (2026-08-30).**
+**Imagery: four supplied images, five drawn marks.**
 
 Every card carries a visual. `Visual` in `Projects.tsx` picks: `project.image` if
 set, otherwise a `ProjectMark`. Both the home cards and the index rows use it, so
 setting `image` upgrades a project everywhere at once.
 
-**What is actually in the three images — this matters, and it is Ahmed's call,
-not drift.** He supplied all three on 2026-08-30 in `src/assets/projects/` and
-asked for them by name after being shown what two of them were. Recorded here so
-nobody "corrects" them back out:
+**What is actually in each image — this matters, and two of them are Ahmed's
+explicit call, not drift.** Recorded here so nobody "corrects" them back out:
 
 | Card | File | What it really is |
 | --- | --- | --- |
+| `flintgrab` | `flintgrab.webp` | **A real capture** of the running app — its live download queue |
 | `segments` | `segments.webp` | **A real capture** of the running Padelos segment builder |
 | `padelgpt` | `padelgpt.webp` | A designed **mockup** — fake browser chrome, empty chat pane |
 | `ppe-safety` | `ppe-safety.webp` | A **generated poster** — the "PPE DETECTED" box is not model output |
 
+- **`flintgrab.webp`** (2026-09-20) came from
+  `D:\Data_Folder\FlintGrab-Website\public\assets\screens\queue.png`, 1102x721,
+  cropped **top-anchored** so the title bar and wordmark survive — a centred
+  window clipped the top of the logo. The 32px lost off the bottom is the status
+  strip. Its lime `#A8E84D` is Flintgrab's own brand accent; a real capture keeps
+  its own colours, same licence `segments` uses. That repo also has
+  `screens/settings.png` if a second view is ever wanted.
 - `segments.png` as supplied is **AVIF despite the `.png` extension** — check the
   magic bytes, not the name, if you reprocess it. Cropped top-anchored so the
   Segment Name field and the prompt both survive.
@@ -660,8 +676,10 @@ nobody "corrects" them back out:
   deliberately to drop its worst parts: the overlaid "AI-Powered Construction
   Safety System" title, and a bottom logo strip whose Arduino mark reads
   **"AMENIO"**.
-- All three were re-encoded to 880x550 WebP. Originals stay in
-  `src/assets/projects/` and are not imported, so they never enter the bundle.
+- All four are 880x550 WebP in `public/projects/`. **Sources are not kept in this
+  repo** — `src/assets/projects/` was deleted after the first three were
+  processed (2.8MB that never entered the bundle), so each entry records where
+  its original came from instead.
 
 **`ppe-safety` has a genuinely real alternative, one line away.** Its own repo's
 `Results/` folder holds true YOLOv8 inference frames — a worker with the model's
@@ -687,9 +705,10 @@ capture at all (`ecommerce-scraper` is two `.py` files and two `.csv`s).
 "PadelGPT" — its AI features are branded "AI Club Manager" and "AI Concierge" —
 so a capture of it would be a marketing page rather than Ahmed's work.
 
-**Five of the eight are runnable web apps** (Flask/Streamlit), so Ahmed can
+**Five of the nine are runnable web apps** (Flask/Streamlit), so Ahmed can
 capture them himself. **That is the highest-value thing left in this section**,
-and a real capture of the deployed PadelGPT assistant most of all.
+and a real capture of the deployed PadelGPT assistant most of all — it is the
+one featured card still carrying a mockup.
 
 **The rule, unchanged.** The section shipped with seven AI-generated posters until
 2026-08-21 and that is why it got flagged: **hallucinated text baked into the
