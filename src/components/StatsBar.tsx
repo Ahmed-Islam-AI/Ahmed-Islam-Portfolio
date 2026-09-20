@@ -104,12 +104,18 @@ export default function StatsBar() {
       >
         {/* ul rather than dl: the icon is a sibling of the value/label pair, and
             `dl > div` may only contain dt/dd. */}
-        <ul className="grid gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-10">
+        {/* One horizontally scrolling rail below sm, the 3-up grid from sm — the
+            same pattern as the Stack category tabs and the Work company rail.
+            The `-mx-6 px-6` bleed cancels the card's own padding so the row
+            scrolls to the card's edge; without it the rail stops short and stops
+            reading as scrollable. `shrink-0` on each item is what keeps them at
+            their natural width instead of squeezing three into the viewport. */}
+        <ul className="no-scrollbar flex gap-6 overflow-x-auto max-sm:-mx-6 max-sm:px-6 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:overflow-visible lg:gap-x-10">
           {STATS.map((stat, i) => (
             <li
               key={stat.label}
-              className={`flex items-center gap-4 ${
-                i > 0 ? 'sm:border-l sm:border-white/12 sm:pl-6 lg:pl-10' : ''
+              className={`flex shrink-0 items-center gap-4 ${
+                i > 0 ? 'border-l border-white/12 pl-6 lg:pl-10' : ''
               }`}
             >
               <span
