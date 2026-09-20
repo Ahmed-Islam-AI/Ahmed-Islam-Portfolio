@@ -173,7 +173,7 @@ export default function Stack() {
               pattern as the Work company rail. */}
           <ul
             data-reveal
-            className="mt-10 flex gap-2 overflow-x-auto [--reveal-delay:180ms] max-lg:-mx-4 max-lg:px-4 max-lg:pb-1 sm:max-lg:-mx-6 sm:max-lg:px-6 lg:flex-wrap lg:overflow-visible"
+            className="no-scrollbar mt-10 flex gap-2 overflow-x-auto [--reveal-delay:180ms] max-lg:-mx-4 max-lg:px-4 max-lg:pb-1 sm:max-lg:-mx-6 sm:max-lg:px-6 lg:flex-wrap lg:overflow-visible"
           >
             {STACK.map((group) => {
               const isActive = locked === group.id
