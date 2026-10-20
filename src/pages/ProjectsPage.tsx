@@ -51,18 +51,9 @@ export default function ProjectsPage() {
             {/* ── Header ─────────────────────────────────────── */}
             <div className="flex flex-col gap-5 pt-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8 lg:pt-14">
               <div>
-                {/* No index numeral here. The `0N /` gutter is the home page's
-                    section counter, and on a standalone route `08` has nothing
-                    to count against — it would be borrowing a meaning this page
-                    doesn't have. Same eyebrow shape, honest label. */}
-                <p data-reveal className="text-eyebrow flex gap-2 text-white/40 uppercase">
-                  <span className="text-brand">Projects</span>
-                  <span aria-hidden>/</span>
-                  <span>Full index</span>
-                </p>
                 <h1
                   data-reveal
-                  className="type-hero mt-4 text-display leading-[0.95] uppercase [--reveal-delay:60ms]"
+                  className="type-hero text-display leading-[0.95] uppercase"
                 >
                   <span className="block text-white">Everything</span>
                   <span className="block text-white/25">

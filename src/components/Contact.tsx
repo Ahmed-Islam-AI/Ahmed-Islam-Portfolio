@@ -120,13 +120,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="section-y scroll-mt-28 bg-ink px-4 sm:px-6 lg:px-20">
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[6.5rem_1fr] lg:gap-14">
-        <p data-reveal className="text-eyebrow flex gap-2 text-white/40 uppercase lg:pt-4">
-          <span className="text-brand">10</span>
-          <span aria-hidden>/</span>
-          <span>Contact</span>
-        </p>
-
+      <div className="mx-auto max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-white">Tell me what</span>

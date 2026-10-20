@@ -90,13 +90,13 @@ public/
 posters and six CodeBucks template stock images that were never Ahmed's work.
 Untracked, so git cannot restore it.
 
-Sections are numbered in the left index gutter and must stay in sync with page
-order: `01` hero, `02` about, `03` experience, `04` skills, `05` services,
-`06` reviews, `07` method, `08` projects, `09` certifications, `10` contact. The
-numeral is hardcoded in each section, so inserting one means renumbering every
-section after it *and* `SECTIONS` — Services at 05 pushed method/projects/
-certifications to 06/07/08, and Reviews at 06 pushed the same three plus contact
-to 07/08/09/10.
+Sections are numbered only in `SectionRail` (`SECTIONS`), which must stay in sync
+with page order: `01` hero, `02` about, `03` experience, `04` skills, `05`
+services, `06` reviews, `07` method, `08` projects, `09` certifications, `10`
+contact. The `0N / NAME` eyebrow each section used to carry in its own left
+gutter column was **removed 2026-10-21** on Ahmed's call (it duplicated the rail
+and read as AI-template); content now starts at the `max-w-6xl` edge. Don't
+bring it back — see STYLE.md "Section anatomy".
 
 ---
 

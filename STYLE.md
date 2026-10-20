@@ -132,10 +132,7 @@ Every content section follows the same skeleton. Match it:
 
 ```tsx
 <section id="…" className="scroll-mt-28 px-4 py-20 sm:px-6 lg:px-20 lg:py-28">
-  <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[6.5rem_1fr] lg:gap-14">
-    <p data-reveal className="text-eyebrow flex gap-2 text-muted/70 uppercase lg:pt-4">
-      <span className="text-brand">0N</span><span aria-hidden>/</span><span>Name</span>
-    </p>
+  <div className="mx-auto max-w-6xl">
     <div className="min-w-0">
       <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
         <span className="block text-heading">First line</span>
@@ -147,12 +144,16 @@ Every content section follows the same skeleton. Match it:
 </section>
 ```
 
-Three things are load-bearing:
+Two things are load-bearing:
 
 1. **`lg:px-20`** — the gutter `SocialRail` occupies. Non-negotiable on new sections.
-2. **Left index gutter** (`0N / NAME`) — numbers must match page order.
-3. **Two-tone stacked heading** — solid line over a `heading/25` ghost line, with
+2. **Two-tone stacked heading** — solid line over a `heading/25` ghost line, with
    the full stop in orange. This is the site's signature; keep it consistent.
+
+**No `0N / NAME` eyebrow above the heading** — removed from every section
+2026-10-21 on Ahmed's call. `SectionRail` already shows the numbers, so the label
+repeated the rail a few hundred pixels to its right, and a numbered eyebrow over
+a display heading is a stock AI-template tell. The heading opens the section.
 
 Alternate backgrounds so sections separate without rules: hero zone `paper` +
 grid, about `paper-2`, experience `paper`, skills `paper-2`, services `paper`,
@@ -251,7 +252,7 @@ Things that would make this site look generic. Avoid all of them:
 
 - Multi-colour category dots or real brand-coloured logos.
 - Purple/blue gradient hero, glassmorphism cards, generic drop shadows.
-- Centred everything — this site is left-aligned with an index gutter.
+- Centred everything — this site is left-aligned.
 - Emoji as icons.
 - Identical grey paragraph blocks: differentiate lead / pull-quote / body.
 - Sections that all animate identically on entry with no stagger.

@@ -76,14 +76,9 @@ export default function Projects() {
             project. The only way out of this section is the CTA at the bottom. */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
           <div>
-            <p data-reveal className="text-eyebrow flex gap-2 text-white/40 uppercase">
-              <span className="text-brand">08</span>
-              <span aria-hidden>/</span>
-              <span>Projects</span>
-            </p>
             <h2
               data-reveal
-              className="type-hero mt-4 text-display leading-[0.95] uppercase [--reveal-delay:60ms]"
+              className="type-hero text-display leading-[0.95] uppercase"
             >
               <span className="block text-white">Things I&rsquo;ve</span>
               <span className="block text-white/25">

@@ -38,14 +38,7 @@ export default function About() {
         Production-first, always
       </span>
 
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[6.5rem_1fr] lg:gap-14">
-        {/* index gutter */}
-        <p data-reveal className="text-eyebrow flex gap-2 text-muted/70 uppercase lg:pt-4">
-          <span className="text-brand">02</span>
-          <span aria-hidden>/</span>
-          <span>About</span>
-        </p>
-
+      <div className="mx-auto max-w-6xl">
         <div>
           {/* two-tone stacked display heading */}
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">

@@ -15,13 +15,7 @@ export default function Services() {
 
   return (
     <section id="services" className="section-y scroll-mt-28 px-4 sm:px-6 lg:px-20">
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[6.5rem_1fr] lg:gap-14">
-        <p data-reveal className="text-eyebrow flex gap-2 text-muted/70 uppercase lg:pt-4">
-          <span className="text-brand">05</span>
-          <span aria-hidden>/</span>
-          <span>Services</span>
-        </p>
-
+      <div className="mx-auto max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">What I</span>

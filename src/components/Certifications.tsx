@@ -106,14 +106,6 @@ export default function Certifications({
 
   const label = (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-      <p className="text-eyebrow flex items-center gap-2 uppercase">
-        <span className="text-ink">09</span>
-        <span aria-hidden className="text-white/50">
-          /
-        </span>
-        <span aria-hidden className="size-1.5 rounded-full bg-ink" />
-        <span className="text-white">Certifications</span>
-      </p>
       <p className="text-[0.6875rem] font-semibold tracking-[0.14em] text-white/60 uppercase">
         {CERTIFICATIONS.length} certifications
         <span aria-hidden className="mx-2 text-ink/40">

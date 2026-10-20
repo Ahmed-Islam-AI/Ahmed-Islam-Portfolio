@@ -196,13 +196,7 @@ export default function Method() {
               (what this section used to do, and Stack still does) pushes the
               column a further 80px in. */}
           <div className="w-full px-4 sm:px-6 lg:px-20">
-            <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[6.5rem_1fr] lg:gap-14">
-              <p className="text-eyebrow flex gap-2 text-white/40 uppercase lg:pt-2">
-                <span className="text-brand">07</span>
-                <span aria-hidden>/</span>
-                <span>Method</span>
-              </p>
-
+            <div className="mx-auto w-full max-w-6xl">
               <div className="min-w-0">
                 {/* text-display, matching every other section heading — this was
                     the only one still on the smaller text-h2 step. */}
