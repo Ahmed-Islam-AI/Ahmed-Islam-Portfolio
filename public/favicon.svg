@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e1e1e"/>
+      <stop offset="1" stop-color="#0b0b0b"/>
+    </linearGradient>
+    <linearGradient id="dot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff6b3d"/>
+      <stop offset="1" stop-color="#d9431a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="1.5"/>
+  <!-- "AI" drawn as paths so it never depends on a font: flat-topped A, then I. -->
+  <path transform="translate(-2.55 8) scale(0.75)" fill="#fff" fill-rule="evenodd"
+    d="M13 50 L27 14 L37 14 L51 50 L41 50 L37.9 42 L26.1 42 L23 50 Z M32 26.9 L35.6 36 L28.4 36 Z"/>
+  <rect x="39.2" y="18.5" width="7.5" height="27" fill="#fff"/>
+  <!-- The orange full stop every heading on the site ends on. -->
+  <circle cx="53" cy="41.7" r="3.8" fill="url(#dot)"/>
+</svg>
