@@ -200,9 +200,8 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
   dangling ones.
 - `data/certifications.ts` — **11 entries from two sources that don't overlap.**
   Entries 1-6 came from Ahmed's LinkedIn (real dates, a link); entries 7-11 are the
-  CV's, and **`date` is still the literal string `ADD DATE` on all five** (the CV
-  has no dates and they are not guessable — it shows in the pill on purpose) with
-  no `href`, so those five render as plain cards. Nothing was dropped in the merge
+  CV's; their dates and the LinkedIn `href` were supplied by Ahmed 2026-10-21
+  (the CV itself has no dates). Nothing was dropped in the merge
   because both lists are real; **the CV PDF still lists only the five, so it and
   the site now disagree** — Ahmed's to reconcile.
   The six `href`s all point at the same LinkedIn *certifications list*, not at

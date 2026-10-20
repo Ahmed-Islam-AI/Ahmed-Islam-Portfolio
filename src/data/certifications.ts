@@ -29,13 +29,9 @@ const LINKEDIN_CERTS = 'https://www.linkedin.com/in/ahmed-islam01/details/certif
  * link, and skills taken from the credential itself.
  *
  * **7-11 are verbatim from the CERTIFICATIONS block of Ahmed-Islam-CV.pdf**, which
- * lists none of the first six. They are still missing:
- *
- * - `date` is **"ADD DATE" on all five** — the CV gives no dates and they are not
- *   guessable. It shows in the pill on purpose.
- * - `href` is absent, so those five render as plain cards rather than links.
- * - `detail` restates each course's own subject. Swap for the real credential ID
- *   ("Credential ID: ABC-123") once you have them.
+ * lists none of the first six. Their dates and LinkedIn link were supplied by
+ * Ahmed 2026-10-21 (the CV itself has no dates). `detail` still restates each
+ * course's own subject — swap for the real credential ID once you have them.
  *
  * `badges` are topic tags, never status claims — no card asserts "VERIFIED".
  *
@@ -108,46 +104,51 @@ export const CERTIFICATIONS: Certification[] = [
   {
     id: 'atomcamp-data-science-ai',
     highlight: 'ATOM',
-    date: 'ADD DATE',
+    date: 'APR 2024',
     name: 'Data Science & AI Bootcamp',
     issuer: 'Atomcamp',
     detail: 'Skills: Python, pandas, data analysis, applied ML',
     badges: ['DATA SCIENCE'],
+    href: LINKEDIN_CERTS,
   },
   {
     id: 'ibm-machine-learning',
     highlight: 'IBM',
-    date: 'ADD DATE',
+    date: 'MAR 2023',
     name: 'IBM Certified Machine Learning',
     issuer: 'IBM',
     detail: 'Skills: supervised & unsupervised learning, model evaluation',
     badges: ['MACHINE LEARNING'],
+    href: LINKEDIN_CERTS,
   },
   {
     id: 'xeven-ai-ml-foundation',
     highlight: 'XEVEN',
-    date: 'ADD DATE',
+    date: 'NOV 2023',
     name: 'AI & Machine Learning Foundation',
     issuer: 'Xeven Solutions',
     detail: 'Skills: ML foundations, feature engineering, evaluation',
     badges: ['FOUNDATION'],
+    href: LINKEDIN_CERTS,
   },
   {
     id: 'udemy-mlops',
     highlight: 'UDEMY',
-    date: 'ADD DATE',
+    date: 'JUL 2025',
     name: 'MLOps Course',
     issuer: 'Udemy',
     detail: 'Skills: CI/CD for ML, containerisation, model deployment',
     badges: ['MLOPS'],
+    href: LINKEDIN_CERTS,
   },
   {
     id: 'langchain-academy-langgraph',
     highlight: 'LCA',
-    date: 'ADD DATE',
+    date: 'SEP 2025',
     name: 'Introduction to LangGraph',
     issuer: 'LangChain Academy',
     detail: 'Skills: agent graphs, state, checkpointing, human-in-the-loop',
     badges: ['AGENTS'],
+    href: LINKEDIN_CERTS,
   },
 ]
