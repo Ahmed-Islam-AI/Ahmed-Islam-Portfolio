@@ -1,17 +1,15 @@
 import { useState, type FormEvent } from 'react'
 import { SERVICES } from '../data/services'
 
-/**
- * TODO(ahmed): paste your Formspree form ID here — the part after `/f/` in the
- * endpoint they give you. Until it's set the form does NOT post anywhere; it
- * hands off to your mail client with every field already filled in, so the
- * section works today rather than silently swallowing enquiries. Deliberately not
- * guessed: a made-up ID would POST a stranger's inbox.
- */
-const FORMSPREE_ID = ''
-
 /** Both real, from the CV. */
 const EMAIL = 'ahmedislam.official@gmail.com'
+
+/**
+ * FormSubmit relays each submission to EMAIL — no account, no key. The very first
+ * submission instead sends EMAIL a one-time "Activate Form" link; until that is
+ * clicked, submissions are not delivered and the form shows the error state.
+ */
+const ENDPOINT = `https://formsubmit.co/ajax/${EMAIL}`
 const WHATSAPP = '923008760724'
 
 /** Client-side options, not a price list — edit freely. */
@@ -97,34 +95,22 @@ export default function Contact() {
     const data = new FormData(form)
 
     // Honeypot: bots fill every field they find, humans never see this one.
-    if (data.get('_gotcha')) return
+    if (data.get('_honey')) return
 
-    if (!FORMSPREE_ID) {
-      const services = data.getAll('services').join(', ') || 'Not specified'
-      const body = [
-        `Name: ${data.get('name')}`,
-        `Email: ${data.get('email')}`,
-        `Company: ${data.get('company') || '—'}`,
-        `Budget: ${data.get('budget')}`,
-        `Timeline: ${data.get('timeline')}`,
-        `Services: ${services}`,
-        '',
-        String(data.get('message') ?? ''),
-      ].join('\n')
-      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(
-        `Project enquiry — ${data.get('name')}`,
-      )}&body=${encodeURIComponent(body)}`
-      return
-    }
+    // Checkboxes repeat the `services` key; flatten to one readable line.
+    data.set('services', data.getAll('services').join(', ') || 'Not specified')
+    data.set('_subject', `Project enquiry — ${data.get('name')}`)
+    data.set('_template', 'table')
 
     setStatus('sending')
     try {
-      const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      const response = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: data,
       })
-      if (!response.ok) throw new Error(String(response.status))
+      const json = await response.json()
+      if (!response.ok || String(json.success) !== 'true') throw new Error(json.message)
       form.reset()
       setStatus('sent')
     } catch {
@@ -307,7 +293,7 @@ export default function Contact() {
               {/* Honeypot — hidden from sight, from the a11y tree and from tab order. */}
               <input
                 type="text"
-                name="_gotcha"
+                name="_honey"
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden

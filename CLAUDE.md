@@ -191,11 +191,10 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
   supplied by Ahmed. See the socials note below for the rail/footer split.
 - The footer has no Privacy Policy / Terms links, unlike the reference it's modelled
   on: those pages don't exist, and a dead link is worse than no link.
-- **`Contact.tsx` has no form endpoint.** `FORMSPREE_ID` is an empty string, and
-  until it's filled in the form does not POST — it hands off to the mail client
-  with every field prefilled, so the section works today instead of swallowing
-  enquiries. Deliberately not guessed: a made-up Formspree ID would POST into a
-  stranger's inbox. The `BUDGETS` ranges are form options, not a price list.
+- **`Contact.tsx` posts to FormSubmit** (`formsubmit.co/ajax/<EMAIL>`, chosen by
+  Ahmed 2026-10-21 — no account). The first submission only sends Ahmed an
+  "Activate Form" email; nothing is delivered until he clicks it. Honeypot field is
+  `_honey`, FormSubmit's own. The `BUDGETS` ranges are form options, not a price list.
 - Every nav anchor now resolves — `#services` and `#contact` were the last two
   dangling ones.
 - `data/certifications.ts` — **11 entries from two sources that don't overlap.**
