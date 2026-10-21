@@ -88,7 +88,7 @@ export const PROJECTS: Project[] = [
      * exists, and would be a straight upgrade.
      */
     image: {
-      src: '/projects/padelgpt.webp',
+      src: '/project-images/padelgpt.webp',
       alt: 'Mockup of the PadelGPT assistant answering a request to show all active memberships.',
     },
   },
@@ -124,7 +124,7 @@ export const PROJECTS: Project[] = [
      * prompt is the thing that shows what the feature does.
      */
     image: {
-      src: '/projects/segments.webp',
+      src: '/project-images/segments.webp',
       alt: 'The Padelos segment builder resolving the prompt "All the players with 0 bookings in the previous 30 days" into a filtered player list.',
     },
   },
@@ -185,7 +185,7 @@ export const PROJECTS: Project[] = [
      * the same licence `segments` uses. See STYLE.md.
      */
     image: {
-      src: '/projects/flintgrab.webp',
+      src: '/project-images/flintgrab.webp',
       alt: 'The Flintgrab download queue: four active transfers with progress bars, per-file throughput and a live speed graph.',
     },
   },
@@ -216,7 +216,7 @@ export const PROJECTS: Project[] = [
      * than an illustration.
      */
     image: {
-      src: '/projects/ppe-safety.webp',
+      src: '/project-images/ppe-safety.webp',
       alt: 'Illustration of the construction safety system: a site worker in a hard hat and hi-vis vest with a PPE detection overlay.',
     },
   },

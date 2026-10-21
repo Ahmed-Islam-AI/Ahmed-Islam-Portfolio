@@ -79,10 +79,10 @@ src/
   data/socials.ts       SOCIALS — shared by SocialRail and Footer
   assets/ahmed.png      hero portrait, transparent cutout
   assets/projects/      Ahmed's supplied card sources — NOT imported, so never
-                        bundled; public/projects/*.webp are the processed ones
+                        bundled; public/project-images/*.webp are the processed ones
 public/
   Ahmed-Islam-CV.pdf    linked by the Download CV button
-  projects/             3 processed card images (see the imagery note below)
+  project-images/       4 processed card images (NOT `projects/` — collides with the route) (see the imagery note below)
   companies/            employer logos (padelos, IR-Solutions, itsolera, bytewise)
 ```
 
@@ -679,7 +679,7 @@ explicit call, not drift.** Recorded here so nobody "corrects" them back out:
   deliberately to drop its worst parts: the overlaid "AI-Powered Construction
   Safety System" title, and a bottom logo strip whose Arduino mark reads
   **"AMENIO"**.
-- All four are 880x550 WebP in `public/projects/`. **Sources are not kept in this
+- All four are 880x550 WebP in `public/project-images/` (renamed from `projects/` 2026-10-21: a folder named like the `/projects` route made GitHub Pages serve it as a directory, 301 to `/projects/` then 404). **Sources are not kept in this
   repo** — `src/assets/projects/` was deleted after the first three were
   processed (2.8MB that never entered the bundle), so each entry records where
   its original came from instead.
