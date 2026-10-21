@@ -629,6 +629,11 @@ they need the same fix.**
 doesn't apply: `vercel.json`, `public/_redirects` (Netlify), and
 `public/404.html` + a four-line decoder in `index.html` (GitHub Pages, which
 can't do rewrites). Verified against `npm run preview`: `/projects` returns 200.
+**Correction (2026-10-21):** only the Pages half was ever in the repo; `vercel.json`
+and `_redirects` never were. The host is now **GitHub Pages** at `ahmedislam.tech`,
+deployed by `.github/workflows/deploy.yml` on every push to `main`, with
+`public/404.html` (whose encoder matches the decoder in `index.html`). No
+`CNAME` file: an Actions deploy ignores it; the domain lives in repo Settings → Pages.
 
 **Project cards are external links.** Every card is an `<a target="_blank">` at a
 live site or a public GitHub repo — six repos, two features of one deployed product.
