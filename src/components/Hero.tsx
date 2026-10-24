@@ -84,7 +84,13 @@ export default function Hero() {
             tab order is unaffected. */}
         <p
           data-reveal
-          className="text-eyebrow max-w-[40ch] border-t border-hairline pt-6 text-heading/80 uppercase lg:col-start-1 lg:row-start-3 lg:mt-10 [--reveal-delay:140ms]"
+          // No rule above it: the CTA row already ends the copy block, so a
+          // hairline separated something that was already separate. 58ch keeps
+          // it to two lines from lg; at three lines of wide-tracked caps it read
+          // as a paragraph, which an eyebrow-style line shouldn't be. Phones and
+          // 1024 still need three; `text-balance` evens them out instead of
+          // stranding "LAUNCH." alone on the last line.
+          className="text-eyebrow max-w-[58ch] text-balance text-heading/80 uppercase lg:col-start-1 lg:row-start-3 lg:mt-10 [--reveal-delay:140ms]"
         >
           Full-stack engineering for software that needs to keep working after launch.
         </p>
