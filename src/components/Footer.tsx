@@ -79,7 +79,7 @@ export default function Footer() {
               {NAV.map((section) => (
                 <li key={section.id}>
                   <a href={to(`#${section.id}`)} className={linkClass}>
-                    <span className="mr-2 text-[0.6875rem] text-white/25 tabular-nums">
+                    <span className="mr-2 text-[0.6875rem] text-white/50 tabular-nums">
                       {section.index}
                     </span>
                     {section.label}
@@ -192,7 +192,7 @@ export default function Footer() {
       {/* ── Bottom bar ───────────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-20">
         {/* Centred while stacked, split left/right once there's room for one line. */}
-        <div className="flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-center text-[0.6875rem] font-semibold tracking-[0.12em] text-white/35 uppercase sm:flex-row sm:justify-between sm:text-left">
+        <div className="flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-center text-[0.6875rem] font-semibold tracking-[0.12em] text-white/60 uppercase sm:flex-row sm:justify-between sm:text-left">
           {/* Computed, so it can't silently go stale. */}
           <p>© {new Date().getFullYear()} Ahmed Islam</p>
           {/* The emoji is here by request. It's the one exception to STYLE.md's

@@ -75,7 +75,7 @@ export default function Nav({ active }: { active?: string }) {
 
           <a
             href={to('#contact')}
-            className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-5 py-2.5 text-[0.75rem] font-semibold tracking-[0.12em] whitespace-nowrap text-white uppercase transition hover:brightness-110 lg:block"
+            className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.12em] whitespace-nowrap text-white uppercase transition hover:brightness-110 lg:block"
           >
             Let&rsquo;s work together
           </a>
@@ -128,7 +128,7 @@ export default function Nav({ active }: { active?: string }) {
           <a
             href={to('#contact')}
             onClick={() => setOpen(false)}
-            className="mt-3 block rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-5 py-3 text-center text-[0.75rem] font-semibold tracking-[0.12em] text-white uppercase"
+            className="mt-3 block rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-3 text-center text-[0.75rem] font-bold tracking-[0.12em] text-white uppercase"
           >
             Let&rsquo;s work together
           </a>

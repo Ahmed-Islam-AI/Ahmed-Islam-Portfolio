@@ -19,13 +19,13 @@ export default function Services() {
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">What I</span>
-            <span className="block text-heading/25">
+            <span className="block text-heading/50">
               deliver<span className="text-brand">.</span>
             </span>
           </h2>
 
           <p data-reveal className="text-lead mt-9 max-w-[56ch] text-muted [--reveal-delay:120ms]">
-            Six ways I get hired, from a single agent to the whole product around it.
+            Seven ways I get hired, from a single agent to the whole product around it.
             Scope one or chain them — most projects end up being two or three.
           </p>
 
@@ -54,7 +54,7 @@ export default function Services() {
                     >
                       <span
                         className={`text-[0.6875rem] font-semibold tracking-[0.14em] tabular-nums transition-colors ${
-                          on ? 'text-brand-bright' : 'text-heading/30'
+                          on ? 'text-brand-bright' : 'text-muted'
                         }`}
                       >
                         {String(i + 1).padStart(2, '0')}
@@ -71,7 +71,7 @@ export default function Services() {
                       <span
                         aria-hidden
                         className={`relative grid size-9 shrink-0 place-items-center rounded-full transition-colors ${
-                          on ? 'bg-brand text-white' : 'text-heading/40 ring-1 ring-hairline'
+                          on ? 'bg-brand text-white' : 'text-muted ring-1 ring-hairline'
                         }`}
                       >
                         <span className="absolute h-[1.5px] w-3.5 rounded-full bg-current" />

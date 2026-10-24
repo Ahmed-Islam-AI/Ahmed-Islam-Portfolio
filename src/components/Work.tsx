@@ -120,7 +120,7 @@ export default function Work() {
               section twice. This one is the employment + education timeline. */}
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">Where I&rsquo;ve</span>
-            <span className="block text-heading/25">
+            <span className="block text-heading/50">
               been<span className="text-brand">.</span>
             </span>
           </h2>
@@ -257,7 +257,7 @@ export default function Work() {
                   aria-controls="role-points"
                   aria-hidden={!overflows}
                   tabIndex={overflows ? undefined : -1}
-                  className={`inline-flex items-center gap-2 text-[0.75rem] font-semibold tracking-[0.14em] text-brand-bright uppercase transition-colors hover:text-white ${
+                  className={`-my-3 inline-flex items-center gap-2 py-3 text-[0.75rem] font-semibold tracking-[0.14em] text-brand-bright uppercase transition-colors hover:text-white ${
                     overflows ? '' : 'pointer-events-none opacity-0'
                   }`}
                 >

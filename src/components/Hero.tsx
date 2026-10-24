@@ -50,7 +50,12 @@ export default function Hero() {
                 <span className="relative inline-flex size-2.5 rounded-full bg-success" />
               </span>
               <span className="text-eyebrow text-heading uppercase">
-                Full-Stack AI Engineer <span className="text-brand">·</span> Web &amp; Agentic
+                Full-Stack AI Engineer
+                {/* the tail wrapped to a second line at 390px */}
+                <span className="max-sm:hidden">
+                  {' '}
+                  <span className="text-brand">·</span> Web &amp; Agentic
+                </span>
               </span>
               <span className="sr-only">— available for new work</span>
             </span>
@@ -129,7 +134,7 @@ export default function Hero() {
                 {CAPABILITIES.map((cap) => (
                   <li
                     key={cap.label}
-                    className={`rounded-lg px-2.5 py-1.5 text-[0.625rem] font-semibold tracking-[0.1em] whitespace-nowrap uppercase ${TONES[cap.tone]}`}
+                    className={`rounded-lg px-2.5 py-1.5 text-[0.6875rem] font-semibold tracking-[0.08em] whitespace-nowrap uppercase ${TONES[cap.tone]}`}
                   >
                     {cap.label}
                   </li>
@@ -167,7 +172,7 @@ export default function Hero() {
           <div data-reveal className="mt-9 flex flex-wrap items-center gap-3 [--reveal-delay:240ms]">
             <a
               href="#projects"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
             >
               See the work
               <svg

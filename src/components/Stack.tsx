@@ -150,7 +150,7 @@ export default function Stack() {
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">The full</span>
-            <span className="block text-heading/25">
+            <span className="block text-heading/50">
               stack<span className="text-brand">.</span>
             </span>
           </h2>
@@ -185,7 +185,7 @@ export default function Stack() {
                   >
                     {group.label}
                     <span
-                      className={`tabular-nums ${isActive ? 'text-brand-bright' : 'text-muted/60'}`}
+                      className={`tabular-nums ${isActive ? 'text-brand-bright' : 'text-muted'}`}
                     >
                       {group.items.length}
                     </span>
@@ -198,7 +198,7 @@ export default function Stack() {
           {/* ── Readout ───────────────────────────────────────── */}
           <p
             data-reveal
-            className="text-eyebrow mt-6 flex flex-wrap items-center gap-3 text-muted/70 uppercase [--reveal-delay:220ms]"
+            className="text-eyebrow mt-6 flex flex-wrap items-center gap-3 text-muted uppercase [--reveal-delay:220ms]"
           >
             <span className="tabular-nums">
               <span className="text-brand">{String(shown).padStart(2, '0')}</span> / {ALL.length}{' '}
@@ -209,7 +209,7 @@ export default function Stack() {
               <button
                 type="button"
                 onClick={() => setLocked(null)}
-                className="text-eyebrow rounded-full px-2.5 py-1 text-brand uppercase ring-1 ring-brand/30 transition-colors hover:bg-brand hover:text-white"
+                className="text-eyebrow relative rounded-full px-2.5 py-1 text-brand uppercase after:absolute after:-inset-x-1 after:-inset-y-2.5 after:content-[''] ring-1 ring-brand/30 transition-colors hover:bg-brand hover:text-white"
               >
                 Show all
               </button>

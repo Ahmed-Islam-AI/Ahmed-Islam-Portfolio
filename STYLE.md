@@ -115,11 +115,20 @@ wide-tracked text is hard to read; keep eyebrows to one short line.
 | `dark-muted` | `#B9B4AF` | secondary text on dark |
 | `success` | `#2E9E5B` | availability dot only |
 
-Hairline on dark is `white/12`. Ghosted display text is `heading/25`. Watermark
-text is `heading/[0.028]` — if you can comfortably read it, it's too strong.
+Hairline on dark is `white/12`. Ghosted display text is `heading/50` on light and
+`white/35` on ink — **raised from `/25` on 2026-10-24**, because at `/25` the ghost
+line measured 1.73:1 against `paper`, under the 3:1 that large bold text needs.
+`/50` is 3.44:1 and `white/35` 3.21:1; don't drop either back. The one ghost that
+cannot pass is Certifications' `white/40` on `brand` (1.61:1): no tint of white
+reaches 3:1 on orange without stopping being a ghost, so it stays as the knowing
+exception. Watermark text is `heading/[0.028]` — if you can comfortably read it,
+it's too strong.
 
-Signature gradient: `linear-gradient(180deg, brand-bright, brand-deep)` on pill
-CTAs. Hover is `brightness-110`, not a colour swap.
+Signature gradient: `linear-gradient(180deg, brand, brand-deep)` on pill CTAs,
+with the label in **bold**. It started at `brand-bright`, where white 12px
+semibold text measured 2.83:1; from `brand` it is 3.44:1, which passes because
+bold text needs 3:1. Keep both halves — the top stop *and* the weight. Hover is
+`brightness-110`, not a colour swap.
 
 **The hero is light.** The written brief describes a dark `#121212` hero; the
 approved mockup is warm `#FAF7F4` with a dark floating nav. The mockup wins.
@@ -136,7 +145,7 @@ Every content section follows the same skeleton. Match it:
     <div className="min-w-0">
       <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
         <span className="block text-heading">First line</span>
-        <span className="block text-heading/25">second<span className="text-brand">.</span></span>
+        <span className="block text-heading/50">second<span className="text-brand">.</span></span>
       </h2>
       …
     </div>
@@ -147,7 +156,7 @@ Every content section follows the same skeleton. Match it:
 Two things are load-bearing:
 
 1. **`lg:px-20`** — the gutter `SocialRail` occupies. Non-negotiable on new sections.
-2. **Two-tone stacked heading** — solid line over a `heading/25` ghost line, with
+2. **Two-tone stacked heading** — solid line over a `heading/50` ghost line, with
    the full stop in orange. This is the site's signature; keep it consistent.
 
 **No `0N / NAME` eyebrow above the heading** — removed from every section
@@ -240,7 +249,9 @@ Not optional, and not to be simplified away:
   `outline-offset: 3px`.
 - Interactive targets ≥ 44px.
 - Body text on `paper` must stay at or above `muted` (`#5C5651`, ~6.7:1). Small
-  uppercase wide-tracked text needs `heading/80` or darker.
+  uppercase wide-tracked text needs `heading/80` or darker. **No opacity-tinted
+  small text at rest** (`heading/30`, `muted/60` and the like measured 2–3:1 and
+  were all raised to `muted` on 2026-10-24); the orange is for the active state.
 - Anything hidden but space-reserving must be `aria-hidden` **and**
   `tabIndex={-1}`, or keyboard users tab into invisible controls.
 

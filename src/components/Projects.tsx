@@ -81,7 +81,7 @@ export default function Projects() {
               className="type-hero text-display leading-[0.95] uppercase"
             >
               <span className="block text-white">Things I&rsquo;ve</span>
-              <span className="block text-white/25">
+              <span className="block text-white/35">
                 shipped<span className="text-brand">.</span>
               </span>
             </h2>
@@ -130,7 +130,7 @@ export default function Projects() {
               raw href would full-page-reload the SPA. */}
           <Link
             to="/projects"
-            className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase transition hover:brightness-110"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase transition hover:brightness-110"
           >
             View all {PROJECTS.length} projects
             <span aria-hidden className="transition-transform group-hover:translate-x-0.5">

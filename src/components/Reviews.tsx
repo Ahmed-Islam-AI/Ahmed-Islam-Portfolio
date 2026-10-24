@@ -42,7 +42,7 @@ export default function Reviews() {
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">In their</span>
-            <span className="block text-heading/25">
+            <span className="block text-heading/50">
               words<span className="text-brand">.</span>
             </span>
           </h2>
@@ -81,7 +81,7 @@ export default function Reviews() {
                       // no-underline so the active run's rule stops at the quote
                       // rather than leaving a stray dash under the marker
                       className={`ms-1 text-[0.5em] font-semibold no-underline tabular-nums transition-colors duration-200 ${
-                        on ? 'text-brand' : 'text-heading/40'
+                        on ? 'text-brand' : 'text-muted'
                       }`}
                     >
                       {i + 1}
@@ -94,7 +94,7 @@ export default function Reviews() {
 
           <h3
             data-reveal
-            className="text-eyebrow mt-14 text-muted/70 uppercase [--reveal-delay:240ms]"
+            className="text-eyebrow mt-14 text-muted uppercase [--reveal-delay:240ms]"
           >
             Who said it
           </h3>
@@ -132,7 +132,7 @@ export default function Reviews() {
                     <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1">
                       <span
                         className={`text-[0.6875rem] font-semibold tracking-[0.14em] tabular-nums transition-colors duration-200 ${
-                          on ? 'text-brand' : 'text-heading/40'
+                          on ? 'text-brand' : 'text-muted'
                         }`}
                       >
                         {String(i + 1).padStart(2, '0')}
@@ -153,7 +153,7 @@ export default function Reviews() {
                         className={`rounded-full px-3 py-1 text-[0.6875rem] font-semibold tracking-[0.12em] whitespace-nowrap uppercase transition-colors duration-200 sm:ms-auto ${
                           on
                             ? 'bg-white text-heading ring-1 ring-hairline'
-                            : 'text-heading/45 ring-1 ring-heading/10'
+                            : 'text-muted ring-1 ring-heading/10'
                         }`}
                       >
                         LinkedIn
@@ -165,7 +165,7 @@ export default function Reviews() {
                     <span
                       aria-hidden
                       className={`relative grid size-8 shrink-0 place-items-center rounded-full transition-colors ${
-                        expanded ? 'bg-brand text-white' : 'text-heading/40 ring-1 ring-hairline'
+                        expanded ? 'bg-brand text-white' : 'text-muted ring-1 ring-hairline'
                       }`}
                     >
                       <span className="absolute h-[1.5px] w-3 rounded-full bg-current" />

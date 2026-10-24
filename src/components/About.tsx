@@ -28,22 +28,12 @@ export default function About() {
         ))}
       </div>
 
-      {/* Rotated marginal note, lifted from the second reference. vertical-rl
-          rather than rotate-90 so the layout box is tall-and-narrow and `right`
-          actually positions it; right-24 at 2xl keeps it clear of SocialRail. */}
-      <span
-        aria-hidden
-        className="text-eyebrow absolute top-1/2 right-14 hidden -translate-y-1/2 text-muted/45 uppercase [writing-mode:vertical-rl] xl:block 2xl:right-24"
-      >
-        Production-first, always
-      </span>
-
       <div className="mx-auto max-w-6xl">
         <div>
           {/* two-tone stacked display heading */}
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-heading">More than</span>
-            <span className="block text-heading/25">
+            <span className="block text-heading/50">
               algorithms<span className="text-brand">.</span>
             </span>
           </h2>
@@ -86,7 +76,7 @@ export default function About() {
           >
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
             >
               Let&rsquo;s work together
               <svg

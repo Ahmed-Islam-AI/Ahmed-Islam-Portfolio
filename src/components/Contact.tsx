@@ -124,7 +124,7 @@ export default function Contact() {
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
             <span className="block text-white">Tell me what</span>
-            <span className="block text-white/25">
+            <span className="block text-white/35">
               you need<span className="text-brand">.</span>
             </span>
           </h2>
@@ -298,7 +298,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'sending'}
-                  className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand-bright to-brand-deep px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {status === 'sending' ? 'Sending' : 'Send enquiry'}
                   <svg

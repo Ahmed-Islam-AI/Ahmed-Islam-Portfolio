@@ -202,7 +202,7 @@ export default function Method() {
                     the only one still on the smaller text-h2 step. */}
                 <h2 className="type-hero text-display leading-[0.95] uppercase">
                   <span className="block text-white">How I</span>
-                  <span className="block text-white/25">
+                  <span className="block text-white/35">
                     build<span className="text-brand">.</span>
                   </span>
                 </h2>
