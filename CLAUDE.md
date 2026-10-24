@@ -51,8 +51,9 @@ src/
   index.css             ALL design tokens (@theme), base layer, utilities, motion
   pages/Home.tsx        section order for the landing page
   pages/ProjectsPage.tsx  /projects — the full index, all seven as rows
-  pages/BlogPage.tsx    /blog — lead post + hairline list (also exports Meta, formatDate)
-  pages/BlogPostPage.tsx  /blog/:slug — article, sticky contents, reading progress
+  pages/BlogPage.tsx    /blog — featured story + cover-card grid (exports Kicker, formatDate, issueOf, tie)
+  pages/BlogPostPage.tsx  /blog/:slug — centred masthead, cover, article, contents, share, author
+  components/PostCover.tsx  a post's drawn cover, seeded from its slug
   content/blog/*.md     the posts. One file per post; the filename is the URL slug
   content/types.ts      PostMeta, TocEntry — shared with blog.vite.ts
   hooks/useReveal.ts    scroll-reveal observer, re-runs per route
@@ -291,6 +292,30 @@ that data. If you edit a code block, re-run it and update its output block.
 **Reading surface rules** (STYLE.md has the visual ones): paper, not ink;
 `.prose` in `index.css` styles the compiled HTML by element; post titles are
 **mixed case** — a sentence to read, not a section heading.
+
+**Redesigned 2026-10-25 (branch `design/blog-redesign`)** after Ahmed rejected
+v1 ("not attractive", and the bare `← ALL POSTS` text link in particular). He
+chose each of these from options:
+
+- **Editorial, centred masthead** on the post (kicker, title, dek, byline with
+  his portrait), a wide cover, then the 44rem column. The index stays
+  left-aligned like every other page; only the post masthead centres.
+- **Automatic drawn covers** — `PostCover.tsx`. A dot field seeded from the
+  slug (mulberry32), so each post's cover is unique and stable; faint dots are
+  data, hollow ones gaps, orange ones signal. A diagram, same licence as
+  `ProjectMark`. It carries no category text on purpose: every cover sits next
+  to a kicker that already prints it. Dot radii are sized for a phone, where
+  the plate renders at ~0.25 scale.
+- **Back pill + breadcrumb**: `‹ All posts` pill (not "Blog" — it sat next to a
+  "Blog" crumb), then `Blog / Category / Title`.
+- Contents: from `xl` a sticky list in the left margin on a hairline track,
+  the current entry drawn as an orange segment; below `xl` a `<details>`.
+- After the article: topics, share (copy link, LinkedIn, X — icons reused from
+  `socials.ts`), an author card, previous/next, and the ink "Let's talk" panel.
+- `tie()` in BlogPage.tsx joins short words (a, and, of…) to the next word with
+  a no-break space, so `text-balance` can't strand "A" at a line end.
+- The reading column is `44rem`, not `68ch`: a wrapper's `ch` is measured at
+  16px while `.prose` sets 68ch at 18px, so the two disagreed by ~80px.
 
 ## Socials: the rail shows five, the footer shows nine
 

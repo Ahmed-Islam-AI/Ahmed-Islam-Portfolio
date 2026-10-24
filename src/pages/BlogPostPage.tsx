@@ -3,20 +3,30 @@ import { Link, useParams } from 'react-router-dom'
 import { bodies, posts } from 'virtual:blog'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import { Meta } from './BlogPage'
+import PostCover from '../components/PostCover'
+import portrait from '../assets/ahmed.png'
+import { SOCIALS } from '../data/socials'
+import { Kicker, issueOf, tie } from './BlogPage'
 import type { PostMeta, TocEntry } from '../content/types'
 
+const SITE = 'https://ahmedislam.tech'
+const iconOf = (name: string) => SOCIALS.find((s) => s.name === name)?.path ?? ''
+
 /**
- * One post, `/blog/:slug`.
+ * One post, `/blog/:slug`. Editorial: a centred header (kicker, title, dek,
+ * byline), a wide drawn cover, then a 68ch reading column.
  *
- * Layout: a ~68ch article column, and from lg a sticky "On this page" column
- * beside it. Below lg the contents collapse into a native <details> above the
- * article: keyboard, screen readers and the open/close state all come free.
+ * The header is the one centred block on the site, and only because a centred
+ * masthead is the editorial convention a reader recognises; the article body
+ * stays left-aligned, as STYLE.md asks of all running text.
  *
- * The body is HTML compiled at build time (`blog.vite.ts`) and loaded as its own
- * chunk, so the index never downloads a post nobody opened. It is our own
- * Markdown from the repo, not user input, which is why it is safe to set as
- * HTML.
+ * Contents: from xl a sticky list in the left margin, beside the column. Below
+ * xl a native <details> above the article — keyboard, screen readers and the
+ * open state come free.
+ *
+ * The body is HTML compiled at build time (`blog.vite.ts`) and loaded as its
+ * own chunk. It is our own Markdown from the repo, never user input, which is
+ * the only reason it is safe to set as HTML.
  */
 export default function BlogPostPage() {
   const { slug = '' } = useParams()
@@ -50,6 +60,7 @@ export default function BlogPostPage() {
   // posts are newest first, so the next-newer is one index down
   const newer = posts[index - 1]
   const older = posts[index + 1]
+  const hasToc = !!body && body.toc.length > 0
 
   return (
     <>
@@ -59,65 +70,134 @@ export default function BlogPostPage() {
       <main id="top" className="min-h-screen bg-paper">
         <div className="pt-nav px-4 pb-28 sm:px-6 lg:px-20 lg:pb-36">
           <div className="mx-auto max-w-6xl">
-            <header className="pt-8 lg:pt-12">
+            {/* ── Back + breadcrumb ─────────────────────────── */}
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-8 lg:pt-10">
               <Link
                 to="/blog"
-                className="group -my-3 inline-flex items-center gap-2 py-3 text-[0.75rem] font-bold tracking-[0.14em] text-muted uppercase transition-colors hover:text-heading"
+                className="group press inline-flex items-center gap-2 rounded-full bg-white py-2 pr-4 pl-2.5 text-sm font-semibold text-heading shadow-[0_8px_20px_-14px_rgb(20_19_18/0.45)] ring-1 ring-hairline hover:ring-heading/20"
               >
-                <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-1">
-                  &larr;
+                <span
+                  aria-hidden
+                  className="grid size-6 place-items-center rounded-full bg-paper-2 text-heading transition-[translate,background-color,color] duration-300 group-hover:-translate-x-0.5 group-hover:bg-heading group-hover:text-white"
+                >
+                  <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10 3.5 5.5 8l4.5 4.5" />
+                  </svg>
                 </span>
                 All posts
               </Link>
+              <ol className="flex min-w-0 items-center gap-2 text-sm text-muted">
+                <li>
+                  <Link to="/blog" className="transition-colors hover:text-heading">
+                    Blog
+                  </Link>
+                </li>
+                {post.tags[0] && (
+                  <>
+                    <li aria-hidden className="text-heading/30">
+                      /
+                    </li>
+                    <li>{post.tags[0]}</li>
+                  </>
+                )}
+                <li aria-hidden className="text-heading/30 max-sm:hidden">
+                  /
+                </li>
+                <li aria-current="page" className="truncate text-heading max-sm:hidden">
+                  {post.title}
+                </li>
+              </ol>
+            </nav>
 
-              {/* Mixed case, unlike section headings: a title is a sentence to
-                  read, and long wide uppercase is the hardest text to read. */}
+            {/* ── Masthead ──────────────────────────────────── */}
+            <header className="mx-auto mt-12 max-w-3xl text-center lg:mt-16">
+              <div data-reveal className="flex justify-center">
+                <Kicker post={post} className="justify-center" />
+              </div>
               <h1
                 data-reveal
-                className="type-hero mt-8 max-w-[20ch] text-display leading-[1.02] text-balance text-heading"
+                className="type-hero mt-6 text-display leading-[1.02] text-balance text-heading [--reveal-delay:80ms]"
               >
-                {post.title}
+                {tie(post.title)}
               </h1>
               <p
                 data-reveal
-                className="text-lead mt-6 max-w-[56ch] text-muted [--reveal-delay:100ms]"
+                className="text-lead mx-auto mt-6 max-w-[54ch] text-balance text-muted [--reveal-delay:140ms]"
               >
                 {post.description}
               </p>
-              <div
-                data-reveal
-                className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-hairline pb-10 [--reveal-delay:160ms]"
-              >
-                <span className="text-sm font-semibold text-heading">Ahmed Islam</span>
-                <Meta post={post} />
+              <div data-reveal className="mt-9 flex items-center justify-center gap-3.5 [--reveal-delay:200ms]">
+                <Avatar className="size-11" />
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-heading">Ahmed Islam</p>
+                  <p className="text-sm text-muted">
+                    Full-Stack AI Engineer <span aria-hidden className="text-heading/30">·</span>{' '}
+                    {post.minutes} min read
+                  </p>
+                </div>
               </div>
             </header>
 
-            <div className="mt-12 lg:mt-14 lg:grid lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-16 xl:gap-24">
-              <div className="min-w-0">
-                {body && body.toc.length > 0 && (
-                  <details className="group mb-10 rounded-2xl bg-white ring-1 ring-hairline lg:hidden">
-                    <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[0.75rem] font-bold tracking-[0.14em] text-heading uppercase [&::-webkit-details-marker]:hidden">
-                      On this page
-                      <span aria-hidden className="text-brand transition-transform duration-300 group-open:rotate-45">
-                        +
+            {/* ── Cover ─────────────────────────────────────── */}
+            <div data-reveal className="mt-12 [--reveal-delay:260ms] lg:mt-16">
+              <PostCover
+                slug={post.slug}
+                      issue={issueOf(post.slug)}
+                className="aspect-[4/3] rounded-[1.75rem] shadow-[0_40px_80px_-50px_rgb(20_19_18/0.6)] sm:aspect-[16/9] lg:aspect-[21/9] lg:rounded-[2rem]"
+              />
+            </div>
+
+            {/* ── Body ──────────────────────────────────────────
+                Three tracks from xl: contents | 44rem column | empty. 44rem, not 68ch:
+                `ch` here would be measured at 16px, the prose sets 68ch at 18px. The empty
+                right track is what keeps the column on the page's centre line,
+                under the masthead, instead of shoved right by the contents. */}
+            <div className="mt-14 lg:mt-20 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,44rem)_minmax(0,1fr)] xl:gap-14">
+              {hasToc && (
+                <aside className="hidden xl:block">
+                  <div className="sticky top-32 ml-auto max-w-56">
+                    <p className="text-eyebrow text-muted uppercase">Contents</p>
+                    <Toc toc={body.toc} tracking className="mt-5" />
+                  </div>
+                </aside>
+              )}
+
+              <div className="mx-auto min-w-0 max-w-[44rem] xl:col-start-2 xl:mx-0">
+                {hasToc && (
+                  <details className="group mb-12 overflow-hidden rounded-2xl bg-white ring-1 ring-hairline xl:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-heading [&::-webkit-details-marker]:hidden">
+                      <span className="flex items-center gap-3">
+                        <span aria-hidden className="grid size-7 place-items-center rounded-full bg-paper-2 text-xs text-muted tabular-nums">
+                          {body.toc.filter((t) => t.depth === 2).length}
+                        </span>
+                        Contents
                       </span>
+                      <svg aria-hidden viewBox="0 0 16 16" className="size-4 text-muted transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                        <path d="m4 6 4 4 4-4" />
+                      </svg>
                     </summary>
                     <Toc toc={body.toc} className="border-t border-hairline px-5 py-4" />
                   </details>
                 )}
 
                 {body ? <Article html={body.html} /> : <ArticleSkeleton />}
-              </div>
 
-              {body && body.toc.length > 0 && (
-                <aside className="hidden lg:block">
-                  <div className="sticky top-32">
-                    <p className="text-eyebrow text-muted uppercase">On this page</p>
-                    <Toc toc={body.toc} tracking className="mt-5" />
-                  </div>
-                </aside>
-              )}
+                {/* ── After the article ───────────────────── */}
+                <div className="mt-16 flex flex-col gap-6 border-t border-hairline pt-8 sm:flex-row sm:items-center sm:justify-between">
+                  {post.tags.length > 0 && (
+                    <ul aria-label="Topics" className="flex flex-wrap gap-2">
+                      {post.tags.map((tag: string) => (
+                        <li key={tag} className="rounded-full bg-paper-2 px-3.5 py-1.5 text-sm font-medium text-heading">
+                          {tag}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <Share post={post} />
+                </div>
+
+                <AuthorCard />
+              </div>
             </div>
 
             <End newer={newer} older={older} />
@@ -127,6 +207,14 @@ export default function BlogPostPage() {
 
       <Footer />
     </>
+  )
+}
+
+function Avatar({ className = '' }: { className?: string }) {
+  return (
+    <span className={`relative block shrink-0 overflow-hidden rounded-full bg-ink-raised ring-2 ring-white ${className}`}>
+      <img src={portrait} alt="" className="absolute inset-x-0 top-0 w-full object-cover object-top" />
+    </span>
   )
 }
 
@@ -149,11 +237,10 @@ function Article({ html }: { html: string }) {
   return <article className="prose" onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />
 }
 
-/** Holds the article's place while its chunk loads (a few ms on a warm cache),
- *  so the footer doesn't jump up and back down. */
+/** Holds the article's place while its chunk loads, so the page doesn't jump. */
 function ArticleSkeleton() {
   return (
-    <div aria-hidden className="max-w-[68ch] space-y-4">
+    <div aria-hidden className="space-y-4">
       {[92, 100, 84, 96, 70].map((w) => (
         <div key={w} className="h-4 animate-pulse rounded-full bg-heading/[0.06]" style={{ width: `${w}%` }} />
       ))}
@@ -162,10 +249,10 @@ function ArticleSkeleton() {
 }
 
 /**
- * Table of contents. With `tracking`, the entry for the section you're reading
- * lights up — same tick language as SectionRail, so it reads as the same
- * system. The observer line sits a quarter of the way down the viewport: a
- * heading counts as "current" once it has scrolled up past the top quarter.
+ * Contents. A hairline track with the current section's segment drawn in
+ * orange over it — position shown by a shape on a line, not by colour alone.
+ * With `tracking`, "current" is the last heading that has scrolled past a line
+ * a quarter of the way down the viewport.
  */
 function Toc({ toc, tracking = false, className = '' }: { toc: TocEntry[]; tracking?: boolean; className?: string }) {
   const [current, setCurrent] = useState(toc[0]?.id)
@@ -180,8 +267,6 @@ function Toc({ toc, tracking = false, className = '' }: { toc: TocEntry[]; track
       // one is current is read from geometry, so a fast scroll that skips a
       // heading entirely still lands on the right entry.
       () => {
-        // Current = the last heading above the line. Walk the headings in
-        // document order and keep the last one whose top has passed it.
         const line = window.innerHeight * 0.25
         let id = toc[0]?.id
         for (const h of headings) if (h.getBoundingClientRect().top <= line) id = h.id
@@ -194,30 +279,90 @@ function Toc({ toc, tracking = false, className = '' }: { toc: TocEntry[]; track
   }, [toc, tracking])
 
   return (
-    <ol className={`space-y-0.5 ${className}`}>
+    <ol className={`border-l border-hairline ${className}`}>
       {toc.map((entry) => {
         const on = tracking && current === entry.id
         return (
-          <li key={entry.id} className={entry.depth === 3 ? 'ps-4' : ''}>
+          <li key={entry.id}>
             <a
               href={`#${entry.id}`}
               aria-current={on ? 'location' : undefined}
-              className={`group flex items-start gap-3 py-1.5 text-sm leading-snug transition-colors ${
-                on ? 'text-heading' : 'text-muted hover:text-heading'
-              }`}
+              className={`-ml-px block border-l-2 py-1.5 text-sm leading-snug transition-colors duration-300 ${
+                entry.depth === 3 ? 'pl-7' : 'pl-4 font-medium'
+              } ${on ? 'border-brand text-heading' : 'border-transparent text-muted hover:text-heading'}`}
             >
-              <span
-                aria-hidden
-                className={`mt-[0.6em] h-px shrink-0 transition-all duration-300 ${
-                  on ? 'w-4 bg-brand' : 'w-2 bg-heading/25 group-hover:w-3'
-                }`}
-              />
               {entry.text}
             </a>
           </li>
         )
       })}
     </ol>
+  )
+}
+
+/** Copy link, LinkedIn, X. Links go to the canonical URL, not localhost. */
+function Share({ post }: { post: PostMeta }) {
+  const [copied, setCopied] = useState(false)
+  const url = `${SITE}/blog/${post.slug}`
+  const button =
+    'press grid size-10 place-items-center rounded-full bg-white text-heading ring-1 ring-hairline hover:bg-heading hover:text-white hover:ring-heading'
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="mr-1 text-sm text-muted">Share</span>
+      <button
+        type="button"
+        aria-label={copied ? 'Link copied' : 'Copy link'}
+        onClick={() =>
+          navigator.clipboard.writeText(url).then(() => {
+            setCopied(true)
+            window.setTimeout(() => setCopied(false), 1600)
+          })
+        }
+        className={button}
+      >
+        <svg aria-hidden viewBox="0 0 24 24" className="size-[1.1rem]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          {copied ? (
+            <path d="m5 12.5 4.5 4.5L19 7.5" />
+          ) : (
+            <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+          )}
+        </svg>
+      </button>
+      {[
+        { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
+        { name: 'X', href: `https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(post.title)}` },
+      ].map((s) => (
+        <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${s.name}`} className={button}>
+          <svg aria-hidden viewBox="0 0 24 24" className="size-4" fill="currentColor">
+            <path d={iconOf(s.name)} />
+          </svg>
+        </a>
+      ))}
+    </div>
+  )
+}
+
+/** Who wrote it, under every post: a face and two sentences, then the way to
+ *  the rest of the site. */
+function AuthorCard() {
+  return (
+    <aside className="mt-10 flex flex-col gap-5 rounded-[1.75rem] bg-white p-6 ring-1 ring-hairline sm:flex-row sm:items-center sm:p-7">
+      <Avatar className="size-16" />
+      <div className="min-w-0 flex-1">
+        <p className="text-eyebrow text-muted uppercase">Written by</p>
+        <p className="type-hero mt-1.5 text-xl text-heading">Ahmed Islam</p>
+        <p className="mt-1.5 text-body text-muted">
+          Full-Stack AI Engineer building production AI systems and the products around them.
+        </p>
+      </div>
+      <Link
+        to="/"
+        className="press shrink-0 self-start rounded-full px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.14em] text-heading uppercase ring-1 ring-heading/20 hover:bg-heading hover:text-white sm:self-auto"
+      >
+        About me
+      </Link>
+    </aside>
   )
 }
 
@@ -230,13 +375,13 @@ function ReadingProgress() {
   return <div aria-hidden className="reading-progress" />
 }
 
-/** Where to go when you reach the end: the next post, and the one thing this
- *  site exists for — talking about work. */
+/** Where to go next: the neighbouring posts, then the one thing this site
+ *  exists for — talking about work. */
 function End({ newer, older }: { newer?: PostMeta; older?: PostMeta }) {
   return (
-    <footer className="mt-20 lg:mt-28">
+    <footer className="mt-24 lg:mt-32">
       {(newer || older) && (
-        <nav aria-label="More posts" className="grid gap-4 sm:grid-cols-2">
+        <nav aria-label="More posts" className="mb-6 grid gap-4 sm:grid-cols-2">
           {[
             { post: older, label: 'Previous' },
             { post: newer, label: 'Next' },
@@ -259,24 +404,28 @@ function End({ newer, older }: { newer?: PostMeta; older?: PostMeta }) {
         </nav>
       )}
 
-      <div className="mt-6 flex flex-col gap-6 rounded-[1.75rem] bg-ink px-7 py-9 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-        <div>
-          <p className="type-hero text-h3 text-white">
-            Building something like this<span className="text-brand">?</span>
-          </p>
-          <p className="mt-2 max-w-[44ch] text-body text-dark-muted">
-            I take on AI systems and the full-stack products around them.
-          </p>
+      <div className="relative isolate overflow-hidden rounded-[2rem] bg-ink px-7 py-12 sm:px-12 sm:py-14">
+        <div aria-hidden className="absolute -top-1/2 -right-1/4 -z-10 size-[60%] rounded-full bg-brand/20 blur-[100px]" />
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-eyebrow text-brand-bright uppercase">Work with me</p>
+            <p className="type-hero mt-3 max-w-[18ch] text-h2 leading-[1.05] text-white">
+              Building something like this<span className="text-brand">?</span>
+            </p>
+            <p className="mt-3 max-w-[46ch] text-body text-dark-muted">
+              I take on AI systems and the full-stack products around them.
+            </p>
+          </div>
+          {/* A plain <a>, like Nav's off-home links: a full load of `/#contact`
+              lets the browser do the anchor scroll, which a router <Link> won't. */}
+          <a
+            href="/#contact"
+            className="press inline-flex shrink-0 items-center gap-2.5 self-start rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 hover:brightness-110 sm:self-auto"
+          >
+            Let&rsquo;s talk
+            <span aria-hidden>&rarr;</span>
+          </a>
         </div>
-        {/* A plain <a>, like Nav's off-home links: a full load of `/#contact`
-            lets the browser do the anchor scroll, which a router <Link> won't. */}
-        <a
-          href="/#contact"
-          className="press inline-flex shrink-0 items-center gap-2.5 self-start rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 hover:brightness-110 sm:self-auto"
-        >
-          Let&rsquo;s talk
-          <span aria-hidden>&rarr;</span>
-        </a>
       </div>
     </footer>
   )
@@ -295,7 +444,7 @@ function NotFound() {
           <p className="mt-4 text-body text-muted">It may have moved, or the link has a typo.</p>
           <Link
             to="/blog"
-            className="press mt-8 inline-flex items-center gap-2 rounded-full border border-heading/20 px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-heading uppercase hover:border-brand hover:text-brand"
+            className="press mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-heading ring-1 ring-hairline hover:ring-heading/20"
           >
             <span aria-hidden>&larr;</span> All posts
           </Link>

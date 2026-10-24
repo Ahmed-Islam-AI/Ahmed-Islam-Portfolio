@@ -326,11 +326,16 @@ Things that would make this site look generic. Avoid all of them:
   (`#f2c4a8`), comments `white/45`, everything else near-white on `ink`. A
   rainbow theme would be fifteen accents on a site that allows one. Program
   output (` ```output `) is a printout: paper-2, hairline, no colour.
-- **No cover images on the index.** A post earns an image inside the post,
-  where it explains something. Charts are real renders of real data, in the
-  palette (`brand` for the point, a light tint of it for context).
-- The index is a lead story plus hairline rows, the `/projects` list language,
-  not a card grid. Contents tracking uses SectionRail's tick.
+- **Covers are drawn, never pictured** (`PostCover.tsx`): ink, the hero grid,
+  a slug-seeded dot field with orange signal dots. No stock, no generated
+  images. Charts inside a post are real renders of real data, in the palette
+  (`brand` for the point, a light tint of it for context).
+- **The post masthead is the one centred block on the site** — editorial
+  convention, chosen by Ahmed. Running text stays left-aligned, and so does the
+  blog index.
+- Index: a featured story (cover beside copy from `lg`) over a two-column grid
+  of cover cards. Back control is a white pill with a chevron chip, never a
+  bare text link.
 
 ## Two knowing exceptions
 
