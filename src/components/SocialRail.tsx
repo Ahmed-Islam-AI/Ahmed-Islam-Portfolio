@@ -46,7 +46,7 @@ export default function SocialRail({
             aria-label={social.name}
             // inverts over the full-bleed bands — an ink circle on an ink
             // background is invisible
-            className={`group grid size-11 place-items-center rounded-full transition duration-200 hover:-translate-x-0.5 hover:scale-110 hover:shadow-lg ${rest} ${hover}`}
+            className={`group grid size-11 place-items-center rounded-full transition duration-200 hover:-translate-x-0.5 hover:scale-110 hover:shadow-lg active:scale-95 ${rest} ${hover}`}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="size-[19px]" aria-hidden>
               <path d={social.path} />

@@ -119,7 +119,7 @@ export default function Reviews() {
                     onFocus={() => setActive(i)}
                     aria-expanded={expanded}
                     aria-controls={`review-full-${i + 1}`}
-                    className="flex w-full items-center gap-4 py-3 text-left"
+                    className="press flex w-full items-center gap-4 py-3 text-left [--press:0.99]"
                   >
                     {/* Same tick language as SectionRail, so the two read as one system. */}
                     <span

@@ -177,7 +177,7 @@ export default function Stack() {
                     type="button"
                     onClick={() => setLocked(group.id)}
                     aria-pressed={isActive}
-                    className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] whitespace-nowrap uppercase ring-1 transition duration-200 ${
+                    className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] whitespace-nowrap uppercase ring-1 press ${
                       isActive
                         ? 'bg-ink text-white ring-ink'
                         : 'bg-white text-heading ring-hairline hover:ring-brand/50'
@@ -209,7 +209,7 @@ export default function Stack() {
               <button
                 type="button"
                 onClick={() => setLocked(null)}
-                className="text-eyebrow relative rounded-full px-2.5 py-1 text-brand uppercase after:absolute after:-inset-x-1 after:-inset-y-2.5 after:content-[''] ring-1 ring-brand/30 transition-colors hover:bg-brand hover:text-white"
+                className="text-eyebrow relative rounded-full px-2.5 py-1 text-brand uppercase after:absolute after:-inset-x-1 after:-inset-y-2.5 after:content-[''] ring-1 ring-brand/30 press hover:bg-brand hover:text-white"
               >
                 Show all
               </button>
@@ -218,26 +218,23 @@ export default function Stack() {
 
           {/* ── The field ─────────────────────────────────────── */}
           <ul data-reveal className="mt-8 flex flex-wrap gap-2.5 [--reveal-delay:260ms]">
-            {ALL.map((skill) => {
-              const on = !locked || skill.cat === locked
-              return (
-                // Filtered-out pills are removed at every width now, not dimmed.
-                // STYLE.md's dim-out treatment is still the rule for *small* filter
-                // sets; here it left 40+ ghost pills around the four you'd asked
-                // for, which buried the selection in its own noise.
-                <li
-                  key={`${skill.cat}-${skill.name}`}
-                  className={`flex items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium ring-1 transition duration-300 ${
-                    on
-                      ? 'bg-white text-heading ring-hairline shadow-[0_10px_26px_-20px_rgb(20_19_18/0.55)]'
-                      : 'hidden'
-                  }`}
-                >
-                  <TechIcon name={skill.name} className="size-4 shrink-0 text-brand" />
-                  {skill.name}
-                </li>
-              )
-            })}
+            {/* Filtered-out pills are removed at every width, not dimmed.
+                STYLE.md's dim-out treatment is still the rule for *small* filter
+                sets; here it left 40+ ghost pills around the four you'd asked
+                for, which buried the selection in its own noise.
+                Removed from the DOM rather than `hidden`, so switching category
+                mounts the new set and `animate-rise-in` cascades it in. The
+                stagger caps at 20 steps, or "Show all" would take 1s to land. */}
+            {ALL.filter((skill) => !locked || skill.cat === locked).map((skill, i) => (
+              <li
+                key={`${skill.cat}-${skill.name}`}
+                className="flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-sm font-medium text-heading shadow-[0_10px_26px_-20px_rgb(20_19_18/0.55)] ring-1 ring-hairline motion-safe:animate-rise-in"
+                style={{ animationDelay: `${Math.min(i, 20) * 18}ms` }}
+              >
+                <TechIcon name={skill.name} className="size-4 shrink-0 text-brand" />
+                {skill.name}
+              </li>
+            ))}
           </ul>
         </div>
         </div>

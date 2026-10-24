@@ -130,7 +130,7 @@ export default function Projects() {
               raw href would full-page-reload the SPA. */}
           <Link
             to="/projects"
-            className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase transition hover:brightness-110"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase press hover:brightness-110"
           >
             View all {PROJECTS.length} projects
             <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
@@ -175,7 +175,7 @@ function Featured({ project, index }: { project: Project; index: number }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${project.name} — opens the ${live ? 'live site' : 'source repository'} in a new tab`}
-      className="group grid gap-8 rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 lg:grid-cols-2 lg:items-center lg:gap-12 lg:p-10"
+      className="group grid gap-8 rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 active:scale-[0.99] lg:grid-cols-2 lg:items-center lg:gap-12 lg:p-10"
     >
       <div className="min-w-0">
         <div className="flex items-center justify-between gap-3 font-mono text-[0.6875rem] tracking-[0.14em]">
@@ -185,7 +185,7 @@ function Featured({ project, index }: { project: Project; index: number }) {
           </span>
         </div>
 
-        <Visual project={project} className="mt-5" />
+        <Visual project={project} className="scroll-unveil mt-5" />
       </div>
 
       <div className="min-w-0">
@@ -229,7 +229,7 @@ function Card({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${project.name} — opens the ${live ? 'live site' : 'source repository'} in a new tab`}
-      className={`group flex min-w-0 flex-col rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 lg:p-7 ${className}`}
+      className={`group flex min-w-0 flex-col rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 active:scale-[0.99] lg:p-7 ${className}`}
     >
       <Visual project={project} className="mb-6" />
 

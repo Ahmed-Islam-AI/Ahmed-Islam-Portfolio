@@ -40,7 +40,9 @@ export default function Hero() {
           fine here because nothing reordered is focusable. */}
       <div className="mx-auto grid max-w-6xl gap-y-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:grid-rows-[auto_auto_1fr] lg:items-start lg:gap-x-20 lg:gap-y-0">
         {/* ── Headline ─────────────────────────────────────────── */}
-        <div className="lg:col-start-1 lg:row-start-1">
+        {/* `scroll-recede` (here and on the portrait) eases the hero back as it
+            leaves through the top, so the stats card reads as the next thing. */}
+        <div className="scroll-recede lg:col-start-1 lg:row-start-1">
           <p data-reveal>
             <span className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-white to-paper-2 py-2 pr-4 pl-3 shadow-[0_10px_30px_-18px_rgb(20_19_18/0.5)] ring-1 ring-hairline">
               {/* live dot — green reads "available"; orange is the brand accent
@@ -97,7 +99,7 @@ export default function Hero() {
           data-reveal="right"
           className="relative lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-center [--reveal-delay:200ms]"
         >
-          <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+          <div className="scroll-recede relative mx-auto w-full max-w-sm lg:max-w-none">
             {/* decorative ring, sits behind the card */}
             <span
               aria-hidden
@@ -172,7 +174,7 @@ export default function Hero() {
           <div data-reveal className="mt-9 flex flex-wrap items-center gap-3 [--reveal-delay:240ms]">
             <a
               href="#projects"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 press hover:brightness-110"
             >
               See the work
               <svg
@@ -192,7 +194,7 @@ export default function Hero() {
             <a
               href="mailto:ahmedislam.official@gmail.com"
               aria-label="Email Ahmed"
-              className="grid size-12 place-items-center rounded-full border border-heading/15 text-heading transition hover:border-brand hover:text-brand"
+              className="grid size-12 place-items-center rounded-full border border-heading/15 text-heading press hover:border-brand hover:text-brand"
             >
               <svg
                 viewBox="0 0 24 24"

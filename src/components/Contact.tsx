@@ -28,7 +28,7 @@ const labelClass = 'text-eyebrow mb-2 block text-dark-muted uppercase'
  * so "an option you can pick" looks identical everywhere in this form.
  */
 const chipClass =
-  'block cursor-pointer rounded-full bg-white/[0.04] px-3.5 py-2 text-[0.75rem] font-semibold tracking-[0.06em] text-dark-muted ring-1 ring-white/12 transition duration-200 hover:text-white peer-checked:bg-brand peer-checked:text-white peer-checked:ring-brand peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-brand peer-focus-visible:outline-offset-2'
+  'block cursor-pointer rounded-full bg-white/[0.04] px-3.5 py-2 text-[0.75rem] font-semibold tracking-[0.06em] text-dark-muted ring-1 ring-white/12 press hover:text-white peer-checked:bg-brand peer-checked:text-white peer-checked:ring-brand peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-brand peer-focus-visible:outline-offset-2'
 
 /**
  * Budget and Timeline as radio chips, NOT a `<select>`.
@@ -145,7 +145,7 @@ export default function Contact() {
             <li>
               <a
                 href={`mailto:${EMAIL}`}
-                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-white uppercase ring-1 ring-white/12 transition-colors hover:bg-brand hover:ring-brand"
+                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-white uppercase ring-1 ring-white/12 press hover:bg-brand hover:ring-brand"
               >
                 <span aria-hidden className="size-1.5 rounded-full bg-brand-bright" />
                 Email
@@ -156,7 +156,7 @@ export default function Contact() {
                 href={`https://wa.me/${WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-white uppercase ring-1 ring-white/12 transition-colors hover:bg-brand hover:ring-brand"
+                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-white uppercase ring-1 ring-white/12 press hover:bg-brand hover:ring-brand"
               >
                 <span aria-hidden className="size-1.5 rounded-full bg-brand-bright" />
                 WhatsApp
@@ -166,7 +166,7 @@ export default function Contact() {
               <a
                 href="/Ahmed-Islam-CV.pdf"
                 download
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-dark-muted uppercase ring-1 ring-white/12 transition-colors hover:text-white hover:ring-white/30"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-dark-muted uppercase ring-1 ring-white/12 press hover:text-white hover:ring-white/30"
               >
                 Download CV
               </a>
@@ -298,7 +298,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'sending'}
-                  className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 press hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {status === 'sending' ? 'Sending' : 'Send enquiry'}
                   <svg

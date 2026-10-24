@@ -144,7 +144,7 @@ export default function Work() {
                         setExpanded(false)
                       }}
                       aria-current={on ? 'true' : undefined}
-                      className={`relative flex w-full items-center gap-3.5 px-5 py-4 text-left transition-colors ${
+                      className={`press relative flex w-full items-center gap-3.5 px-5 py-4 text-left [--press:0.98] ${
                         on ? 'bg-white/[0.06]' : 'hover:bg-white/[0.03]'
                       }`}
                     >
@@ -187,7 +187,11 @@ export default function Work() {
 
             {/* ── Detail panel ───────────────────────────────── */}
             <div className="px-6 py-8 sm:px-9 sm:py-10">
-              <div className="flex items-center gap-4">
+              {/* Switching company crossfades rather than cutting. Keyed blocks
+                  remount, and a remount replays `animate-rise-in`; the bullets
+                  are keyed by their own text so they remount anyway. The bullet
+                  <ul> itself is NOT keyed: its ResizeObserver is attached once. */}
+              <div key={job.company} className="flex items-center gap-4 motion-safe:animate-rise-in">
                 {job.logo && (
                   // wide plate, not a square: every one of these is a horizontal
                   // wordmark, so height is the constraint and width must be free
@@ -207,7 +211,7 @@ export default function Work() {
 
               <ol className="mt-7 space-y-5 border-l border-white/12 pl-6">
                 {job.roles.map((role) => (
-                  <li key={role.title} className="relative">
+                  <li key={role.title} className="relative motion-safe:animate-rise-in [animation-delay:60ms]">
                     <span
                       aria-hidden
                       className="absolute top-1.5 -left-[1.6875rem] size-2.5 rounded-full bg-brand ring-4 ring-ink-raised"
@@ -224,10 +228,11 @@ export default function Work() {
                 style={{ height: bodyHeight }}
               >
                 <ul ref={points} className="space-y-3">
-                  {job.points.map((point) => (
+                  {job.points.map((point, i) => (
                     <li
                       key={point}
-                      className="flex gap-3 text-[0.9375rem] leading-relaxed text-dark-muted"
+                      className="flex gap-3 text-[0.9375rem] leading-relaxed text-dark-muted motion-safe:animate-rise-in"
+                      style={{ animationDelay: `${100 + i * 40}ms` }}
                     >
                       <span
                         aria-hidden
@@ -257,7 +262,7 @@ export default function Work() {
                   aria-controls="role-points"
                   aria-hidden={!overflows}
                   tabIndex={overflows ? undefined : -1}
-                  className={`-my-3 inline-flex items-center gap-2 py-3 text-[0.75rem] font-semibold tracking-[0.14em] text-brand-bright uppercase transition-colors hover:text-white ${
+                  className={`-my-3 inline-flex items-center gap-2 py-3 text-[0.75rem] font-semibold tracking-[0.14em] text-brand-bright uppercase press hover:text-white ${
                     overflows ? '' : 'pointer-events-none opacity-0'
                   }`}
                 >
@@ -280,7 +285,10 @@ export default function Work() {
               {/* Reserves two tag rows (measured at 89px incl. pt-6): Padelos' 10
                   tags wrap to two, the shorter roles fit one, and the difference
                   was jumping the card 25px. Bump if an entry ever needs three. */}
-              <ul className="mt-8 flex min-h-24 flex-wrap content-start items-start gap-2 border-t border-white/10 pt-6">
+              <ul
+                key={job.company}
+                className="mt-8 flex min-h-24 flex-wrap content-start items-start gap-2 border-t border-white/10 pt-6 motion-safe:animate-rise-in [animation-delay:160ms]"
+              >
                 {job.stack.map((tool) => (
                   <li
                     key={tool}

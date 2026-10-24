@@ -225,9 +225,27 @@ Full detail in [CLAUDE.md](CLAUDE.md). The design rules:
 - **Reveals fire once.** Never replay on scroll-up.
 - **Stagger, don't cascade.** 60–80ms between siblings via `[--reveal-delay:]`.
   Anything longer feels sluggish.
-- **Easing is `cubic-bezier(0.22, 1, 0.36, 1)`** for reveals — quick out, soft
-  landing. Hovers use `duration-200`, reveals `0.8s`, filters `duration-300`.
-- **Snap is `proximity`, never `mandatory`.**
+- **Motion is tokens, not per-element values** (2026-10-24). `@theme` in
+  `index.css` overrides Tailwind's defaults, so a bare `transition` is already
+  220ms on `cubic-bezier(0.22, 1, 0.36, 1)` (quick out, soft landing), and so is
+  `ease-out`. `ease-spring` is a damped spring sampled into `linear()` (3.8%
+  overshoot) for things that should feel physical. Don't hand-write a curve.
+- **Everything you can press gives under the finger.** The `press` utility
+  scales to `--press` (0.96 default) on `:active` and springs back. Full-width
+  rows set `[--press:0.985]`, cards `active:scale-[0.99]`. A new button without
+  it reads as dead. It owns its `transition-property`, so don't also put
+  `transition` on the same element.
+- **Section headings rise line by line out of a mask**, solid line then ghost,
+  from one rule on `h2[data-reveal] > .block`. Keep two-tone headings as
+  `.block` spans and they get it for free.
+- **Three scroll-linked moments, no more**: the hero recedes as it leaves, the
+  thesis in About lights up in reading order, the featured project opens from
+  an inset window. Native `animation-timeline: view()`; Firefox simply gets the
+  static page. A fourth would make scroll-linking the page's texture instead of
+  its emphasis.
+- Durations: hovers 220ms (the default), reveals `0.8s`, line reveals `0.9s`,
+  presses 120ms in / 300ms spring out.
+- **No scroll snapping** (removed 2026-08-12, see CLAUDE.md).
 - Transforms and opacity only. No animating layout properties.
 - **The two gutters are a pair.** `SectionRail` (progress, left) and `SocialRail`
   (links, right) both live in the `lg:px-20` gutter. Keep them symmetric and

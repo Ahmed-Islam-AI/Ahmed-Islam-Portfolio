@@ -14,7 +14,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="section-y relative isolate scroll-mt-28 overflow-hidden bg-paper-2 px-4 sm:px-6 lg:px-20"
+      className="section-y relative isolate scroll-mt-28 overflow-clip bg-paper-2 px-4 sm:px-6 lg:px-20"
     >
       {/* watermark */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 select-none">
@@ -54,9 +54,15 @@ export default function About() {
             data-reveal
             className="mt-9 max-w-[50ch] border-l-2 border-brand pl-6 [--reveal-delay:180ms]"
           >
+            {/* `scroll-read` lights the sentence up in reading order as it scrolls
+                in. It has to be an inline span: the sweep relies on the
+                background running across the line fragments as one strip. */}
             <p className="text-lead text-heading">
-              I believe that AI is about more than just complex algorithms, it&rsquo;s about
-              solving tangible problems and creating intuitive, data-driven experiences for users.
+              <span className="scroll-read">
+                I believe that AI is about more than just complex algorithms, it&rsquo;s about
+                solving tangible problems and creating intuitive, data-driven experiences for
+                users.
+              </span>
             </p>
           </blockquote>
 
@@ -76,7 +82,7 @@ export default function About() {
           >
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 transition hover:brightness-110"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 press hover:brightness-110"
             >
               Let&rsquo;s work together
               <svg
@@ -96,7 +102,7 @@ export default function About() {
             <a
               href="/Ahmed-Islam-CV.pdf"
               download="Ahmed-Islam-CV.pdf"
-              className="group inline-flex items-center gap-2.5 rounded-full border border-heading/20 px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-heading uppercase transition hover:border-brand hover:text-brand"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-heading/20 px-6 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-heading uppercase press hover:border-brand hover:text-brand"
             >
               Download CV
               <svg

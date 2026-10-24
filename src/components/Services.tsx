@@ -50,7 +50,7 @@ export default function Services() {
                       onClick={() => setOpen(service.id)}
                       aria-expanded={on}
                       aria-controls={`service-${service.id}`}
-                      className="group flex w-full items-center gap-4 px-5 py-6 text-left sm:gap-6 sm:px-8"
+                      className="group press flex w-full items-center gap-4 px-5 py-6 text-left [--press:0.985] sm:gap-6 sm:px-8"
                     >
                       <span
                         className={`text-[0.6875rem] font-semibold tracking-[0.14em] tabular-nums transition-colors ${

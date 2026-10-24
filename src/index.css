@@ -61,6 +61,47 @@
   --text-eyebrow--line-height: 1.25;
   --text-eyebrow--letter-spacing: 0.16em;
   --text-eyebrow--font-weight: 600;
+
+  /* Motion. One curve family for the whole site, so a hover, an accordion and a
+     reveal all decelerate the same way. Overriding Tailwind's defaults here
+     retunes every bare `transition` / `transition-colors` / `ease-out` at once.
+     `ease-out` is the reveal curve (quick out, soft landing). `ease-spring` is a
+     damped spring (zeta 0.72, 3.8% overshoot) sampled into `linear()`, for things
+     that should feel physical: presses, the nav indicator, the menu sheet. */
+  --default-transition-duration: 220ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: linear(
+    0, 0.074, 0.239, 0.431, 0.611, 0.761, 0.874, 0.952, 1, 1.027, 1.037, 1.038,
+    1.033, 1.026, 1.019, 1.012, 1.007, 1.003, 1.001, 0.999, 1
+  );
+
+  --animate-rise-in: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+    }
+  }
+}
+
+/* Press feedback: the control gives under the finger and springs back. Uses the
+   individual `scale` property, so it composes with any `transform` the element
+   already carries (reveal offsets, hover nudges) instead of overwriting it.
+   `--press` lets big targets (full-width rows, cards) give less than a pill. Not
+   gated on reduced motion: it tracks the gesture directly, which HIG lists as
+   the acceptable kind. */
+@utility press {
+  transition-property: scale, translate, color, background-color, border-color, box-shadow, filter,
+    opacity;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-spring);
+
+  &:active {
+    scale: var(--press, 0.96);
+    transition-duration: 120ms;
+  }
 }
 
 /* One vertical rhythm for the whole page. Change it here, not per section.
@@ -216,5 +257,134 @@
   [data-reveal][data-revealed] {
     opacity: 1;
     transform: none;
+  }
+
+  /* Section headings rise line by line out of a mask, solid line first, then the
+     ghost. The h2 itself stops moving; each `.block` line does. Translate and the
+     clip's bottom inset run on the same curve, so the mask edge stays put while
+     the text slides up through it. Negative insets leave room for the caps,
+     which overflow the 0.92 line box. */
+  h2[data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  h2[data-reveal] > .block {
+    clip-path: inset(-0.3em -0.3em 100% -0.3em);
+    translate: 0 100%;
+    transition:
+      clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  h2[data-reveal] > .block + .block {
+    transition-delay: calc(var(--reveal-delay, 0ms) + 110ms);
+  }
+
+  h2[data-reveal][data-revealed] > .block {
+    clip-path: inset(-0.3em);
+    translate: none;
+  }
+}
+
+/* Scroll-linked moments. Native scroll-driven animations: no library and no
+   scroll listener, the compositor runs them. Where `animation-timeline` isn't
+   supported (Firefox today) the page is the same page without them, and none
+   of these run under reduced motion. Each is applied to an element that does
+   NOT carry `data-reveal`, because an animation's opacity would override the
+   reveal's transition on the same element.
+
+   **No `overflow-hidden` on any ancestor of these.** `hidden` makes the box a
+   scroll container, and view() then tracks that box — which never scrolls — so
+   the animation freezes at one value with no error. Same trap as `sticky` (see
+   CLAUDE.md). Use `overflow-clip`: it clips identically without that side
+   effect. About's section was `overflow-hidden` and froze `scroll-read`. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Hero portrait and headline recede as they leave through the top. */
+    .scroll-recede {
+      animation: recede linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    /* The stats card rises into focus as it arrives from below. */
+    .scroll-rise {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+
+    /* About's thesis lights up in reading order. The gradient is laid out
+       across every line fragment as one strip (box-decoration-break: slice,
+       the default), so sliding it sweeps line 1, then line 2. Finishes by the
+       time the quote reaches mid-screen, so a reader who stops is never left
+       on half-lit text. */
+    .scroll-read {
+      color: transparent;
+      background: linear-gradient(
+          to right,
+          var(--color-heading) 50%,
+          color-mix(in srgb, var(--color-heading) 45%, var(--color-paper-2)) 50%
+        )
+        100% 0 / 200% 100% no-repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: read linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 50%;
+    }
+
+    /* The featured project's capture opens from an inset window to its full
+       frame while the image settles from a slight zoom. */
+    .scroll-unveil {
+      animation: unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+
+    .scroll-unveil > * {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
+}
+
+@keyframes recede {
+  to {
+    scale: 0.92;
+    opacity: 0.35;
+  }
+}
+
+@keyframes rise {
+  from {
+    scale: 0.94;
+    opacity: 0.4;
+  }
+}
+
+@keyframes read {
+  to {
+    background-position: 0 0;
+  }
+}
+
+@keyframes unveil {
+  from {
+    clip-path: inset(9% 9% round 0.75rem);
+  }
+  /* -1px, not 0: the frame's ring is an outer box-shadow and inset(0) would
+     shave it off */
+  to {
+    clip-path: inset(-1px round calc(0.75rem + 1px));
+  }
+}
+
+@keyframes settle {
+  from {
+    scale: 1.12;
   }
 }

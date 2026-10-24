@@ -966,6 +966,37 @@ the lead copy must never say "on the left / on the right".
   the last section whose top is above the centre line. Verified `09` both after a
   real scroll to the bottom and after reloading while parked there.
 
+### Micro-motion and scroll-linked moments — added 2026-10-24
+
+Branch `design/apple-polish`, from an HIG-based audit. Rules are in STYLE.md
+"Motion"; these are the traps.
+
+- **`overflow-hidden` freezes a `view()` timeline**, silently, exactly the way
+  it breaks `sticky`: `hidden` makes the box a scroll container, the timeline
+  tracks that box, and it never scrolls. About's thesis sweep sat at one value
+  until the section went `overflow-clip`, which clips the watermark identically.
+  Any ancestor of a `.scroll-*` element must not be `overflow-hidden`.
+- **A `.scroll-*` class never goes on a `[data-reveal]` element.** The
+  animation's opacity would override the reveal's transition. Put it on a
+  wrapper (Hero's copy column, StatsBar's `<section>`, the Visual frame).
+- `view()` honours `scroll-padding-top` (7.5rem on `html`), so "leaving the
+  top" means passing under the nav pill, not the viewport edge. That is why the
+  hero starts receding at ~70px of scroll rather than ~170.
+- `scroll-read` sweeps a background across the text, so it must be an inline
+  `<span>`: inline boxes lay the background across every line as one strip,
+  which is what makes it light up line 1, then line 2.
+- **The mobile menu is always mounted** and hides with `invisible`, so it can
+  animate both ways while staying out of the tab order. Escape returns focus to
+  the toggle; a pointerdown outside the header closes it.
+- The nav dot's position is **measured** (`offsetLeft` of the
+  `[aria-current]` link, re-measured on resize and `document.fonts.ready`). An
+  inline `translate` style would override a `-translate-x-1/2` class, so the
+  half-width is subtracted in the number instead. Verified within 0.3px.
+- Work's detail panel replays `animate-rise-in` by remounting keyed blocks. The
+  bullet `<ul>` is deliberately **not** keyed: its ResizeObserver attaches once.
+- Stack's pills are filtered out of the DOM now, not `hidden`, so a category
+  switch mounts fresh pills and they cascade in (stagger capped at 20 steps).
+
 ### 3. No scroll snapping — removed 2026-08-12
 
 The page used to run `scroll-snap-type: y proximity` on `html` from `lg` up.

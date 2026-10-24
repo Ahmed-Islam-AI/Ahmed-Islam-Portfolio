@@ -96,7 +96,7 @@ export default function StatsBar() {
   }, [])
 
   return (
-    <section className="px-4 pb-20 sm:px-6 lg:px-20 lg:pb-28">
+    <section className="scroll-rise px-4 pb-20 sm:px-6 lg:px-20 lg:pb-28">
       <div
         ref={card}
         data-reveal
