@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ProjectsPage from './pages/ProjectsPage'
+import BlogPage from './pages/BlogPage'
+import BlogPostPage from './pages/BlogPostPage'
 import { useReveal } from './hooks/useReveal'
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/projects" element={<ProjectsPage />} />
+      <Route path="/blog" element={<BlogPage />} />
+      <Route path="/blog/:slug" element={<BlogPostPage />} />
     </Routes>
   )
 }

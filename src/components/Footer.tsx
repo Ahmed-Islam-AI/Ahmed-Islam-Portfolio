@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { SECTIONS } from './SectionRail'
 import { SERVICES } from '../data/services'
 import { SOCIALS } from '../data/socials'
@@ -86,6 +86,16 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              {/* Not a section, so no index number: an arrow in its slot says
+                  "this leaves the page" the way the numbers say "this scrolls". */}
+              <li>
+                <Link to="/blog" className={linkClass}>
+                  <span aria-hidden className="mr-2 text-[0.6875rem] text-brand-bright">
+                    &rarr;
+                  </span>
+                  Blog
+                </Link>
+              </li>
             </ul>
           </nav>
 

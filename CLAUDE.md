@@ -51,6 +51,10 @@ src/
   index.css             ALL design tokens (@theme), base layer, utilities, motion
   pages/Home.tsx        section order for the landing page
   pages/ProjectsPage.tsx  /projects — the full index, all seven as rows
+  pages/BlogPage.tsx    /blog — lead post + hairline list (also exports Meta, formatDate)
+  pages/BlogPostPage.tsx  /blog/:slug — article, sticky contents, reading progress
+  content/blog/*.md     the posts. One file per post; the filename is the URL slug
+  content/types.ts      PostMeta, TocEntry — shared with blog.vite.ts
   hooks/useReveal.ts    scroll-reveal observer, re-runs per route
   hooks/useActiveSection.ts  which section you're in (centre-line observer)
   components/
@@ -84,6 +88,10 @@ public/
   Ahmed-Islam-CV.pdf    linked by the Download CV button
   project-images/       4 processed card images (NOT `projects/` — collides with the route) (see the imagery note below)
   companies/            employer logos (padelos, IR-Solutions, itsolera, bytewise)
+  blog-images/<slug>/   a post's figures (NOT `blog/` — collides with the route)
+  og.png                1200x630 share image for every page
+blog.vite.ts            compiles the posts at build time (see the Blog section)
+tsconfig.node.json      types for the two Node-side files; the app's tsconfig is browser-only
 ```
 
 `assets-original/` is **gone** (deleted 2026-08-30). It held the AI-generated
@@ -223,6 +231,66 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
 ---
 
 ---
+
+## Blog — added 2026-10-25
+
+`/blog` and `/blog/:slug`, reached from a **Blog button in the nav pill** (and a
+footer link), never from the landing page — Ahmed's call. It is a button and
+not an eighth link because the links scroll this page and Blog leaves it; it
+also could not be a link, since the row had 16px to spare at 1024. The orange
+CTA reads "Let's talk" below `xl` to make room; measured 42px of clearance at
+1024 afterwards, no overflow at 1024/1100/1280/1440.
+
+**Adding a post** — the whole workflow:
+
+1. Create `src/content/blog/<slug>.md`. The filename is the URL.
+2. Start it with frontmatter. Flat `key: value` only (it is not YAML):
+   ```
+   ---
+   title: Missing Values and Outliers: A Practical Guide
+   description: One sentence. It is the share-card text and the index blurb.
+   date: 2026-10-25
+   tags: [Data Science, pandas]
+   draft: true
+   ---
+   ```
+   `draft: true` shows the post in `npm run dev` and hides it from the build.
+3. Write Markdown. Fenced code is highlighted at build time; fence program
+   output as ` ```output ` and it renders as a labelled printout instead.
+   `![alt](/blog-images/<slug>/x.svg "caption")` becomes a figure with a
+   caption — alt and caption do different jobs, keep both. `##` and `###`
+   headings feed the "On this page" contents automatically.
+4. Push to main. The deploy builds it.
+
+**How it works** — `blog.vite.ts`, two plugins:
+
+- Posts compile to virtual modules: `virtual:blog` (metadata, eager) and
+  `virtual:blog/<slug>` (HTML + contents, one lazy chunk each). `marked` and
+  `highlight.js` are **devDependencies and never reach the browser**.
+- The post body is set with `dangerouslySetInnerHTML`. That is safe only
+  because it is our own Markdown from the repo; never feed it user input.
+- At build, a `post`-phase plugin writes `dist/blog/index.html` and
+  `dist/blog/<slug>.html`, copies of the shell with that page's own title,
+  description, canonical and `og:*` tags, so a LinkedIn/X share previews the
+  post (crawlers don't run JS) and Pages serves a 200. It must run after
+  Vite's HTML plugin: in the normal phase `index.html` isn't in the bundle and
+  the pages were silently not written. It now throws instead.
+- **`blog/index.html`, not `blog.html`, and images in `blog-images/`** — the
+  post pages make `dist/blog/` a directory, and a directory named like a route
+  is the trap that broke `/projects`. `/blog` 301s to `/blog/` and serves.
+- `withMeta` throws if `index.html` loses any tag it rewrites (title,
+  description, canonical, og:title/description/url/type). Don't delete them.
+
+**The first post is DRAFT content written on Ahmed's instruction.** He asked
+for a generic rewrite of his Stackademic article (written for Bytewise), which
+could not be fetched (403), so it was written fresh. Every number in it is real
+output: the code was run against seaborn's Titanic dataset (pandas 3.1,
+scikit-learn 1.9) and both charts in `public/blog-images/` were rendered from
+that data. If you edit a code block, re-run it and update its output block.
+
+**Reading surface rules** (STYLE.md has the visual ones): paper, not ink;
+`.prose` in `index.css` styles the compiled HTML by element; post titles are
+**mixed case** — a sentence to read, not a section heading.
 
 ## Socials: the rail shows five, the footer shows nine
 

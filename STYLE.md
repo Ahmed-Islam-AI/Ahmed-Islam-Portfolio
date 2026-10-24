@@ -312,6 +312,26 @@ Things that would make this site look generic. Avoid all of them:
 
 ---
 
+## The blog (reading surfaces)
+
+- **Paper, not ink.** Projects is a gallery and sits on ink; posts are long
+  reading and sit on the same light ground as the site's prose.
+- **Post titles are mixed case** at `text-display` (`text-h2` on the index),
+  with `text-balance`. Uppercase is for section headings; a title is a
+  sentence, and long wide uppercase is the hardest text here to read.
+- `.prose`: 68ch measure, 1.125rem/1.75, text in `heading` (not `muted` —
+  a whole article in the secondary colour reads as a caption). Each `h2` carries
+  a short orange rule above it, the section full stop at article scale.
+- **Code is one accent too.** Keywords `brand-bright`, strings a warm sand
+  (`#f2c4a8`), comments `white/45`, everything else near-white on `ink`. A
+  rainbow theme would be fifteen accents on a site that allows one. Program
+  output (` ```output `) is a printout: paper-2, hairline, no colour.
+- **No cover images on the index.** A post earns an image inside the post,
+  where it explains something. Charts are real renders of real data, in the
+  palette (`brand` for the point, a light tint of it for context).
+- The index is a lead story plus hairline rows, the `/projects` list language,
+  not a card grid. Contents tracking uses SectionRail's tick.
+
 ## Two knowing exceptions
 
 Both were asked for directly. Don't "fix" them, and don't treat either as a

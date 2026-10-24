@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const LINKS = [
   { label: 'About', href: '#about' },
@@ -28,6 +28,7 @@ export default function Nav({ active }: { active?: string }) {
    * scroll that `scroll-behavior` in index.css already provides.
    */
   const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
+  const onBlog = pathname.startsWith('/blog')
 
   const header = useRef<HTMLElement>(null)
   const toggle = useRef<HTMLButtonElement>(null)
@@ -94,8 +95,8 @@ export default function Nav({ active }: { active?: string }) {
 
         {/* Right-hand group. The CTA sits in normal flow, so it can no longer
             overlap the Contact link the way it did in the mockup. */}
-        <div className="ml-auto flex items-center gap-5 xl:gap-7">
-          <ul ref={links} className="relative hidden items-center gap-5 lg:flex xl:gap-7">
+        <div className="ml-auto flex items-center gap-3 sm:gap-4 xl:gap-7">
+          <ul ref={links} className="relative hidden items-center gap-4 lg:flex xl:gap-7">
             {/* The active-link marker: one dot that slides between links rather
                 than a colour change alone, so "where am I" isn't carried by hue.
                 Springs on the same curve as the press feedback. */}
@@ -126,11 +127,28 @@ export default function Nav({ active }: { active?: string }) {
             })}
           </ul>
 
+          {/* Blog is a button, not an eighth link in the row: the links jump to
+              places on this page, Blog goes to another page, and the shape says
+              so. It also had to be — at 1024px the row had 16px to spare. One
+              element at every width; below lg it sits beside the menu toggle. */}
+          <Link
+            to="/blog"
+            aria-current={onBlog ? 'page' : undefined}
+            className={`press inline-flex shrink-0 items-center rounded-full px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase lg:py-2.5 ${
+              onBlog ? 'bg-white text-ink' : 'text-white ring-1 ring-white/25 hover:bg-white/10'
+            }`}
+          >
+            Blog
+          </Link>
+
           <a
             href={to('#contact')}
             className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.12em] whitespace-nowrap text-white uppercase press hover:brightness-110 lg:block"
           >
-            Let&rsquo;s work together
+            {/* Short label below xl: with the Blog button beside it, the full
+                label pushed the row 60px past the pill at 1024 (measured). */}
+            <span className="xl:hidden">Let&rsquo;s talk</span>
+            <span className="hidden xl:inline">Let&rsquo;s work together</span>
           </a>
 
           <button
