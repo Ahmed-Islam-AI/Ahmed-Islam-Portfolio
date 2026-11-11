@@ -144,7 +144,7 @@ Every content section follows the same skeleton. Match it:
   <div className="mx-auto max-w-6xl">
     <div className="min-w-0">
       <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-        <span className="block text-heading">First line</span>
+        <span className="block text-heading">First line</span>{' '}
         <span className="block text-heading/50">second<span className="text-brand">.</span></span>
       </h2>
       …
@@ -236,13 +236,20 @@ Full detail in [CLAUDE.md](CLAUDE.md). The design rules:
   it reads as dead. It owns its `transition-property`, so don't also put
   `transition` on the same element.
 - **Section headings rise line by line out of a mask**, solid line then ghost,
-  from one rule on `h2[data-reveal] > .block`. Keep two-tone headings as
-  `.block` spans and they get it for free.
+  from one rule on `:is(h1, h2)[data-reveal] > .block`. Keep two-tone headings
+  as `.block` spans and they get it for free; page H1s built that way do too.
 - **Three scroll-linked moments, no more**: the hero recedes as it leaves, the
   thesis in About lights up in reading order, the featured project opens from
   an inset window. Native `animation-timeline: view()`; Firefox simply gets the
   static page. A fourth would make scroll-linking the page's texture instead of
-  its emphasis.
+  its emphasis. That count is the home page's. A service page has its own
+  two: the problem statement's `scroll-read` and the sticky story, where the
+  diagram builds as the steps pass. The story is the page's point, so it is
+  allowed to carry it; don't add a third there either.
+- **Service diagrams are diagrams**, like `ProjectMark`: ink stage, generic
+  parts, one accent. Unbuilt is a dashed outline, current is orange, done is
+  solid. A pulse only runs on links into the current step, so motion always
+  points at what the text is talking about.
 - Durations: hovers 220ms (the default), reveals `0.8s`, line reveals `0.9s`,
   presses 120ms in / 300ms spring out.
 - **No scroll snapping** (removed 2026-08-12, see CLAUDE.md).
