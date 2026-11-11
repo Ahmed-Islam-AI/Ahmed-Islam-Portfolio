@@ -260,16 +260,18 @@
   }
 
   /* Section headings rise line by line out of a mask, solid line first, then the
-     ghost. The h2 itself stops moving; each `.block` line does. Translate and the
+     ghost. The heading itself stops moving; each `.block` line does. Page H1s
+     built the same way (ProjectsPage, ServicePage) get it too; a heading without
+     `.block` lines keeps the plain reveal. Translate and the
      clip's bottom inset run on the same curve, so the mask edge stays put while
      the text slides up through it. Negative insets leave room for the caps,
      which overflow the 0.92 line box. */
-  h2[data-reveal] {
+  :is(h1, h2)[data-reveal]:has(> .block) {
     opacity: 1;
     transform: none;
   }
 
-  h2[data-reveal] > .block {
+  :is(h1, h2)[data-reveal] > .block {
     clip-path: inset(-0.3em -0.3em 100% -0.3em);
     translate: 0 100%;
     transition:
@@ -278,11 +280,11 @@
     transition-delay: var(--reveal-delay, 0ms);
   }
 
-  h2[data-reveal] > .block + .block {
+  :is(h1, h2)[data-reveal] > .block + .block {
     transition-delay: calc(var(--reveal-delay, 0ms) + 110ms);
   }
 
-  h2[data-reveal][data-revealed] > .block {
+  :is(h1, h2)[data-reveal][data-revealed] > .block {
     clip-path: inset(-0.3em);
     translate: none;
   }
@@ -349,6 +351,88 @@
       animation-timeline: view();
       animation-range: entry 0% cover 45%;
     }
+  }
+}
+
+/* Service diagrams (ServiceDiagram.tsx). The hero copy assembles itself: nodes
+   pop in, edges draw. Live edges carry a pulse that runs from one node to the
+   next. Pulse paths (and the hero's edges, which draw in) use pathLength="1",
+   so one dash value fits every edge length. No pulses and no assembly under reduced motion: the diagram is
+   simply drawn. */
+.diagram-edge {
+  stroke: rgb(255 255 255 / 0.24);
+  stroke-width: 1.5;
+  transition: stroke 0.5s;
+}
+
+.diagram-edge[data-state='future'] {
+  stroke: rgb(255 255 255 / 0.14);
+  stroke-dasharray: 3 4;
+}
+
+.diagram-edge[data-state='live'] {
+  stroke: rgb(241 86 41 / 0.5);
+}
+
+/* Hidden until its animation runs (fill-mode none), so a delayed pulse never
+   sits parked at the start of its edge. */
+.diagram-pulse {
+  stroke: var(--color-brand-bright);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.12 0.88;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .diagram-pulse {
+    animation: flow 2.2s linear infinite;
+  }
+
+  .diagram-assemble .diagram-node {
+    animation: node-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.35s + var(--d, 0s));
+  }
+
+  .diagram-assemble .diagram-edge {
+    stroke-dasharray: 1;
+    animation: draw 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.6s + var(--d, 0s));
+  }
+}
+
+@keyframes flow {
+  from {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes node-in {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+/* The consent banner's link to Analytics once accepted: a bright segment
+   running along it, the diagram pulse at banner scale (ConsentBanner.tsx). */
+@keyframes consent-flow {
+  from {
+    translate: -60% 0;
+  }
+  to {
+    translate: 60% 0;
   }
 }
 
