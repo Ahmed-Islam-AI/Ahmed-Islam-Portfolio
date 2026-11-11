@@ -52,7 +52,11 @@ src/
   pages/Home.tsx        section order for the landing page
   pages/ProjectsPage.tsx  /projects — the full index, all seven as rows
   pages/BlogPage.tsx    /blog — featured story + cover-card grid (exports Kicker, formatDate, issueOf, tie)
-  pages/BlogPostPage.tsx  /blog/:slug — centred masthead, cover, article, contents, share, author
+  pages/BlogPostPage.tsx  /blog/:slug — centred masthead, cover, article, contents, share, author (exports BackPill, TalkPanel)
+  pages/ServicePage.tsx   /services/:id — one page per entry in data/services.ts
+  pages/PrivacyPage.tsx   /privacy — what GA4 and the form collect (DRAFT, not legal advice)
+  analytics.ts          GA4 + Consent Mode; MEASUREMENT_ID lives here (see Analytics)
+  components/ConsentBanner.tsx  the Europe-only cookie banner
   components/PostCover.tsx  a post's drawn cover, seeded from its slug
   content/blog/*.md     the posts. One file per post; the filename is the URL slug
   content/types.ts      PostMeta, TocEntry — shared with blog.vite.ts
@@ -77,12 +81,19 @@ src/
     TechIcon.tsx        name -> SVG path, brand marks + concept glyphs
     SectionRail.tsx     left-gutter progress rail + active section (owns SECTIONS)
     SocialRail.tsx      fixed right-edge social links
-  data/projects.ts      Project interface + the 8 real projects (summary/stack DRAFT)
+  data/projects.ts      Project interface + the 10 real projects (summary/stack DRAFT)
   data/certifications.ts  Certification interface + 11 certifications (6 LinkedIn, 5 CV)
   data/services.ts      Service interface + the 7 service offers (DRAFT copy)
   data/testimonials.ts  Testimonial interface + 5 real LinkedIn recommendations
   data/socials.ts       SOCIALS — shared by SocialRail and Footer
-  assets/ahmed.png      hero portrait, transparent cutout
+  data/pages.ts         PAGES — title + description for home, /projects, /blog (see SEO)
+  assets/ahmed.webp     hero portrait (and the blog's byline avatar), transparent cutout.
+                        790x1110 WebP q82 with alpha, 82 kB. Shown at most 370x520,
+                        so this is ~2x. Measured on Slow 4G, desktop: the photo is
+                        the LCP element and arrives at 3.3s, vs 9.7s as the PNG.
+  assets/ahmed.png      the 1.2 MB PNG master it was encoded from. NOT imported, so
+                        never shipped; re-encode from it (Pillow, quality=82,
+                        method=6, alpha_quality=90), don't import it back
   assets/projects/      Ahmed's supplied card sources — NOT imported, so never
                         bundled; public/project-images/*.webp are the processed ones
 public/
@@ -92,6 +103,8 @@ public/
   blog-images/<slug>/   a post's figures (NOT `blog/` — collides with the route)
   og.png                1200x630 share image for every page
 blog.vite.ts            compiles the posts at build time (see the Blog section)
+prerender.mjs           fills each built page's root with its rendered HTML (see SEO)
+src/entry-server.tsx    renders one route to a string, for prerender.mjs
 tsconfig.node.json      types for the two Node-side files; the app's tsconfig is browser-only
 ```
 
@@ -131,10 +144,20 @@ non-AI/ML entry in the gallery and the first thing standing behind what
 `services.ts` sells. The Services copy still names no client, no site and no
 number — it now *could* point at Flintgrab, which is Ahmed's call to make.
 
-`data/projects.ts` is **real**, not a seed: nine projects with verbatim URLs.
+`data/projects.ts` is **real**, not a seed: ten projects with verbatim URLs.
 Seven were supplied 2026-08-15; `segments` was added 2026-08-30 and its copy is
 read off the product screen Ahmed supplied rather than invented — but its
 `stack` is the one unverified field on it and carries a `TODO(Ahmed)`.
+`flintgrab` followed on 2026-09-20 and `dukaan` on 2026-11-05.
+
+**`dukaan`** is an offline Android app (billing, stock, udhaar) whose source is
+`D:\inventory_management_app`, public as `Ahmed-Islam-AI/Dukaan-Inventory`.
+Every fact on its card is from that repo's README. Its `status` is **`APK`**, a
+third value beside `LIVE` and `SOURCE`: not on the Play Store, so the card
+links to `releases/latest`, where the APK installs (Ahmed's call). Screen-reader
+labels come from `destinationOf()` in `data/projects.ts` ("download page" for
+`APK`), so a new status is one edit, not three. Its copy was run through the
+humanizer skill on Ahmed's instruction.
 Three CV-derived placeholders were dropped when it was populated (Padelos MCP
 Server, Multimodal RAG Tutor, BraTS Tumour Segmentation with its real 0.71 Dice)
 — they had no link, and beside the linked cards they read as broken. They are
@@ -198,8 +221,10 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
 
 - ~~`data/socials.ts` placeholders~~ — **all real as of 2026-08-30.** Nine links,
   supplied by Ahmed. See the socials note below for the rail/footer split.
-- The footer has no Privacy Policy / Terms links, unlike the reference it's modelled
-  on: those pages don't exist, and a dead link is worse than no link.
+- The footer has a **Privacy** link since 2026-11-11 (`/privacy`, added with
+  Google Analytics, whose terms require one) and, once GA is configured, a
+  **Cookie settings** button. Still no Terms link: that page doesn't exist,
+  and a dead link is worse than no link.
 - **`Contact.tsx` posts to FormSubmit** (`formsubmit.co/ajax/<EMAIL>`, chosen by
   Ahmed 2026-10-21 — no account). The first submission only sends Ahmed an
   "Activate Form" email; nothing is delivered until he clicks it. Honeypot field is
@@ -316,6 +341,193 @@ chose each of these from options:
   a no-break space, so `text-balance` can't strand "A" at a line end.
 - The reading column is `44rem`, not `68ch`: a wrapper's `ch` is measured at
   16px while `.prose` sets 68ch at 18px, so the two disagreed by ~80px.
+
+## SEO — added 2026-11-11
+
+The site is a client-rendered SPA, so what search engines can read without
+running JS is the `<head>` of each HTML file. That is where the SEO lives:
+
+- **One real HTML page per route**, written at build by the `site-pages`
+  plugin in `blog.vite.ts`: `projects.html`, `services/<id>.html`,
+  `blog/index.html`, `blog/<slug>.html`, each with its own title, description, canonical and
+  `og:*`. `projects.html` used to be a `cp` of the home shell in
+  `deploy.yml`, so /projects claimed to be the home page. **The `cp` is gone —
+  re-adding it overwrites the real page after the build.**
+- **`sitemap.xml`** is generated by the same plugin from the real routes and
+  posts (only URLs that return a 200 on Pages, so `/blog/` with the slash).
+  **`public/robots.txt`** points to it.
+- **A page per service** (`/services/<id>`, `pages/ServicePage.tsx`), because
+  Google ranks pages, not sites: one home page cannot rank for seven services.
+  - The service `id` **is the URL slug** (renamed 2026-11-11 from `agents`,
+    `rag`, `web`… to `agentic-ai`, `rag-development`, `web-development`…, so
+    the URLs carry search words). Renaming one breaks every link to its page.
+  - `data/services.ts` holds the page copy too (`seoTitle`, `description`,
+    `heading`, `problem`, `graph`, `steps`, `experience`, `projects`,
+    `faqs`), and `blog.vite.ts` imports it in Node to write each page's head
+    tags, a `Service` JSON-LD block and the sitemap entries. **So that file
+    must stay plain data**: no imports, no `import.meta.env` (undefined in
+    Node). Its cross-reference checks (project slugs, diagram node ids, CV
+    entries and point indexes) live in ServicePage.tsx for that reason.
+  - `problem`, `steps` and `faqs` are DRAFT positioning. The only claims
+    about Ahmed's own work are in "Where I've done it", and those are his CV
+    lines **quoted** from `EXPERIENCE` (exported from Work.tsx) by index, not
+    retold. `web-development` has no CV entry, so that chapter shows only
+    Flintgrab there.
+  - **Rebuilt as a story the same day**, after Ahmed rejected v1 ("very short,
+    not animated, not professional"). He chose a *sticky* story over pinned
+    scenes. Order: hero (the system's diagram draws itself) → the problem
+    (`scroll-read`, on paper-2 because that sweep's ghost colour is mixed
+    against paper-2) → how I build it → what you get (ink band) → where I've
+    done it → questions (`<details name>`, one open at a time) → other
+    services + talk panel.
+  - **The diagram** is `ServiceDiagram.tsx`: nodes are HTML boxes placed by
+    percentage over an SVG with the same 400×340 aspect, so nothing stretches.
+    Hero mode draws everything in; story mode shows unbuilt nodes dashed, the
+    current step's nodes orange, and a pulse only on links touching them.
+    Its boxes are sized in `cqw`/`em` against **the diagram's own width**
+    (a size container), not the viewport: viewport steps collided at 1024,
+    where two columns make it narrower than on a phone. Below 20rem the
+    icons drop out instead of the text shrinking. Checked with every box
+    enlarged at 1440/1280/1024/768/390/360: no overlaps.
+  - **Sticky story traps.** Below `lg` the story is block layout, not grid: a
+    sticky grid item only moves inside its own grid area, which in one column
+    is its own row, so it never sticks. The current step comes from an
+    IntersectionObserver band at ~60% on desktop and ~74% on a phone, where
+    the diagram covers the top ~450px; at 60% the current step's title was
+    still behind it. The progress fill writes `style.scale`, not `transform`:
+    Tailwind 4's `scale-y-0` is the `scale` property, and the two multiply.
+  - Graph labels stay ≤ ~13 characters and three to a row at x = 72/200/328;
+    re-run an overlap check at 360 and 1024 if you move a node.
+  - Ways in: the open Services row's "More on …" link, the footer's Services
+    column, each page's "Other services" list, the sitemap. The closed
+    accordion panels are `inert`, or their links would take Tab focus unseen.
+  - Both contact buttons go to `/?service=<id>#contact`. Contact ticks that
+    service after mount, then **removes the param** from the address
+    (`navigate(…, { replace: true })`): left there, it rode along for the rest
+    of the visit (`/?service=x#top` after a logo click) and into bookmarks.
+    Home then scrolls to the hash itself, because when the page is drawn from
+    scratch (dev, unknown URLs) `#contact` didn't exist yet when the browser
+    looked, and the visit stayed at the top. Measured: lands with the contact
+    heading ~220px down, in dev and in the built site.
+  - No `services/index.html` and no `/services` route: the list is the home
+    page's `#services`, which is where "All services" goes.
+- **Structured data.** `index.html` carries a Person + WebSite JSON-LD block
+  (`#person-ld`) that every copied page inherits; each post adds a
+  `BlogPosting` block via `withMeta`'s `jsonLd`. The Person `sameAs` repeats
+  the profile links from `data/socials.ts` (not WhatsApp, a chat link). A DEV
+  check in `socials.ts` warns if the two drift; add a link in both places.
+
+**Titles and headings (SEO step 2).** The voice stays; the search words go
+where search engines weigh them, with no visible text changed:
+
+- **`data/pages.ts` is the one source** for the home, /projects and /blog
+  titles and descriptions. `blog.vite.ts` writes them into each page's head
+  (the home page's too, rewriting the shell) and the pages set
+  `document.title` from the same object. They used to be hand-typed twice,
+  and arriving at home by an in-app link kept the previous page's title.
+  Services and posts keep their own (`seoTitle`, frontmatter). index.html's
+  literal title/description are only what dev shows; keep them equal.
+- **The home H1 is the role pill plus the tagline**: "Full-Stack AI Engineer ·
+  Web & Agentic" + "I build products that work beyond the demo." The pill
+  used to be a `<p>` above an H1 that named no skill. Measured: pill,
+  headline and lead are pixel-identical at 1440 and 390. Don't move the pill
+  back out of the `<h1>`; the "available" status is a separate sr-only `<p>`
+  now, since it isn't part of the heading.
+- The section H2s ("What I deliver.", "Things I've shipped.") were left as
+  they are, on purpose: the service pages now carry the keyword headings, and
+  rewording the home page's for search would trade the voice for little.
+- The Person JSON-LD carries `description`, `knowsAbout` (15 skills, all in
+  Stack.tsx or the CV) and `alumniOf`. Keep `knowsAbout` to things the site
+  shows evidence for.
+
+**Prerendered HTML (SEO step 2).** Every page's HTML now contains its
+rendered content, not an empty `<div id="root">`, so crawlers that don't run
+JS (Bing often, every link-preview bot) read the text. `npm run build` is now
+three steps: the client build (which writes the per-route HTML), an SSR build
+of `src/entry-server.tsx` into `dist-ssr/`, then `node prerender.mjs`, which
+fills each page's root and deletes `dist-ssr/`. Routes are read off the HTML
+files the build wrote, so a new route needs no list here. `main.tsx` adopts
+the markup with `hydrateRoot` when `data-route` matches the URL, and falls back
+to `createRoot` otherwise (dev, and unknown URLs served 404.html → home HTML).
+
+Rules this imposes, each one learned while wiring it up:
+
+- **Nothing may read `window`, `document` or `matchMedia` while rendering**,
+  only in effects. The build has no browser, and the browser's first render
+  must match the build's HTML exactly: on a mismatch React 19 keeps the
+  build-time attributes and does not patch them. That is why reduced motion
+  is `hooks/useReducedMotion` (false first, real value after mount) and the
+  Contact `?service=` pre-tick is an effect, not `defaultChecked`.
+- **A blog post's body is loaded before rendering**, at build and in the
+  browser (`preloadPost`), or the HTML would hold the loading skeleton.
+- **Two-tone headings carry `{' '}` between their `.block` lines.** On screen
+  it is nothing (whitespace between blocks); in the text a crawler reads, it
+  is what stops "Agentic AI" + "systems." becoming "Agentic AIsystems.".
+- **The marquees fill in after mount** and are not in the HTML: 128 brand
+  paths, aria-hidden, were 224 kB of the home page's 427 kB. Big decorative
+  SVG belongs after mount; text belongs in the HTML.
+- **Verify with the production build**, not dev (dev never hydrates):
+  `npm run build && npx vite preview`, then on every route check that no node
+  under `#root` is replaced on load and the console has no errors. Measured
+  2026-11-11: all 11 routes adopt their HTML with 0 errors; with JS off the
+  home page has ~1,680 words, the post ~2,550, each service page 560–790.
+
+**Analytics (SEO step 2).** Google Analytics 4, Ahmed's choice over Umami
+(2026-11-11), with Consent Mode v2 and a **Europe-only banner**, also his
+choice. Everything is in `src/analytics.ts`. **`MEASUREMENT_ID` is
+`G-QFPNV9V4Q4`** (2026-11-12): property "ahmedislam.tech", added to the GA
+account Firebase created for Dukaan, kept separate from its
+`dukaan-inventory` property. The setup page also showed a Tag Manager
+snippet (`GTM-K2X52LHZ`); it is not used, gtag.js talks to GA directly.
+With the ID emptied, nothing loads, no banner shows and the minifier drops
+the GA code entirely.
+
+- **Consent.** Two `consent default` calls: `denied` for the EEA/UK/CH
+  (Google applies it by its own geolocation), `granted` everywhere else; ads
+  storage denied for everyone. The banner asks only visitors whose **time
+  zone** is in Europe: a static site has no server to ask for a country, so
+  it errs wide. A choice goes to localStorage and is re-sent as a `consent
+  update` on every load; Decline sends `denied` explicitly, because outside
+  the region the default is `granted`. Footer "Cookie settings" reopens it
+  (an `OPEN_CONSENT` window event). Accept and Decline are the same size.
+- **Events.** GA4 records page views (history changes too), outbound clicks
+  and file downloads itself. Ours: `generate_lead` (the form succeeded; what
+  was asked for, never who), `contact_failed`, `contact_cta` and
+  `email_click`, each with `from` where one page has several.
+- **Clicks are tagged with `data-track="event"` + `data-track-<key>`**, read
+  by one capture listener. Not Umami's `data-umami-event`: its handler holds
+  same-tab links and reloads the page at their href, which broke in-app
+  navigation and turned the CV `download` into a page visit.
+- **`MEASUREMENT_ID: string`, typed wide on purpose.** As a bare `''` literal,
+  `MEASUREMENT_ID !== ''` is a type error the moment a real ID replaces it,
+  so adding the ID would have failed the build. Found by testing with one.
+- Only `ahmedislam.tech` loads it, so dev and preview never count. To test the
+  real path, serve dist/ under that hostname with Puppeteer request
+  interception, stub gtag.js and FormSubmit, and read `window.dataLayer`.
+- **`/privacy` describes this setup and FormSubmit.** Change it if either
+  changes. It is prerendered but kept out of the sitemap. Rewritten
+  2026-11-12 in a formal register on Ahmed's request ("professional
+  sentences"), with the usual sections (controller, data, use, cookies,
+  third parties, retention, rights, changes, contact). Its "up to 14 months"
+  retention assumes GA4's data retention is set to 14 months.
+- **The banner's concept is consent as a connection** (Ahmed asked for
+  "attractive, a unique concept"): a mini diagram, You → This site ┄┄
+  Analytics, in the service diagrams' node style. Hover/focus on a button
+  previews its effect on the link; the answer shows as "Connected" (solid,
+  pulsing link) or "Declined" (cut link) for 1.3s before the card leaves. One
+  label row ("Analytics cookies" + status) keeps it at 283px: a separate
+  eyebrow and heading said the same thing and made it 334px. The link is 2px:
+  at 1px the orange read as grey.
+
+**Writing rules.** The `asd-ste100` skill (Simplified Technical English,
+installed globally 2026-11-11) was applied, on Ahmed's call, to the blog post,
+the project summaries and the image alt text only. It is built for technical
+and factual text and says so itself ("not for creative or marketing copy"), so
+the hero, About, Services and Method keep their voice, and the testimonials are
+verbatim and never edited. Its linter is
+`python ~/.claude/skills/asd-ste100/scripts/ste-lint.py <file>`; the blog post
+and the project text both lint at 0 findings. A semicolon or a 26-word sentence
+in those is a regression.
 
 ## Socials: the rail shows five, the footer shows nine
 
@@ -656,10 +868,12 @@ budget; with nothing pinned there is no unreachable fold.
   picks the three **by slug, not by array order**, so reordering `PROJECTS` can't
   silently change them. A slug that resolves to nothing throws in dev — same
   `import.meta.env.DEV` guard pattern as `data/testimonials.ts`. Currently
-  `padelgpt`, `segments`, `flintgrab`. Two were rotated out on Ahmed's
-  instruction and **both remain in `PROJECTS`** — leaving `FEATURED` is not
-  deletion: `content-moderation` (2026-08-30, when `segments` arrived) and
-  `ppe-safety` (2026-09-20, when `flintgrab` took its slot).
+  `padelgpt`, `dukaan`, `flintgrab`: an AI product, a mobile app and a desktop
+  app. Three were rotated out on Ahmed's instruction and **all remain in
+  `PROJECTS`** — leaving `FEATURED` is not deletion: `content-moderation`
+  (2026-08-30, when `segments` arrived), `ppe-safety` (2026-09-20, when
+  `flintgrab` took its slot) and `segments` (2026-11-05, when `dukaan` took
+  its slot; it and `padelgpt` were two features of one product).
 - **The featured panel's anchor is its visual; the name sits beside it at
   `text-h2`.** This flipped once, deliberately. While no project had imagery the
   anchor was the name at `text-display` — the right call for a card with nothing
@@ -695,7 +909,7 @@ budget; with nothing pinned there is no unreachable fold.
 
 **`/projects` — `pages/ProjectsPage.tsx`, the full index.**
 
-All nine as **full-width hairline-separated rows**, not a card grid. Two reasons,
+All ten as **full-width hairline-separated rows**, not a card grid. Two reasons,
 both hard: `lg:grid-cols-3` of eight cards is the single most recognisable
 AI-generated layout there is, and reusing the home card would make the two
 surfaces read as the same page twice. A list is also the form that scales — at
@@ -741,7 +955,7 @@ live site or a public GitHub repo — six repos, two features of one deployed pr
   six of the original seven had the identical string in both fields and PadelGPT had only a
   live site — a second field would have been the same URL twice.
 
-**Imagery: four supplied images, five drawn marks.**
+**Imagery: five supplied images, five drawn marks.**
 
 Every card carries a visual. `Visual` in `Projects.tsx` picks: `project.image` if
 set, otherwise a `ProjectMark`. Both the home cards and the index rows use it, so
@@ -756,6 +970,7 @@ explicit call, not drift.** Recorded here so nobody "corrects" them back out:
 | `segments` | `segments.webp` | **A real capture** of the running Padelos segment builder |
 | `padelgpt` | `padelgpt.webp` | A designed **mockup** — fake browser chrome, empty chat pane |
 | `ppe-safety` | `ppe-safety.webp` | A **generated poster** — the "PPE DETECTED" box is not model output |
+| `dukaan` | `dukaan.webp` | **Three real screenshots** (Items, Home, Invoice) from the app's README set, demo shop data, composed on Dukaan's own saffron `#E8590C` |
 
 - **`flintgrab.webp`** (2026-09-20) came from
   `D:\Data_Folder\FlintGrab-Website\public\assets\screens\queue.png`, 1102x721,
@@ -772,7 +987,7 @@ explicit call, not drift.** Recorded here so nobody "corrects" them back out:
   deliberately to drop its worst parts: the overlaid "AI-Powered Construction
   Safety System" title, and a bottom logo strip whose Arduino mark reads
   **"AMENIO"**.
-- All four are 880x550 WebP in `public/project-images/` (renamed from `projects/` 2026-10-21: a folder named like the `/projects` route made GitHub Pages serve it as a directory, 301 to `/projects/` then 404). **Sources are not kept in this
+- All five are 880x550 WebP in `public/project-images/` (renamed from `projects/` 2026-10-21: a folder named like the `/projects` route made GitHub Pages serve it as a directory, 301 to `/projects/` then 404). **Sources are not kept in this
   repo** — `src/assets/projects/` was deleted after the first three were
   processed (2.8MB that never entered the bundle), so each entry records where
   its original came from instead.
@@ -905,8 +1120,9 @@ somewhere:
   full-stack reframe and sits *beside* `web-apps` ("Full-stack AI products")
   rather than replacing it. One is a site or an app; the other is a product with
   a model inside it. A visitor who wants the first should not have to read an
-  agent pitch to find it. Both the Contact form's service chips and the footer's
-  Services column read from this array, so adding an offer updates all three.
+  agent pitch to find it. The Contact form's service chips, the footer's
+  Services column and the service pages all read from this array, so adding an
+  offer updates all four (and adds a page, which needs its page fields filled).
 - **One row is always open** (`useState(SERVICES[0].id)`); clicking a row opens it
   rather than toggling, so the section can never collapse to seven blank lines.
 - The reveal animates **`grid-template-rows` from `0fr` to `1fr`**, which
