@@ -29,6 +29,8 @@ import { Marked } from 'marked'
 import hljs from 'highlight.js/lib/common'
 import type { Plugin } from 'vite'
 import type { PostMeta, TocEntry } from './src/content/types.ts'
+import { PAGES } from './src/data/pages.ts'
+import { SERVICES } from './src/data/services.ts'
 
 const DIR = join(import.meta.dirname, 'src/content/blog')
 const SITE = 'https://ahmedislam.tech'
@@ -158,8 +160,12 @@ function loadPosts(includeDrafts: boolean) {
 
 /** Swap the shell's head tags for one page's. The shell must carry each tag
  *  (index.html does); a missing one throws rather than shipping a page that
- *  silently previews as the home page. */
-function withMeta(shell: string, page: { title: string; description: string; path: string; type: string }) {
+ *  silently previews as the home page. `jsonLd`, when given, is added as a
+ *  second structured-data block beside the shell's Person/WebSite one. */
+function withMeta(
+  shell: string,
+  page: { title: string; description: string; path: string; type: string; jsonLd?: object },
+) {
   const replacements: [RegExp, string][] = [
     [/<title>[^<]*<\/title>/, `<title>${escapeHtml(page.title)}</title>`],
     [/(<meta\s+name="description"\s+content=")[^"]*(")/, `$1${escapeHtml(page.description)}$2`],
@@ -169,11 +175,17 @@ function withMeta(shell: string, page: { title: string; description: string; pat
     [/(<meta\s+property="og:type"\s+content=")[^"]*(")/, `$1${page.type}$2`],
     [/(<link\s+rel="canonical"\s+href=")[^"]*(")/, `$1${SITE}${page.path}$2`],
   ]
-  return replacements.reduce((html, [re, value]) => {
+  const html = replacements.reduce((html, [re, value]) => {
     if (!re.test(html)) throw new Error(`blog: index.html is missing ${re}`)
     return html.replace(re, value)
   }, shell)
+  if (!page.jsonLd) return html
+  // `<` escaped so a title containing "</script>" can't close the block early
+  const ld = JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')
+  return html.replace('</head>', `<script type="application/ld+json">${ld}</script>\n</head>`)
 }
+
+const xmlEscape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
 /**
  * Two plugins, because their hooks need different places in Vite's order. The
@@ -228,10 +240,21 @@ export default function blog(): Plugin[] {
     },
   }
 
+  /**
+   * Writes every route's real HTML page, plus the sitemap. Site-wide, not
+   * blog-only, despite living in this file: it is the one place that knows
+   * every route at build time.
+   *
+   * `projects.html` used to be a plain `cp` of the home shell in deploy.yml, so
+   * /projects told search engines it was the home page (same title,
+   * description and canonical). It is written here with its own tags now, and
+   * the `cp` is gone. Re-adding it would overwrite this file after the build.
+   */
   const pages: Plugin = {
-    name: 'blog-pages',
+    name: 'site-pages',
     enforce: 'post',
-    apply: 'build',
+    // not in the SSR build prerender.mjs renders from: it has no index.html
+    apply: (_, env) => env.command === 'build' && !env.isSsrBuild,
 
     generateBundle(_, bundle) {
       const shell = bundle['index.html']
@@ -241,16 +264,84 @@ export default function blog(): Plugin[] {
 
       this.emitFile({
         type: 'asset',
+        fileName: 'projects.html',
+        source: withMeta(html, {
+          ...PAGES.projects,
+          path: '/projects',
+          type: 'website',
+        }),
+      })
+
+      // Only routes that return a 200 on Pages, at the exact URL Pages serves
+      // (so `/blog/` with the slash). Posts carry their date as lastmod.
+      const urls = [
+        { loc: '/' },
+        { loc: '/projects' },
+        ...SERVICES.map((s) => ({ loc: `/services/${s.id}` })),
+        { loc: '/blog/', lastmod: posts[0]?.meta.date },
+        ...posts.map(({ meta }) => ({ loc: `/blog/${meta.slug}`, lastmod: meta.date })),
+      ]
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemap.xml',
+        source:
+          '<?xml version="1.0" encoding="UTF-8"?>\n' +
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+          urls
+            .map(
+              (u) =>
+                `  <url><loc>${xmlEscape(SITE + u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`,
+            )
+            .join('\n') +
+          '\n</urlset>\n',
+      })
+
+      // One page per service, so each can rank for its own searches. No
+      // `services/index.html`: nothing links to /services, the list is
+      // the home page's #services.
+      for (const s of SERVICES) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `services/${s.id}.html`,
+          source: withMeta(html, {
+            title: `${s.seoTitle} — Ahmed Islam`,
+            description: s.description,
+            path: `/services/${s.id}`,
+            type: 'website',
+            jsonLd: {
+              '@context': 'https://schema.org',
+              '@type': 'Service',
+              name: s.seoTitle,
+              description: s.description,
+              url: `${SITE}/services/${s.id}`,
+              provider: { '@id': `${SITE}/#person` },
+            },
+          }),
+        })
+      }
+
+      this.emitFile({
+        type: 'asset',
         fileName: 'blog/index.html',
         source: withMeta(html, {
-          title: 'Blog — Ahmed Islam',
-          description:
-            'Guides and notes on AI engineering and the web: what worked, what broke, and the code that fixed it.',
+          ...PAGES.blog,
           // the trailing slash is the URL Pages actually serves (see above)
           path: '/blog/',
           type: 'website',
         }),
       })
+
+      // Not in the sitemap: there is nothing on it to rank for. It still needs
+      // its own HTML so Pages serves it with a 200 and it gets prerendered.
+      this.emitFile({
+        type: 'asset',
+        fileName: 'privacy.html',
+        source: withMeta(html, { ...PAGES.privacy, path: '/privacy', type: 'website' }),
+      })
+
+      // The home page's own head comes from PAGES too, so index.html's
+      // literal title and description are only what `npm run dev` shows.
+      shell.source = withMeta(html, { ...PAGES.home, path: '/', type: 'website' })
 
       for (const { meta } of posts) {
         this.emitFile({
@@ -261,6 +352,22 @@ export default function blog(): Plugin[] {
             description: meta.description,
             path: `/blog/${meta.slug}`,
             type: 'article',
+            // Lets search engines show the post as an article (date, author).
+            // The author points at the Person block every page already carries.
+            jsonLd: {
+              '@context': 'https://schema.org',
+              '@type': 'BlogPosting',
+              headline: meta.title,
+              description: meta.description,
+              datePublished: meta.date,
+              dateModified: meta.date,
+              keywords: meta.tags.join(', '),
+              url: `${SITE}/blog/${meta.slug}`,
+              mainEntityOfPage: `${SITE}/blog/${meta.slug}`,
+              image: `${SITE}/og.png`,
+              author: { '@id': `${SITE}/#person` },
+              publisher: { '@id': `${SITE}/#person` },
+            },
           }),
         })
       }
