@@ -3,27 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ahmed Islam — Full-Stack AI Engineer</title>
+    <title>Ahmed Islam — Full-Stack AI Engineer | Agentic AI, RAG &amp; Web Apps</title>
     <meta
       name="description"
-      content="Ahmed Islam builds production AI systems and the full-stack products around them, LangGraph, LangChain, MCP and RAG on the back end, React and Next.js on the front."
+      content="Full-Stack AI Engineer in Islamabad, Pakistan, building agentic AI systems, RAG pipelines, machine learning models and React and Next.js web apps."
     />
     <!-- Share previews. blog.vite.ts rewrites title, description, og:* and the
-         canonical per blog page at build time, so every tag it touches must
-         stay here; it throws if one goes missing. -->
+         canonical for every page at build time, the home page included, from
+         src/data/pages.ts (the values here are what `npm run dev` shows; keep
+         them the same). Every tag it touches must stay here; it throws if one
+         goes missing. -->
     <link rel="canonical" href="https://ahmedislam.tech/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ahmed Islam" />
-    <meta property="og:title" content="Ahmed Islam — Full-Stack AI Engineer" />
+    <meta property="og:title" content="Ahmed Islam — Full-Stack AI Engineer | Agentic AI, RAG &amp; Web Apps" />
     <meta
       property="og:description"
-      content="Ahmed Islam builds production AI systems and the full-stack products around them, LangGraph, LangChain, MCP and RAG on the back end, React and Next.js on the front."
+      content="Full-Stack AI Engineer in Islamabad, Pakistan, building agentic AI systems, RAG pipelines, machine learning models and React and Next.js web apps."
     />
     <meta property="og:url" content="https://ahmedislam.tech/" />
     <meta property="og:image" content="https://ahmedislam.tech/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Structured data: who this site is about, for search engines. Every
+         copied page (blog posts, /projects) inherits it. `sameAs` must match
+         the profile links in src/data/socials.ts (WhatsApp is a chat link, not
+         a profile, so it stays out); a DEV check there warns if they drift. -->
+    <script type="application/ld+json" id="person-ld">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://ahmedislam.tech/#person",
+            "name": "Ahmed Islam",
+            "jobTitle": "Full-Stack AI Engineer",
+            "description": "Full-Stack AI Engineer building agentic AI systems, RAG pipelines, machine learning models and web apps.",
+            "url": "https://ahmedislam.tech/",
+            "image": "https://ahmedislam.tech/og.png",
+            "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Haripur" },
+            "knowsAbout": [
+              "Agentic AI",
+              "Multi-agent systems",
+              "Retrieval-augmented generation",
+              "LangGraph",
+              "LangChain",
+              "Model Context Protocol",
+              "Machine learning",
+              "Computer vision",
+              "Natural language processing",
+              "Python",
+              "FastAPI",
+              "React",
+              "Next.js",
+              "n8n",
+              "Docker"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Islamabad",
+              "addressCountry": "PK"
+            },
+            "sameAs": [
+              "https://www.linkedin.com/in/ahmed-islam-ai/",
+              "https://github.com/Ahmed-Islam-AI",
+              "https://www.upwork.com/freelancers/~013d744c3e6673db44",
+              "https://ahmed-islam.medium.com/",
+              "https://leetcode.com/u/user9234eM/",
+              "https://x.com/DevAhmedAI",
+              "https://www.instagram.com/ahmedislam.ai",
+              "https://facebook.com/AhmedIslamAI"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://ahmedislam.tech/#website",
+            "name": "Ahmed Islam",
+            "url": "https://ahmedislam.tech/",
+            "publisher": { "@id": "https://ahmedislam.tech/#person" }
+          }
+        ]
+      }
+    </script>
     <meta name="theme-color" content="#faf7f4" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -53,6 +116,9 @@
     />
   </head>
   <body>
+    <!-- Keep the root div below empty and written exactly as it is:
+         prerender.mjs finds it by that exact text and fills it with each
+         page's rendered HTML at build. Don't quote it in a comment either. -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
