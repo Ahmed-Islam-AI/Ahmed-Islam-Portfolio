@@ -4,13 +4,27 @@ import { bodies, posts } from 'virtual:blog'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import PostCover from '../components/PostCover'
-import portrait from '../assets/ahmed.png'
+import portrait from '../assets/ahmed.webp'
 import { SOCIALS } from '../data/socials'
 import { Kicker, issueOf, tie } from './BlogPage'
 import type { PostMeta, TocEntry } from '../content/types'
 
 const SITE = 'https://ahmedislam.tech'
 const iconOf = (name: string) => SOCIALS.find((s) => s.name === name)?.path ?? ''
+
+type Body = { html: string; toc: TocEntry[] }
+const loaded: Record<string, Body> = {}
+
+/**
+ * Loads a post's body chunk ahead of rendering. The build calls it before
+ * rendering a post to HTML (entry-server.tsx), so the article itself is in the
+ * page a crawler reads, not the loading skeleton; main.tsx calls it before
+ * adopting that HTML, so the browser's first render has the same article.
+ */
+export async function preloadPost(slug: string) {
+  const load = bodies[slug]
+  if (load && !loaded[slug]) loaded[slug] = await load()
+}
 
 /**
  * One post, `/blog/:slug`. Editorial: a centred header (kicker, title, dek,
@@ -32,15 +46,14 @@ export default function BlogPostPage() {
   const { slug = '' } = useParams()
   const index = posts.findIndex((p) => p.slug === slug)
   const post = posts[index]
-  const [body, setBody] = useState<{ html: string; toc: TocEntry[] } | null>(null)
+  const [body, setBody] = useState<Body | null>(() => loaded[slug] ?? null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    if (loaded[slug]) return setBody(loaded[slug])
     setBody(null)
-    const load = bodies[slug]
-    if (!load) return
     let live = true
-    load().then((b) => live && setBody(b))
+    preloadPost(slug).then(() => live && setBody(loaded[slug] ?? null))
     return () => {
       live = false
     }
@@ -72,20 +85,7 @@ export default function BlogPostPage() {
           <div className="mx-auto max-w-6xl">
             {/* ── Back + breadcrumb ─────────────────────────── */}
             <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-8 lg:pt-10">
-              <Link
-                to="/blog"
-                className="group press inline-flex items-center gap-2 rounded-full bg-white py-2 pr-4 pl-2.5 text-sm font-semibold text-heading shadow-[0_8px_20px_-14px_rgb(20_19_18/0.45)] ring-1 ring-hairline hover:ring-heading/20"
-              >
-                <span
-                  aria-hidden
-                  className="grid size-6 place-items-center rounded-full bg-paper-2 text-heading transition-[translate,background-color,color] duration-300 group-hover:-translate-x-0.5 group-hover:bg-heading group-hover:text-white"
-                >
-                  <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M10 3.5 5.5 8l4.5 4.5" />
-                  </svg>
-                </span>
-                All posts
-              </Link>
+              <BackPill href="/blog">All posts</BackPill>
               <ol className="flex min-w-0 items-center gap-2 text-sm text-muted">
                 <li>
                   <Link to="/blog" className="transition-colors hover:text-heading">
@@ -404,30 +404,70 @@ function End({ newer, older }: { newer?: PostMeta; older?: PostMeta }) {
         </nav>
       )}
 
-      <div className="relative isolate overflow-hidden rounded-[2rem] bg-ink px-7 py-12 sm:px-12 sm:py-14">
-        <div aria-hidden className="absolute -top-1/2 -right-1/4 -z-10 size-[60%] rounded-full bg-brand/20 blur-[100px]" />
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-eyebrow text-brand-bright uppercase">Work with me</p>
-            <p className="type-hero mt-3 max-w-[18ch] text-h2 leading-[1.05] text-white">
-              Building something like this<span className="text-brand">?</span>
-            </p>
-            <p className="mt-3 max-w-[46ch] text-body text-dark-muted">
-              I take on AI systems and the full-stack products around them.
-            </p>
-          </div>
-          {/* A plain <a>, like Nav's off-home links: a full load of `/#contact`
-              lets the browser do the anchor scroll, which a router <Link> won't. */}
-          <a
-            href="/#contact"
-            className="press inline-flex shrink-0 items-center gap-2.5 self-start rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 hover:brightness-110 sm:self-auto"
-          >
-            Let&rsquo;s talk
-            <span aria-hidden>&rarr;</span>
-          </a>
-        </div>
-      </div>
+      <TalkPanel
+        title="Building something like this"
+        body="I take on AI systems and the full-stack products around them."
+      />
     </footer>
+  )
+}
+
+/** The white back pill with a chevron chip. Shared with ServicePage. A `/#…`
+ *  target is a plain <a>, since only a full load does the anchor scroll. */
+export function BackPill({ href, children }: { href: string; children: string }) {
+  const className =
+    'group press inline-flex items-center gap-2 rounded-full bg-white py-2 pr-4 pl-2.5 text-sm font-semibold text-heading shadow-[0_8px_20px_-14px_rgb(20_19_18/0.45)] ring-1 ring-hairline hover:ring-heading/20'
+  const inner = (
+    <>
+      <span
+        aria-hidden
+        className="grid size-6 place-items-center rounded-full bg-paper-2 text-heading transition-[translate,background-color,color] duration-300 group-hover:-translate-x-0.5 group-hover:bg-heading group-hover:text-white"
+      >
+        <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10 3.5 5.5 8l4.5 4.5" />
+        </svg>
+      </span>
+      {children}
+    </>
+  )
+  return href.includes('#') ? (
+    <a href={href} className={className}>
+      {inner}
+    </a>
+  ) : (
+    <Link to={href} className={className}>
+      {inner}
+    </Link>
+  )
+}
+
+/** The ink "Let's talk" panel that closes a post or a service page. */
+export function TalkPanel({ title, body, href = '/#contact' }: { title: string; body: string; href?: string }) {
+  return (
+    <div className="relative isolate overflow-hidden rounded-[2rem] bg-ink px-7 py-12 sm:px-12 sm:py-14">
+      <div aria-hidden className="absolute -top-1/2 -right-1/4 -z-10 size-[60%] rounded-full bg-brand/20 blur-[100px]" />
+      <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-eyebrow text-brand-bright uppercase">Work with me</p>
+          <p className="type-hero mt-3 max-w-[18ch] text-h2 leading-[1.05] text-balance text-white">
+            {title}
+            <span className="text-brand">?</span>
+          </p>
+          <p className="mt-3 max-w-[46ch] text-body text-dark-muted">{body}</p>
+        </div>
+        {/* A plain <a>, like Nav's off-home links: a full load of `/#contact`
+            lets the browser do the anchor scroll, which a router <Link> won't. */}
+        <a
+          href={href}
+          data-track="contact_cta"
+          data-track-from="talk_panel"
+          className="press inline-flex shrink-0 items-center gap-2.5 self-start rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 hover:brightness-110 sm:self-auto"
+        >
+          Let&rsquo;s talk
+          <span aria-hidden>&rarr;</span>
+        </a>
+      </div>
+    </div>
   )
 }
 

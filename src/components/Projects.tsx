@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { CSSProperties } from 'react'
 import {
+  destinationOf,
   FEATURED_PROJECTS,
   LIVE_COUNT,
   PROJECTS,
@@ -80,7 +81,7 @@ export default function Projects() {
               data-reveal
               className="type-hero text-display leading-[0.95] uppercase"
             >
-              <span className="block text-white">Things I&rsquo;ve</span>
+              <span className="block text-white">Things I&rsquo;ve</span>{' '}
               <span className="block text-white/35">
                 shipped<span className="text-brand">.</span>
               </span>
@@ -168,13 +169,12 @@ export default function Projects() {
  * a new pattern dressed as an existing one — decoration carrying no information.
  */
 function Featured({ project, index }: { project: Project; index: number }) {
-  const live = project.status === 'LIVE'
   return (
     <a
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${project.name} — opens the ${live ? 'live site' : 'source repository'} in a new tab`}
+      aria-label={`${project.name} — opens the ${destinationOf(project)} in a new tab`}
       className="group grid gap-8 rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 active:scale-[0.99] lg:grid-cols-2 lg:items-center lg:gap-12 lg:p-10"
     >
       <div className="min-w-0">
@@ -222,13 +222,12 @@ function Card({
   index: number
   className: string
 }) {
-  const live = project.status === 'LIVE'
   return (
     <a
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${project.name} — opens the ${live ? 'live site' : 'source repository'} in a new tab`}
+      aria-label={`${project.name} — opens the ${destinationOf(project)} in a new tab`}
       className={`group flex min-w-0 flex-col rounded-[1.75rem] bg-ink-raised p-6 shadow-[0_30px_60px_-34px_rgb(0_0_0/0.85)] ring-1 ring-white/12 transition-all duration-500 hover:ring-white/25 active:scale-[0.99] lg:p-7 ${className}`}
     >
       <Visual project={project} className="mb-6" />

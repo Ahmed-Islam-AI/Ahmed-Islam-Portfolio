@@ -149,7 +149,7 @@ export default function Stack() {
         <div className="mx-auto w-full max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-heading">The full</span>
+            <span className="block text-heading">The full</span>{' '}
             <span className="block text-heading/50">
               stack<span className="text-brand">.</span>
             </span>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import TechIcon from './TechIcon'
 import { SERVICES } from '../data/services'
 
@@ -18,7 +19,7 @@ export default function Services() {
       <div className="mx-auto max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-heading">What I</span>
+            <span className="block text-heading">What I</span>{' '}
             <span className="block text-heading/50">
               deliver<span className="text-brand">.</span>
             </span>
@@ -90,6 +91,9 @@ export default function Services() {
                   <div
                     id={`service-${service.id}`}
                     role="region"
+                    // Closed panels are only collapsed and transparent, so the
+                    // link inside would still take Tab focus without this.
+                    inert={!on}
                     className={`grid transition-all duration-300 ease-out ${
                       on ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                     }`}
@@ -110,20 +114,34 @@ export default function Services() {
                           ))}
                         </ul>
 
-                        <ul className="mt-7 flex flex-wrap gap-2 border-t border-white/10 pt-6">
-                          {service.stack.map((tool) => (
-                            <li
-                              key={tool}
-                              className="flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-2.5 py-1.5 text-xs font-semibold text-dark-muted ring-1 ring-white/10"
-                            >
-                              <TechIcon
-                                name={tool}
-                                className="size-3.5 shrink-0 text-brand-bright"
-                              />
-                              {tool}
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="mt-7 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                          <ul className="flex flex-wrap gap-2">
+                            {service.stack.map((tool) => (
+                              <li
+                                key={tool}
+                                className="flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-2.5 py-1.5 text-xs font-semibold text-dark-muted ring-1 ring-white/10"
+                              >
+                                <TechIcon
+                                  name={tool}
+                                  className="size-3.5 shrink-0 text-brand-bright"
+                                />
+                                {tool}
+                              </li>
+                            ))}
+                          </ul>
+                          {/* The way into the service's own page. Its text names
+                              the service, which is also what search engines read
+                              from a link. */}
+                          <Link
+                            to={`/services/${service.id}`}
+                            className="group -my-2.5 inline-flex shrink-0 items-center gap-2 py-3.5 text-[0.75rem] font-semibold tracking-[0.14em] text-brand-bright uppercase transition-colors hover:text-white"
+                          >
+                            More on {service.title}
+                            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                              &rarr;
+                            </span>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

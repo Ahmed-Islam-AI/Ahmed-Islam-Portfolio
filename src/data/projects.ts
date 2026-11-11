@@ -190,6 +190,54 @@ export const PROJECTS: Project[] = [
     },
   },
   {
+    slug: 'dukaan',
+    name: 'Dukaan',
+    /**
+     * Added 2026-11-05 on Ahmed's instruction, taking `segments`' place in
+     * `FEATURED` (Segments stays in the list).
+     *
+     * **`APK`, not `LIVE` or `SOURCE`.** It is an Android app, not on the Play
+     * Store yet, so there is no site to visit. The repo is public, but Ahmed
+     * chose the release page as the destination: it is where a visitor can
+     * actually install it (`Dukaan-<version>.apk`). `releases/latest` always
+     * opens the newest release, so this link never needs bumping.
+     */
+    status: 'APK',
+    href: 'https://github.com/Ahmed-Islam-AI/Dukaan-Inventory/releases/latest',
+    /**
+     * Facts from the repo's own README (`D:\inventory_management_app`). "Its
+     * first client is a phone shop in Lahore" is the README's claim, and it
+     * names no shop, so neither does this. Written with the humanizer skill,
+     * then checked with the asd-ste100 skill's linter (0 findings): no
+     * semicolons, sentences under 25 words.
+     */
+    summary:
+      'Billing, stock and udhaar (customer credit) for a small shop, in an Android app that works without internet. Its first client is a phone shop in Lahore. It shares invoices on WhatsApp and runs in English or Urdu.',
+    /**
+     * From the README's "Under the hood" table: Kotlin, Jetpack Compose, Room
+     * on SQLite, optional Firebase sync, ML Kit for on-device barcode scanning.
+     * Kotlin, Jetpack Compose and ML Kit were added to `TechIcon.tsx` for this
+     * card.
+     */
+    stack: ['Kotlin', 'Jetpack Compose', 'SQLite', 'Firebase', 'ML Kit'],
+    /**
+     * REAL captures: three screenshots from the app's own README set
+     * (`docs/images/screens/` items, home, receipt-invoice), taken from the
+     * debug build on an emulator with the README's demo shop data. Composed on
+     * Dukaan's own saffron `#E8590C` (from its docs/DESIGN.md) at 880x550 by a
+     * scratch Puppeteer script; nothing in the frame is drawn except the
+     * backdrop. Its saffron is the product's colour, same licence as Flintgrab's
+     * lime and Segments' blue.
+     *
+     * Not the README's `hero.png`: that banner is half title text and taglines,
+     * which would repeat the card's own name beside it.
+     */
+    image: {
+      src: '/project-images/dukaan.webp',
+      alt: "Three Dukaan screens with demo data. Left: the item list, with stock and profit per item. Centre: the home screen, with today's cash and a 7-day sales chart. Right: the invoice for a saved sale.",
+    },
+  },
+  {
     slug: 'ppe-safety',
     name: 'Construction Safety System',
     status: 'SOURCE',
@@ -290,7 +338,10 @@ export const PROJECTS: Project[] = [
  * non-AI/ML build here, so it is what backs up the web development `services.ts`
  * sells. The rest are one click away on `/projects`.
  *
- * Two have been rotated out on Ahmed's instruction, and both are still in
+ * `dukaan` (2026-11-05) adds the third kind of build: an AI product, a desktop
+ * app and now a mobile app, instead of two features of the same platform.
+ *
+ * Three have been rotated out on Ahmed's instruction, and all are still in
  * `PROJECTS` — dropping out of `FEATURED` is not deletion:
  *   - `content-moderation`, 2026-08-30, when `segments` was added. Still the
  *     only project whose README states a measured result, so it keeps its
@@ -298,8 +349,10 @@ export const PROJECTS: Project[] = [
  *   - `ppe-safety`, 2026-09-20, when `flintgrab` took its slot. Still the
  *     largest single build here (YOLOv8 + facial recognition + an Arduino/ROS
  *     unit).
+ *   - `segments`, 2026-11-05, when `dukaan` took its slot. It and `padelgpt`
+ *     are both Padelos features, so the home section had shown one product twice.
  */
-export const FEATURED: readonly string[] = ['padelgpt', 'segments', 'flintgrab']
+export const FEATURED: readonly string[] = ['padelgpt', 'dukaan', 'flintgrab']
 
 /** The three featured projects, in FEATURED order. */
 export const FEATURED_PROJECTS: Project[] = FEATURED.map(
@@ -312,6 +365,15 @@ export const SOURCE_COUNT = PROJECTS.filter((p) => p.href.includes('github.com')
 export const GITHUB_PROFILE = 'https://github.com/Ahmed-Islam-AI'
 
 export const isRepo = (href: string) => new URL(href).host === 'github.com'
+
+/** What a card's link opens, for its aria-label. One place, so a new status
+ *  can't leave three cards announcing the wrong destination. */
+export const destinationOf = (project: Project) =>
+  project.status === 'LIVE'
+    ? 'live site'
+    : project.status === 'APK'
+      ? 'download page'
+      : 'source repository'
 
 /**
  * The destination, printed in a card or row footer.

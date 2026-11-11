@@ -18,6 +18,8 @@ import {
   siHtml5,
   siHuggingface,
   siJavascript,
+  siJetpackcompose,
+  siKotlin,
   siKubernetes,
   siLangchain,
   siLanggraph,
@@ -157,6 +159,12 @@ const ICONS: Record<string, string> = {
   // and his to change; a project's stack is a fact about the project. See the
   // Projects note in CLAUDE.md for why those two lists diverge on purpose.
   Electron: siElectron.path,
+  // Kotlin, Jetpack Compose and ML Kit are for Dukaan's card, same reasoning
+  // as Electron above. ML Kit gets the hand-drawn scan glyph: it is what the
+  // app uses it for (on-device barcode scanning), and simple-icons has no ML
+  // Kit mark — Google's own logo would claim more than the card means.
+  'Jetpack Compose': siJetpackcompose.path,
+  'ML Kit': CONCEPT.scan,
   'Next.js': siNextdotjs.path,
   'Tailwind CSS': siTailwindcss.path,
   Bootstrap: siBootstrap.path,
@@ -193,6 +201,7 @@ const ICONS: Record<string, string> = {
   SQL: CONCEPT.db,
   JavaScript: siJavascript.path,
   TypeScript: siTypescript.path,
+  Kotlin: siKotlin.path,
   'C++': siCplusplus.path,
 
   // Visualisation
@@ -201,10 +210,14 @@ const ICONS: Record<string, string> = {
   Gradio: siGradio.path,
 }
 
+/** A technology name, or a bare concept key (`chat`, `db`, `bars`…) for things
+ *  that are ideas rather than tools — the service diagrams use both. */
+const pathOf = (name: string) => ICONS[name] ?? CONCEPT[name as keyof typeof CONCEPT] ?? CONCEPT.cube
+
 export default function TechIcon({ name, className }: { name: string; className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
-      <path d={ICONS[name] ?? CONCEPT.cube} />
+      <path d={pathOf(name)} />
     </svg>
   )
 }

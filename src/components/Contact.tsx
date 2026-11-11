@@ -1,5 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { SERVICES } from '../data/services'
+import { track } from '../analytics'
 
 /** Both real, from the CV. */
 const EMAIL = 'ahmedislam.official@gmail.com'
@@ -88,6 +90,25 @@ function ChipGroup({
 
 export default function Contact() {
   const [status, setStatus] = useState<Status>('idle')
+  const { pathname, search, hash } = useLocation()
+  const navigate = useNavigate()
+
+  // A service page's "Start a project" links here with `?service=<id>`, so
+  // that service arrives ticked. Done after mount, not as `defaultChecked`:
+  // the page is HTML rendered at build time, which has no query string, and
+  // React keeps the build-time attributes when the first render disagrees.
+  //
+  // Then the param is dropped from the address: its job is done, and left
+  // there it rode along for the rest of the visit (`/?service=x#top` after
+  // clicking the logo) and into any bookmark or shared link. `replace`, so
+  // Back doesn't return to it; the hash is kept and nothing scrolls.
+  useEffect(() => {
+    const id = new URLSearchParams(search).get('service')
+    if (!id) return
+    const box = document.getElementById(`svc-${id}`)
+    if (box instanceof HTMLInputElement) box.checked = true
+    navigate({ pathname, hash }, { replace: true })
+  }, [search])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -111,9 +132,16 @@ export default function Contact() {
       })
       const json = await response.json()
       if (!response.ok || String(json.success) !== 'true') throw new Error(json.message)
+      // The conversion. What was asked for, never who asked.
+      track('generate_lead', {
+        services: String(data.get('services')),
+        budget: String(data.get('budget') ?? ''),
+        timeline: String(data.get('timeline') ?? ''),
+      })
       form.reset()
       setStatus('sent')
     } catch {
+      track('contact_failed')
       setStatus('error')
     }
   }
@@ -123,7 +151,7 @@ export default function Contact() {
       <div className="mx-auto max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-white">Tell me what</span>
+            <span className="block text-white">Tell me what</span>{' '}
             <span className="block text-white/35">
               you need<span className="text-brand">.</span>
             </span>
@@ -145,6 +173,8 @@ export default function Contact() {
             <li>
               <a
                 href={`mailto:${EMAIL}`}
+                data-track="email_click"
+                data-track-from="contact"
                 className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[0.75rem] font-semibold tracking-[0.1em] text-white uppercase ring-1 ring-white/12 press hover:bg-brand hover:ring-brand"
               >
                 <span aria-hidden className="size-1.5 rounded-full bg-brand-bright" />

@@ -7,7 +7,7 @@ const COLLAPSED_H = 216
 
 /** Straight from Ahmed-Islam-CV.pdf — roles, dates and bullets are his, verbatim
  *  apart from light trimming. Keep this in sync with the CV when it changes. */
-const EXPERIENCE = [
+export const EXPERIENCE = [
   {
     company: 'Padelos',
     short: 'P',
@@ -119,7 +119,7 @@ export default function Work() {
               shipped.", and two headings both claiming "work" read as the same
               section twice. This one is the employment + education timeline. */}
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-heading">Where I&rsquo;ve</span>
+            <span className="block text-heading">Where I&rsquo;ve</span>{' '}
             <span className="block text-heading/50">
               been<span className="text-brand">.</span>
             </span>
@@ -191,7 +191,7 @@ export default function Work() {
                   remount, and a remount replays `animate-rise-in`; the bullets
                   are keyed by their own text so they remount anyway. The bullet
                   <ul> itself is NOT keyed: its ResizeObserver is attached once. */}
-              <div key={job.company} className="flex items-center gap-4 motion-safe:animate-rise-in">
+              <div key={`${job.company}-head`} className="flex items-center gap-4 motion-safe:animate-rise-in">
                 {job.logo && (
                   // wide plate, not a square: every one of these is a horizontal
                   // wordmark, so height is the constraint and width must be free
@@ -286,7 +286,7 @@ export default function Work() {
                   tags wrap to two, the shorter roles fit one, and the difference
                   was jumping the card 25px. Bump if an entry ever needs three. */}
               <ul
-                key={job.company}
+                key={`${job.company}-tags`}
                 className="mt-8 flex min-h-24 flex-wrap content-start items-start gap-2 border-t border-white/10 pt-6 motion-safe:animate-rise-in [animation-delay:160ms]"
               >
                 {job.stack.map((tool) => (

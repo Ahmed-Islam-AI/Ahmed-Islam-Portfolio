@@ -27,10 +27,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # The build writes projects.html, blog/*.html and sitemap.xml itself
+      # (blog.vite.ts), each with its own title, description and canonical.
+      # Don't copy index.html over projects.html here: it would replace that
+      # page's tags with the home page's.
       - run: npm run build
-      # Pages serves /projects from projects.html with a 200; without it the
-      # route only loads via the 404.html shim, which search engines see as 404.
-      - run: cp dist/index.html dist/projects.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

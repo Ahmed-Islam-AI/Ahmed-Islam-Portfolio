@@ -114,4 +114,16 @@ if (import.meta.env.DEV) {
         'put the rest in the footer, which lists all of SOCIALS.',
     )
   }
+
+  // index.html repeats these links as structured data (`sameAs` in
+  // #person-ld) for search engines. It can't import this file, so check here.
+  const ld = document.getElementById('person-ld')?.textContent
+  if (ld) {
+    const person = JSON.parse(ld)['@graph'].find((n: { '@type': string }) => n['@type'] === 'Person')
+    const want = SOCIALS.filter((s) => s.name !== 'WhatsApp').map((s) => s.href).sort()
+    const have = [...person.sameAs].sort()
+    if (JSON.stringify(want) !== JSON.stringify(have)) {
+      console.warn('index.html #person-ld sameAs is out of sync with SOCIALS', { want, have })
+    }
+  }
 }

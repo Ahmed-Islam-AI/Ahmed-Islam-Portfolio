@@ -1,4 +1,4 @@
-import portrait from '../assets/ahmed.png'
+import portrait from '../assets/ahmed.webp'
 
 /** Floating capability chips. Positions are hand-tuned so they clear each other
  *  and the portrait caption — in the mockup "Production observability" landed on
@@ -43,35 +43,43 @@ export default function Hero() {
         {/* `scroll-recede` (here and on the portrait) eases the hero back as it
             leaves through the top, so the stats card reads as the next thing. */}
         <div className="scroll-recede lg:col-start-1 lg:row-start-1">
-          <p data-reveal>
-            <span className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-white to-paper-2 py-2 pr-4 pl-3 shadow-[0_10px_30px_-18px_rgb(20_19_18/0.5)] ring-1 ring-hairline">
-              {/* live dot — green reads "available"; orange is the brand accent
-                  and would read as decoration rather than status */}
-              <span className="relative flex size-2.5 shrink-0" title="Available for new work">
-                <span className="absolute inline-flex size-full rounded-full bg-success opacity-60 motion-safe:animate-ping" />
-                <span className="relative inline-flex size-2.5 rounded-full bg-success" />
-              </span>
-              <span className="text-eyebrow text-heading uppercase">
-                Full-Stack AI Engineer
-                {/* the tail wrapped to a second line at 390px */}
-                <span className="max-sm:hidden">
-                  {' '}
-                  <span className="text-brand">·</span> Web &amp; Agentic
+          {/* The pill is the H1's first line. The role words people search
+              for ("Full-Stack AI Engineer") were in a <p> above a heading that
+              names no skill at all, so the one H1 on the page said nothing a
+              search engine could match. Same pixels: the pill and the line
+              keep their own reveals, and the `{' '}` between the two blocks
+              renders as nothing but keeps them two phrases in the text. */}
+          <h1>
+            <span data-reveal className="block">
+              <span className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-white to-paper-2 py-2 pr-4 pl-3 shadow-[0_10px_30px_-18px_rgb(20_19_18/0.5)] ring-1 ring-hairline">
+                {/* live dot — green reads "available"; orange is the brand accent
+                    and would read as decoration rather than status */}
+                <span className="relative flex size-2.5 shrink-0" title="Available for new work">
+                  <span className="absolute inline-flex size-full rounded-full bg-success opacity-60 motion-safe:animate-ping" />
+                  <span className="relative inline-flex size-2.5 rounded-full bg-success" />
+                </span>
+                <span className="text-eyebrow text-heading uppercase">
+                  Full-Stack AI Engineer
+                  {/* the tail wrapped to a second line at 390px */}
+                  <span className="max-sm:hidden">
+                    {' '}
+                    <span className="text-brand">·</span> Web &amp; Agentic
+                  </span>
                 </span>
               </span>
-              <span className="sr-only">— available for new work</span>
+            </span>{' '}
+            <span
+              data-reveal
+              className="type-hero text-display mt-6 block max-w-[16ch] text-heading uppercase [--reveal-delay:80ms]"
+            >
+              {/* "systems" -> "products" so the line covers a website as well as an
+                  agent. "Beyond the demo" is the sharpest phrase on the page and
+                  stays; the pill above and the lead below carry the specifics. */}
+              I build products that work beyond the demo.
             </span>
-          </p>
-
-          <h1
-            data-reveal
-            className="type-hero text-display mt-6 max-w-[16ch] text-heading uppercase [--reveal-delay:80ms]"
-          >
-            {/* "systems" -> "products" so the line covers a website as well as an
-                agent. "Beyond the demo" is the sharpest phrase on the page and
-                stays; the pill above and the lead below carry the specifics. */}
-            I build products that work beyond the demo.
           </h1>
+          {/* Was inside the pill; it's a status, not part of the heading. */}
+          <p className="sr-only">Available for new work.</p>
         </div>
 
         {/* ── The closing line ─────────────────────────────────────
@@ -125,7 +133,7 @@ export default function Hero() {
               />
               <img
                 src={portrait}
-                alt="Ahmed Islam"
+                alt="Ahmed Islam, Full-Stack AI Engineer"
                 width={790}
                 height={1110}
                 fetchPriority="high"
@@ -199,6 +207,8 @@ export default function Hero() {
 
             <a
               href="mailto:ahmedislam.official@gmail.com"
+              data-track="email_click"
+              data-track-from="hero"
               aria-label="Email Ahmed"
               className="grid size-12 place-items-center rounded-full border border-heading/15 text-heading press hover:border-brand hover:text-brand"
             >

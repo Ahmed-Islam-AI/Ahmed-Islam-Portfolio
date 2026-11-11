@@ -4,6 +4,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { Destination, StackChips, Visual } from '../components/Projects'
 import {
+  destinationOf,
   GITHUB_PROFILE,
   LIVE_COUNT,
   PROJECTS,
@@ -11,6 +12,7 @@ import {
   type Project,
 } from '../data/projects'
 import TechIcon from './../components/TechIcon'
+import { PAGES } from '../data/pages'
 
 /**
  * The full project index — every project, one row each.
@@ -35,7 +37,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     window.scrollTo(0, 0)
     const previous = document.title
-    document.title = 'Projects — Ahmed Islam'
+    document.title = PAGES.projects.title
     return () => {
       document.title = previous
     }
@@ -55,7 +57,7 @@ export default function ProjectsPage() {
                   data-reveal
                   className="type-hero text-display leading-[0.95] uppercase"
                 >
-                  <span className="block text-white">Everything</span>
+                  <span className="block text-white">Everything</span>{' '}
                   <span className="block text-white/35">
                     I&rsquo;ve built<span className="text-brand">.</span>
                   </span>
@@ -132,14 +134,22 @@ export default function ProjectsPage() {
  * is a card grid with one column, which is the shape this page exists to avoid.
  * The whole row is the link, so the target is far larger than the 44px floor.
  */
-function Row({ project, index }: { project: Project; index: number }) {
-  const live = project.status === 'LIVE'
+export function Row({
+  project,
+  index,
+  heading: Heading = 'h2',
+}: {
+  project: Project
+  index: number
+  /** `h3` where the rows sit under a page's own h2 (ServicePage). */
+  heading?: 'h2' | 'h3'
+}) {
   return (
     <a
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${project.name} — opens the ${live ? 'live site' : 'source repository'} in a new tab`}
+      aria-label={`${project.name} — opens the ${destinationOf(project)} in a new tab`}
       // Negative inline margin + matching padding so the hover tint bleeds past
       // the text column and reads as a full row, without the border moving.
       className="group -mx-4 grid gap-x-6 gap-y-4 border-b border-white/10 px-4 py-8 transition-colors hover:bg-white/[0.03] lg:grid-cols-[2.5rem_9rem_minmax(0,1fr)_minmax(0,17rem)] lg:gap-x-8 lg:py-10"
@@ -155,9 +165,9 @@ function Row({ project, index }: { project: Project; index: number }) {
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <h2 className="type-hero text-h3 leading-tight text-white transition-colors group-hover:text-brand-bright">
+          <Heading className="type-hero text-h3 leading-tight text-white transition-colors group-hover:text-brand-bright">
             {project.name}
-          </h2>
+          </Heading>
           <span className="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.6875rem] tracking-[0.14em] text-dark-muted ring-1 ring-white/10">
             {project.status}
           </span>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { PAGES } from '../data/pages'
 import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import StatsBar from '../components/StatsBar'
@@ -45,6 +46,23 @@ export default function Home() {
     })
     observer.observe(el)
     return () => observer.disconnect()
+  }, [])
+
+  // Land on the section the address names (`/#contact` from another page).
+  // The browser only does this itself when the section is in the HTML it
+  // parsed: the built pages have it, but in dev, and on any URL the app draws
+  // from scratch, it doesn't exist yet when the browser looks, and the visit
+  // stayed at the top. `instant`, or html's smooth scrolling would glide
+  // through the whole page; on the built pages it's a no-op or a small nudge.
+  // Arriving by an in-app link, the tab would otherwise keep the last page's
+  // title: those pages restore whatever was there when they mounted.
+  useEffect(() => {
+    document.title = PAGES.home.title
+  }, [])
+
+  useEffect(() => {
+    const id = decodeURIComponent(location.hash.slice(1))
+    if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
   }, [])
 
   return (

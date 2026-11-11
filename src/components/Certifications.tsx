@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { CERTIFICATIONS, type Certification } from '../data/certifications'
+import { useReducedMotion } from '../hooks/useReducedMotion'
 
 /**
  * Viewport heights of runway per card, plus one for the settle at each end.
@@ -30,11 +31,7 @@ export default function Certifications({
   const deck = useRef<HTMLDivElement>(null)
   const bar = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
-  const [reduced] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
+  const reduced = useReducedMotion()
 
   useEffect(() => {
     if (reduced) return
@@ -118,7 +115,7 @@ export default function Certifications({
 
   const headline = (
     <h2 className="type-hero mt-6 text-display leading-[0.92] uppercase">
-      <span className="block text-white">Certified.</span>
+      <span className="block text-white">Certified.</span>{' '}
       <span className="block text-white/40">
         Then applied<span className="text-ink">.</span>
       </span>

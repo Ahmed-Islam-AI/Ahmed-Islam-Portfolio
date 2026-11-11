@@ -5,6 +5,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import PostCover from '../components/PostCover'
 import type { PostMeta } from '../content/types'
+import { PAGES } from '../data/pages'
 
 /** "25 Oct 2026". en-GB to match the site's British spelling; UTC so a post
  *  dated the 25th never renders as the 24th west of Greenwich. */
@@ -38,7 +39,7 @@ export default function BlogPage() {
   useEffect(() => {
     window.scrollTo(0, 0)
     const previous = document.title
-    document.title = 'Blog — Ahmed Islam'
+    document.title = PAGES.blog.title
     return () => {
       document.title = previous
     }
@@ -55,7 +56,7 @@ export default function BlogPage() {
           <div className="mx-auto max-w-6xl">
             <header className="flex flex-col gap-8 pt-10 lg:flex-row lg:items-end lg:justify-between lg:pt-14">
               <h1 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-                <span className="block text-heading">Notes from</span>
+                <span className="block text-heading">Notes from</span>{' '}
                 <span className="block text-heading/50">
                   the build<span className="text-brand">.</span>
                 </span>

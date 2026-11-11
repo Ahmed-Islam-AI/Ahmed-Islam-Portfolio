@@ -143,6 +143,8 @@ export default function Nav({ active }: { active?: string }) {
 
           <a
             href={to('#contact')}
+            data-track="contact_cta"
+            data-track-from="nav"
             className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.12em] whitespace-nowrap text-white uppercase press hover:brightness-110 lg:block"
           >
             {/* Short label below xl: with the Blog button beside it, the full
@@ -209,6 +211,8 @@ export default function Nav({ active }: { active?: string }) {
         </ul>
         <a
           href={to('#contact')}
+          data-track="contact_cta"
+          data-track-from="nav"
           onClick={() => setOpen(false)}
           className="mt-3 block rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-3 text-center text-[0.75rem] font-bold tracking-[0.12em] text-white uppercase press"
         >

@@ -32,7 +32,7 @@ export default function About() {
         <div>
           {/* two-tone stacked display heading */}
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-heading">More than</span>
+            <span className="block text-heading">More than</span>{' '}
             <span className="block text-heading/50">
               algorithms<span className="text-brand">.</span>
             </span>
@@ -82,6 +82,8 @@ export default function About() {
           >
             <a
               href="#contact"
+              data-track="contact_cta"
+              data-track-from="about"
               className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-b from-brand to-brand-deep px-6 py-3.5 text-[0.75rem] font-bold tracking-[0.14em] text-white uppercase shadow-lg shadow-brand/25 press hover:brightness-110"
             >
               Let&rsquo;s work together

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from '../hooks/useReducedMotion'
 
 /**
  * DRAFT COPY — the one section not derived from the CV. The five phases are
@@ -65,11 +66,7 @@ export default function Method() {
   const panel = useRef<HTMLDivElement>(null)
   const path = useRef<SVGPathElement>(null)
   const dot = useRef<HTMLSpanElement>(null)
-  const [reduced] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
+  const reduced = useReducedMotion()
   /**
    * A coarse copy of progress, and the ONLY thing here that goes through React.
    * The line and the dot are written straight to the DOM (below); this drives the
@@ -201,7 +198,7 @@ export default function Method() {
                 {/* text-display, matching every other section heading — this was
                     the only one still on the smaller text-h2 step. */}
                 <h2 className="type-hero text-display leading-[0.95] uppercase">
-                  <span className="block text-white">How I</span>
+                  <span className="block text-white">How I</span>{' '}
                   <span className="block text-white/35">
                     build<span className="text-brand">.</span>
                   </span>

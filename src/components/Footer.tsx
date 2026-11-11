@@ -1,4 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
+import { analyticsOn } from '../analytics'
+import { OPEN_CONSENT } from './ConsentBanner'
 import { SECTIONS } from './SectionRail'
 import { SERVICES } from '../data/services'
 import { SOCIALS } from '../data/socials'
@@ -104,9 +106,9 @@ export default function Footer() {
             <ul className="mt-5 grid gap-3.5">
               {SERVICES.map((service) => (
                 <li key={service.id}>
-                  <a href={to('#services')} className={linkClass}>
+                  <Link to={`/services/${service.id}`} className={linkClass}>
                     {service.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -153,6 +155,8 @@ export default function Footer() {
         {/* ── Email, given the weight it deserves ──────────────── */}
         <a
           href={`mailto:${EMAIL}`}
+          data-track="email_click"
+          data-track-from="footer"
           className="group mt-16 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-white/10 pt-10"
         >
           <span className="text-eyebrow shrink-0 text-dark-muted uppercase">Start here</span>
@@ -203,8 +207,37 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-20">
         {/* Centred while stacked, split left/right once there's room for one line. */}
         <div className="flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-center text-[0.6875rem] font-semibold tracking-[0.12em] text-white/60 uppercase sm:flex-row sm:justify-between sm:text-left">
-          {/* Computed, so it can't silently go stale. */}
-          <p>© {new Date().getFullYear()} Ahmed Islam</p>
+          {/* Computed, so it can't silently go stale. The page HTML carries
+              the build's year; after New Year, until the next deploy, the
+              browser's differs, and that one text node may keep the old one
+              rather than fail the whole page's hydration. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3">
+            <p suppressHydrationWarning>© {new Date().getFullYear()} Ahmed Islam</p>
+            <span aria-hidden className="text-white/25">
+              ·
+            </span>
+            {/* Privacy and Cookie settings: required once the site uses Google
+                Analytics (its terms, and EU consent law: a choice has to be
+                as easy to change as to make). -my/py keep the 44px target
+                without growing the bar. */}
+            <Link to="/privacy" className="-my-3 py-3 transition-colors hover:text-white">
+              Privacy policy
+            </Link>
+            {analyticsOn && (
+              <>
+                <span aria-hidden className="text-white/25">
+                  ·
+                </span>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT))}
+                  className="-my-3 py-3 font-semibold tracking-[0.12em] uppercase transition-colors hover:text-white"
+                >
+                  Cookie settings
+                </button>
+              </>
+            )}
+          </div>
           {/* The emoji is here by request. It's the one exception to STYLE.md's
               "no emoji as icons" rule, and its red is the one non-palette colour
               on the page — swap in an SVG heart in `text-brand` to undo both.

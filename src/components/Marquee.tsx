@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TechIcon from './TechIcon'
 
 /** Brand marks only — the concept glyphs repeat too much to read well in a band. */
@@ -49,6 +49,13 @@ const DECAY = 2.6 // how fast the boost eases back to 1
  */
 export default function Marquee({ direction = 1 }: { direction?: 1 | -1 }) {
   const track = useRef<HTMLDivElement>(null)
+
+  // The icons fill in after mount, so they are not in the build-time HTML.
+  // Both bands draw every icon twice, and those 128 brand paths were 224 kB
+  // of the home page's 427 kB, for a decoration that is aria-hidden and well
+  // below the fold. `h-12` on the track holds the row's height meanwhile.
+  const [items, setItems] = useState<string[]>([])
+  useEffect(() => setItems([...MARQUEE_ITEMS, ...MARQUEE_ITEMS]), [])
 
   useEffect(() => {
     const el = track.current
@@ -119,8 +126,8 @@ export default function Marquee({ direction = 1 }: { direction?: 1 | -1 }) {
       // fixed SocialRail sits, instead of sliding under it
       className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_88%,transparent)]"
     >
-      <div ref={track} className="flex w-max shrink-0 gap-3 will-change-transform">
-        {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((name, i) => (
+      <div ref={track} className="flex h-12 w-max shrink-0 gap-3 will-change-transform">
+        {items.map((name, i) => (
           <span
             key={`${name}-${i}`}
             className="grid size-12 shrink-0 place-items-center rounded-full bg-white text-heading/75 shadow-[0_8px_20px_-16px_rgb(20_19_18/0.5)] ring-1 ring-hairline"

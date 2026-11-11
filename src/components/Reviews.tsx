@@ -41,7 +41,7 @@ export default function Reviews() {
       <div className="mx-auto max-w-6xl">
         <div className="min-w-0">
           <h2 data-reveal className="type-hero text-display leading-[0.92] uppercase">
-            <span className="block text-heading">In their</span>
+            <span className="block text-heading">In their</span>{' '}
             <span className="block text-heading/50">
               words<span className="text-brand">.</span>
             </span>
