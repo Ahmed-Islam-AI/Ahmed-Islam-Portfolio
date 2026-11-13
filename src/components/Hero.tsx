@@ -206,7 +206,7 @@ export default function Hero() {
             </a>
 
             <a
-              href="mailto:ahmedislam.official@gmail.com"
+              href="mailto:hello@ahmedislam.tech"
               data-track="email_click"
               data-track-from="hero"
               aria-label="Email Ahmed"
