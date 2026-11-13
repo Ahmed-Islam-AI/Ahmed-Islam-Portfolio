@@ -566,6 +566,12 @@ which is still where the mail lands. All of it is on free plans:
 - **Keep exactly one SPF record** (`v=spf1 include:_spf.mx.cloudflare.net ~all`).
   Brevo authenticates through DKIM (`brevo1`/`brevo2._domainkey`) and DMARC
   (`p=none`), not SPF. A second SPF TXT invalidates both.
+- **Subdomains** are a `CNAME` to `ahmed-islam-ai.github.io`, DNS only, plus
+  the custom domain set in that repo's Settings → Pages. The account has
+  verified `ahmedislam.tech` on GitHub (`_github-pages-challenge-…` TXT), so no
+  one else can claim a subdomain of it. First one: `flintgrab.` (repo
+  `Flint-Grab-site`, its own Actions deploy; the 180 MB installer is a
+  release asset, since it's over GitHub's 100 MB file limit).
 
 ## Socials: the rail shows five, the footer shows nine
 
@@ -998,10 +1004,11 @@ deployed by `.github/workflows/deploy.yml` on every push to `main`, with
 `CNAME` file: an Actions deploy ignores it; the domain lives in repo Settings → Pages.
 
 **Project cards are external links.** Every card is an `<a target="_blank">` at a
-live site or a public GitHub repo — six repos, two features of one deployed product.
+live site, a public GitHub repo or a release page. Three are live: two features
+of one deployed product (Padelos) and, since 2026-11-13, `flintgrab.ahmedislam.tech`.
 
 - `urlLabel(project.href)` prints the **repo name alone** for a GitHub link, and
-  the host for the one live site. It used to print host + owner + repo inside
+  the host for a live site. It used to print host + owner + repo inside
   fake browser chrome, but `github.com/Ahmed-Islam-AI/` is the identical first
   24 characters on seven of the nine cards, so `truncate` ate the only part that
   carried information. The GitHub mark beside the label says which host it is.

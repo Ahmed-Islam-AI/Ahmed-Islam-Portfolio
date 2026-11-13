@@ -135,25 +135,23 @@ export const PROJECTS: Project[] = [
      * Added 2026-09-20 on Ahmed's instruction, taking `ppe-safety`'s place in
      * `FEATURED` (that project stays in the list, it just isn't featured).
      *
-     * **`SOURCE`, not `LIVE` — checked, don't "fix" it.** The site's own
-     * `og:url` says `https://flintgrab.com/`, but that domain **does not
-     * resolve**: `nslookup` returns NXDOMAIN and curl can't resolve the host,
-     * for the apex and `www` alike. So the product is built and has a signed
-     * installer, but there is nothing deployed to link a visitor to. The
-     * marketing-site repo IS public (verified HTTP 200), so that is the honest
-     * destination. **The moment flintgrab.com resolves, this becomes `LIVE`
-     * with the site as `href` — that's a strictly better card.**
+     * **`LIVE` since 2026-11-13, at `flintgrab.ahmedislam.tech`.** The
+     * `Flint-Grab-site` repo deploys there through GitHub Pages, and its
+     * Download button serves the installer from that repo's `v0.1.0` release.
+     * Until then the card was `SOURCE` and linked the repo, because the site's
+     * own domain, `flintgrab.com`, was never registered. If it ever is, move
+     * `href` there.
      *
      * The desktop app itself is closed source (`UNLICENSED` in its
      * package.json, "proprietary" in its README), so there is no app repo to
-     * point at. `Flint-Grab-site` is the public artefact.
+     * point at.
      *
      * This is also the first **web/desktop** entry in a gallery that was
      * otherwise all AI/ML — the content gap CLAUDE.md has been flagging, since
      * `services.ts` sells web development with nothing behind it in the gallery.
      */
-    status: 'SOURCE',
-    href: 'https://github.com/Ahmed-Islam-AI/Flint-Grab-site',
+    status: 'LIVE',
+    href: 'https://flintgrab.ahmedislam.tech',
     /**
      * Read off the product's own `index.html` meta description and the app
      * README's opening line, both written by Ahmed. Not paraphrased loosely —
@@ -383,7 +381,7 @@ export const destinationOf = (project: Project) =>
  * six of the seven entries, so `truncate` ate the only part that said anything.
  * The GitHub mark beside the label already carries which host it is.
  *
- * The one live site keeps its host, which is the useful thing there.
+ * A live site keeps its host, which is the useful thing there.
  */
 export function urlLabel(href: string) {
   const url = new URL(href)
