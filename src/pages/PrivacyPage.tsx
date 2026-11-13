@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import { PAGES } from '../data/pages'
 import { BackPill } from './BlogPostPage'
 
-const EMAIL = 'ahmedislam.official@gmail.com'
+const EMAIL = 'hello@ahmedislam.tech'
 const external = { target: '_blank', rel: 'noopener noreferrer' } as const
 
 /**
@@ -37,11 +37,12 @@ export default function PrivacyPage() {
       <main id="top" className="min-h-screen bg-paper">
         <div className="pt-nav px-4 pb-28 sm:px-6 lg:px-20 lg:pb-36">
           <div className="mx-auto max-w-6xl">
-            <nav aria-label="Breadcrumb" className="pt-8 lg:pt-10">
+            {/* Same as the service pages: no back pill on a phone. */}
+            <nav aria-label="Back" className="pt-8 max-sm:hidden lg:pt-10">
               <BackPill href="/">Home</BackPill>
             </nav>
 
-            <header className="mt-12 lg:mt-16">
+            <header className="mt-8 sm:mt-12 lg:mt-16">
               <h1 data-reveal className="type-hero text-display leading-[0.92] uppercase">
                 <span className="block text-heading">Privacy</span>{' '}
                 <span className="block text-heading/50">
@@ -123,6 +124,20 @@ export default function PrivacyPage() {
                     formsubmit.co
                   </a>
                   ) delivers contact form submissions by email.
+                </li>
+                <li>
+                  <strong>Cloudflare</strong> (
+                  <a href="https://www.cloudflare.com" {...external}>
+                    cloudflare.com
+                  </a>
+                  ) forwards email sent to {EMAIL} to my mailbox.
+                </li>
+                <li>
+                  <strong>Brevo</strong> (
+                  <a href="https://www.brevo.com" {...external}>
+                    brevo.com
+                  </a>
+                  ) delivers my email replies.
                 </li>
               </ul>
 
