@@ -123,16 +123,17 @@ const ALL = STACK.flatMap((group) => group.items.map((name) => ({ name, cat: gro
 
 export default function Stack() {
   /**
-   * One category at a time, at every width, and it only changes when the visitor
-   * changes it.
+   * Every tool shows by default (Ahmed, 2026-11-13: it used to open on the first
+   * category, with the rest behind `Show all`). A category tab filters to that
+   * group; `Show all` returns to the full field.
    *
    * There used to be a `hovered` state layered over this, so moving the mouse
    * across the tabs swapped the whole field underneath — a preview nobody asked
    * for that made the section feel twitchy. Selection is now click/tap only, so
    * mouse and touch behave identically. Clicking the active tab is a no-op rather
-   * than a toggle-off; `Show all` is the one deliberate way to see all 55.
+   * than a toggle-off.
    */
-  const [locked, setLocked] = useState<string | null>(STACK[0].id)
+  const [locked, setLocked] = useState<string | null>(null)
   const active = STACK.find((group) => group.id === locked)
   const shown = active ? active.items.length : ALL.length
 
