@@ -117,24 +117,15 @@ function Hero({ service, contact, label }: { service: Service; contact: string; 
       </div>
 
       <div className="mx-auto max-w-6xl pb-20 lg:pb-28">
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-8 lg:pt-10">
+        {/* Back pill only, and only from `sm`. The "Services / RAG & knowledge
+            systems" trail beside it was cut on Ahmed's call (2026-11-12): it
+            repeated the heading right below it and read as generated. On a
+            phone the nav pill and the Back gesture already do this job. */}
+        <nav aria-label="Back" className="pt-8 max-sm:hidden lg:pt-10">
           <BackPill href="/#services">All services</BackPill>
-          <ol className="flex min-w-0 items-center gap-2 text-sm text-muted">
-            <li>
-              <a href="/#services" className="transition-colors hover:text-heading">
-                Services
-              </a>
-            </li>
-            <li aria-hidden className="text-heading/30">
-              /
-            </li>
-            <li aria-current="page" className="truncate text-heading">
-              {service.title}
-            </li>
-          </ol>
         </nav>
 
-        <div className="mt-10 grid items-center gap-12 lg:mt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="mt-8 grid items-center gap-12 sm:mt-10 lg:mt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
           <div className="min-w-0">
             <h1 data-reveal className="type-hero text-display leading-[0.92] uppercase">
               <span className="block text-heading">{service.heading[0]}</span>{' '}
