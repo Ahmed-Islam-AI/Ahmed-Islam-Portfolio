@@ -77,12 +77,15 @@ export default function Nav({ active }: { active?: string }) {
   // nav never collides with them, and reserving that gutter squeezed the links
   // into the logo at 1024px.
   return (
-    <header ref={header} className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
+    // `pointer-events-none` on the header, `auto` on the pill and the sheet:
+    // the header is a full-width fixed box, and its empty padding must not
+    // catch taps meant for the page under it.
+    <header ref={header} className="pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
       <nav
         aria-label="Main"
         // ring keeps the pill defined over the dark Method band, where an ink
         // pill on an ink background would have no visible edge
-        className="mx-auto flex max-w-7xl items-center rounded-2xl bg-ink/95 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md sm:px-5"
+        className="pointer-events-auto mx-auto flex max-w-7xl items-center rounded-2xl bg-ink/95 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md sm:px-5"
       >
         <a href={to('#top')} className="flex shrink-0 items-center gap-2.5">
           <span aria-hidden className="h-8 w-[3px] rounded-full bg-brand" />
@@ -187,10 +190,17 @@ export default function Nav({ active }: { active?: string }) {
       {/* Always mounted so it can animate both ways. `invisible` when closed
           takes it out of the tab order and the a11y tree, not just out of
           sight; visibility is in the transition list so that only flips after
-          the fade-out has finished. */}
+          the fade-out has finished.
+
+          **Absolute, below the pill — not in flow.** In flow, its ~400px of
+          height made the fixed header that tall even while the sheet was
+          invisible, and the header's box caught every tap on the top half of
+          a phone screen: company tabs, skill tabs, Services rows and the
+          blog's contents only worked when scrolled into the lower half
+          (measured: `elementFromPoint` returned the header at y≈460). */}
       <div
         id="mobile-menu"
-        className={`mx-auto mt-2 max-w-7xl origin-top rounded-2xl bg-ink/98 p-3 backdrop-blur-md transition-[opacity,translate,scale,visibility] lg:hidden ${
+        className={`pointer-events-auto absolute inset-x-4 top-full mx-auto mt-2 max-w-7xl origin-top rounded-2xl bg-ink/98 p-3 backdrop-blur-md transition-[opacity,translate,scale,visibility] sm:inset-x-6 lg:hidden ${
           open
             ? 'visible translate-y-0 scale-100 opacity-100 duration-500 ease-spring'
             : 'invisible -translate-y-2 scale-[0.97] opacity-0 duration-200 ease-out'
