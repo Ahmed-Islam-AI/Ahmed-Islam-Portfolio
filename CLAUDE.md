@@ -15,6 +15,15 @@ deliberate widening, not drift.
 contract: tokens, type scale, spacing, and the rules that keep this site from
 drifting into generic-template territory.
 
+**No breadcrumb trails, anywhere** (Ahmed, 2026-11-12). Nothing like
+`Blog / Data Science / Title` or `Services / RAG & knowledge systems` above
+a heading, and no other path-style label strings (`Home › …`, `/ category`).
+He removed them from the service pages and then the blog post because they
+"look like an AI-generated website". A sub-page gets at most one back pill
+(`BackPill`), shown from `sm` up, never on a phone. This holds for every new
+page and every new section: don't add a trail "for SEO" or "for context".
+Search engines get breadcrumbs from JSON-LD if ever needed, not from the page.
+
 ---
 
 ## Stack
@@ -102,6 +111,7 @@ public/
   companies/            employer logos (padelos, IR-Solutions, itsolera, bytewise)
   blog-images/<slug>/   a post's figures (NOT `blog/` — collides with the route)
   og.png                1200x630 share image for every page
+  fonts/                Archivo, self-hosted (Latin + Latin Extended woff2, OFL.txt)
 blog.vite.ts            compiles the posts at build time (see the Blog section)
 prerender.mjs           fills each built page's root with its rendered HTML (see SEO)
 src/entry-server.tsx    renders one route to a string, for prerender.mjs
@@ -229,6 +239,7 @@ Link annotations do not survive this, so hyperlink targets are not recoverable.
   Ahmed 2026-10-21 — no account). The first submission only sends Ahmed an
   "Activate Form" email; nothing is delivered until he clicks it. Honeypot field is
   `_honey`, FormSubmit's own. The `BUDGETS` ranges are form options, not a price list.
+  **Changing `EMAIL` needs a new activation**: the endpoint is the address itself.
 - Every nav anchor now resolves — `#services` and `#contact` were the last two
   dangling ones.
 - `data/certifications.ts` — **11 entries from two sources that don't overlap.**
@@ -331,8 +342,9 @@ chose each of these from options:
   `ProjectMark`. It carries no category text on purpose: every cover sits next
   to a kicker that already prints it. Dot radii are sized for a phone, where
   the plate renders at ~0.25 scale.
-- **Back pill + breadcrumb**: `‹ All posts` pill (not "Blog" — it sat next to a
-  "Blog" crumb), then `Blog / Category / Title`.
+- **Back pill only**: `‹ All posts`, hidden on phones. It had a
+  `Blog / Category / Title` trail beside it until 2026-11-12, when Ahmed had
+  it removed (see the no-breadcrumb rule at the top).
 - Contents: from `xl` a sticky list in the left margin on a hairline track,
   the current entry drawn as an orange segment; below `xl` a `<details>`.
 - After the article: topics, share (copy link, LinkedIn, X — icons reused from
@@ -411,6 +423,10 @@ running JS is the `<head>` of each HTML file. That is where the SEO lives:
     heading ~220px down, in dev and in the built site.
   - No `services/index.html` and no `/services` route: the list is the home
     page's `#services`, which is where "All services" goes.
+  - **No breadcrumb trail, and no back pill on phones** (Ahmed, 2026-11-12):
+    "Services / RAG & knowledge systems" repeated the H1 right under it and
+    "looks AI generated". The "All services" pill stays from `sm`. Same on
+    /privacy and, since the same day, the blog post.
 - **Structured data.** `index.html` carries a Person + WebSite JSON-LD block
   (`#person-ld`) that every copied page inherits; each post adds a
   `BlogPosting` block via `withMeta`'s `jsonLd`. The Person `sameAs` repeats
@@ -528,6 +544,28 @@ verbatim and never edited. Its linter is
 `python ~/.claude/skills/asd-ste100/scripts/ste-lint.py <file>`; the blog post
 and the project text both lint at 0 findings. A semicolon or a 26-word sentence
 in those is a regression.
+
+## Domain and email — added 2026-11-12
+
+The site's address is **`hello@ahmedislam.tech`** (Hero, Contact + its FormSubmit
+endpoint, Footer, Privacy, README). It replaced `ahmedislam.official@gmail.com`,
+which is still where the mail lands. All of it is on free plans:
+
+- **DNS is on Cloudflare** (nameservers `anirban`/`sharon.ns.cloudflare.com`);
+  the domain is still *registered* at Namify, whose DNS records page is now
+  unused. **The GitHub Pages records are "DNS only" (grey cloud), on purpose**:
+  GitHub issues and renews the HTTPS certificate itself, and the proxy can break
+  that. Ignore Cloudflare's "proxy your records" prompts.
+- **Receiving**: Cloudflare Email Routing forwards `hello@` to the Gmail. One
+  rule, catch-all off.
+- **Sending**: Brevo's free SMTP relay (300/day), used from Thunderbird and
+  iPhone Mail as a `hello@` identity. Not Gmail's "Send mail as": Google ends it
+  for outside addresses in January 2027. Brevo adds a tracking pixel to HTML
+  mail, which cost 2.5 points on mail-tester; the `hello@` identity sends
+  **plain text**, and scored 10/10.
+- **Keep exactly one SPF record** (`v=spf1 include:_spf.mx.cloudflare.net ~all`).
+  Brevo authenticates through DKIM (`brevo1`/`brevo2._domainkey`) and DMARC
+  (`p=none`), not SPF. A second SPF TXT invalidates both.
 
 ## Socials: the rail shows five, the footer shows nine
 
@@ -706,6 +744,16 @@ reaches the bottom edge, so it's already settled by the time you look at it.
 Under reduced motion the hidden state is never applied at all, so content is
 simply visible — it does not depend on JS to appear.
 
+**Nothing is revealed until Archivo has loaded** (or 2.5s have passed),
+since 2026-11-12. The pages arrive as prerendered HTML, so on a first visit
+the reveals could run before the font, and the hero faded in set in the
+system font ("I BUILD PRODUCTS / THAT WORK / …") then re-wrapped when Archivo
+landed. Reported on a phone; reproduced by delaying the font 2s: the old
+build showed the system font for 2s then jumped, the fixed one shows Archivo
+from the first visible frame. `whenFontsReady` uses `document.fonts.load`,
+not `fonts.ready`, which resolves at once if loading hasn't started. The font
+is self-hosted and preloaded (STYLE.md "Type"), so the gate rarely waits.
+
 There is a **resize sweep** safeguard: an element inside a `display: none`
 ancestor never generates an intersection entry, so if a breakpoint change later
 reveals its container it would sit at `opacity: 0` forever. The sweep reveals
@@ -743,15 +791,22 @@ fix for the dot visibly trailing the line:
   line painted in commit N and the dot caught up in commit N+1 — structurally one
   frame behind, every frame, and the gap widened with scroll speed. Both are now
   `style` writes inside the rAF loop.
-- **`pathLength={1}` is gone.** It made the dash unit-free, but `getPointAtLength`
-  works on the geometric length, so the two only agreed if the browser happened to
-  normalise `getTotalLength()` the same way. One measured `len` now feeds both.
-  The path is in viewBox units, so its length never changes with the viewport —
-  measure once.
-- **Neither element takes a `style` prop.** React re-applies `style` on every
-  render, so a prop there would clobber the rAF writes each time state ticked.
-- Measured after the fix: dot centre to drawn line tip is **≤0.02px** at every
-  sampled position, at all three widths.
+- **The orange line is revealed by a clip, not a dash** (since 2026-11-12). A
+  `<clipPath>` rect in viewBox units, its width set to the dot's `x` each
+  frame. The dash version was wrong at every width: **`non-scaling-stroke`
+  lays dashes out in screen pixels**, but the dash was sized from
+  `getTotalLength()`, which is in viewBox units. Measured on the old build:
+  on desktop the line fell up to 81px behind the dot, on a phone it ran
+  78px ahead, and Ahmed saw an orange tail at the far end before scrolling.
+  The clip works because the wave only ever moves rightwards. **Don't bring
+  a dash back on a `non-scaling-stroke` path.**
+- **Neither the dot nor the clip rect takes its position from React.** React
+  re-applies `style` on every render, so a prop there would clobber the rAF
+  writes each time state ticked. The rect's `width="0"` is static, so React
+  never touches it after the first render.
+- Measured after the fix, reading the screen pixels along the curve: no orange
+  past the dot and no gap behind it, at p = 0…1 at 1680, 1440, 1280 and 390,
+  at 1×, 1.5× and 3× pixel density.
 
 **Only `stage` goes through React**, a copy of progress quantised to 2%. It
 drives the step cards, tool chips and closing pill, which are pass/fail gates at
@@ -1297,6 +1352,17 @@ Branch `design/apple-polish`, from an HIG-based audit. Rules are in STYLE.md
 - **The mobile menu is always mounted** and hides with `invisible`, so it can
   animate both ways while staying out of the tab order. Escape returns focus to
   the toggle; a pointerdown outside the header closes it.
+- **…and it is `absolute` below the pill, with the header
+  `pointer-events-none`** (pill and sheet `auto`). Fixed 2026-11-12. In flow,
+  the closed sheet's ~400px still made the fixed header 481px tall, and that
+  transparent box caught every tap on the top half of a phone screen:
+  Experience companies, skill tabs and Show all, Services rows, the blog's
+  Contents, FAQs. They only worked once scrolled into the lower half, which
+  read as "sometimes works". Live from 2026-10-24 until found. Measured after:
+  header 84px, the open sheet at the identical box (16, 92, 358×389), and a
+  15-check tap test with every control at y≈300 passes (it fails 11 of them on
+  the old build). **Anything fixed and full-width gets `pointer-events-none`
+  on its empty parts.**
 - The nav dot's position is **measured** (`offsetLeft` of the
   `[aria-current]` link, re-measured on resize and `document.fonts.ready`). An
   inline `translate` style would override a `-translate-x-1/2` class, so the
