@@ -50,8 +50,12 @@ CLAUDE.md. A second brand band is fine; a band in some *other* colour is not.
 
 ## Type
 
-**Archivo** site-wide, one family, variable, loaded from Google Fonts in
-`index.html`.
+**Archivo** site-wide, one family, variable, **self-hosted** since
+2026-11-12: `public/fonts/` (Latin and Latin Extended, Google's own v25
+files, SIL OFL), `@font-face` at the top of `src/index.css`, the Latin file
+preloaded in `index.html`. Not Google Fonts: that cost two extra connections
+before the font could start, sent visitors' IPs to Google, and on a slow
+phone the font arrived after the text and the hero re-wrapped.
 
 > Supersedes the earlier Montserrat decision (2026-07-26). Montserrat is the most
 > common font in AI-generated portfolios and reads templated. Archivo is
@@ -294,6 +298,10 @@ Things that would make this site look generic. Avoid all of them:
 - Sections that all animate identically on entry with no stagger.
 - Placeholder lorem text, or invented credentials to fill a layout.
 - Adding a dependency for something a few lines of CSS handles.
+- **Breadcrumb trails** (`Blog / Data Science / …`, `Services / RAG …`) or any
+  other path-style label above a heading. Ahmed had them removed from every
+  page on 2026-11-12 ("looks like an AI-generated website"). A sub-page gets
+  one back pill from `sm` up, and nothing on a phone.
 - **Generated imagery standing in for a product screenshot.** The Projects
   gallery shipped with seven AI-made poster cards until 2026-08-21; four had
   hallucinated text baked into the pixels ("BeautifulSooup", "TenFolox",
