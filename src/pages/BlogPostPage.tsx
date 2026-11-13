@@ -83,34 +83,16 @@ export default function BlogPostPage() {
       <main id="top" className="min-h-screen bg-paper">
         <div className="pt-nav px-4 pb-28 sm:px-6 lg:px-20 lg:pb-36">
           <div className="mx-auto max-w-6xl">
-            {/* ── Back + breadcrumb ─────────────────────────── */}
-            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-8 lg:pt-10">
+            {/* ── Back ──────────────────────────────────────────
+                No breadcrumb trail ("Blog / Data Science / …"): Ahmed's call,
+                2026-11-12, it reads as an AI-generated site. No pill on a
+                phone either, same as the service pages. */}
+            <nav aria-label="Back" className="pt-8 max-sm:hidden lg:pt-10">
               <BackPill href="/blog">All posts</BackPill>
-              <ol className="flex min-w-0 items-center gap-2 text-sm text-muted">
-                <li>
-                  <Link to="/blog" className="transition-colors hover:text-heading">
-                    Blog
-                  </Link>
-                </li>
-                {post.tags[0] && (
-                  <>
-                    <li aria-hidden className="text-heading/30">
-                      /
-                    </li>
-                    <li>{post.tags[0]}</li>
-                  </>
-                )}
-                <li aria-hidden className="text-heading/30 max-sm:hidden">
-                  /
-                </li>
-                <li aria-current="page" className="truncate text-heading max-sm:hidden">
-                  {post.title}
-                </li>
-              </ol>
             </nav>
 
             {/* ── Masthead ──────────────────────────────────── */}
-            <header className="mx-auto mt-12 max-w-3xl text-center lg:mt-16">
+            <header className="mx-auto mt-8 max-w-3xl text-center sm:mt-12 lg:mt-16">
               <div data-reveal className="flex justify-center">
                 <Kicker post={post} className="justify-center" />
               </div>
