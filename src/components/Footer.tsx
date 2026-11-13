@@ -5,7 +5,7 @@ import { SECTIONS } from './SectionRail'
 import { SERVICES } from '../data/services'
 import { SOCIALS } from '../data/socials'
 
-const EMAIL = 'ahmedislam.official@gmail.com'
+const EMAIL = 'hello@ahmedislam.tech'
 
 /** `hero` is the top of the page, not a destination anyone picks from a footer. */
 const NAV = SECTIONS.filter((section) => section.id !== 'hero')
