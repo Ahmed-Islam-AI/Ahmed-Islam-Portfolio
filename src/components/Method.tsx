@@ -66,6 +66,7 @@ export default function Method() {
   const panel = useRef<HTMLDivElement>(null)
   const path = useRef<SVGPathElement>(null)
   const dot = useRef<HTMLSpanElement>(null)
+  const drawn = useRef<SVGRectElement>(null)
   const reduced = useReducedMotion()
   /**
    * A coarse copy of progress, and the ONLY thing here that goes through React.
@@ -93,24 +94,29 @@ export default function Method() {
    *
    * Two details keep them locked together now:
    *
-   * - The dash and the dot share ONE length. `pathLength={1}` is gone: it made the
-   *   dash unit-free but left `getPointAtLength` on the geometric scale, so the
-   *   two agreed only if the browser happened to normalise `getTotalLength()` the
-   *   same way. Measured once — the path is in viewBox units, so its length never
-   *   changes with the viewport.
+   * - **The line is revealed by a clip, not a dash.** It used to be a dash
+   *   sized from `getTotalLength()`, but `vector-effect: non-scaling-stroke`
+   *   makes the browser lay dashes out in *screen* pixels, while that length is
+   *   in viewBox units. Stretched to 1150px the screen path is longer than the
+   *   dash, so the pattern repeated: an orange tail sat at the far end at p=0
+   *   and slid ahead of the dot as you scrolled (reported 2026-11-12). The
+   *   wave only ever moves rightwards (every control point sits on its
+   *   segment's horizontal midpoint), so "drawn up to the dot" is exactly
+   *   "everything left of the dot's x", which a clip rect in viewBox units
+   *   gives at any width.
    * - The dot carries no `style` prop. React re-applies `style` on every render,
    *   so a prop here would clobber the rAF writes each time `stage` ticked.
    */
   useEffect(() => {
     const line = path.current
-    if (!line) return
+    const edge = drawn.current
+    if (!line || !edge) return
 
     const len = line.getTotalLength()
-    line.style.strokeDasharray = String(len)
 
     const draw = (p: number) => {
-      line.style.strokeDashoffset = String(len * (1 - p))
       const point = line.getPointAtLength(len * p)
+      edge.setAttribute('width', String(point.x))
       const el = dot.current
       if (!el) return
       // Percentages of the same viewBox, so the dot inherits the same stretch
@@ -236,10 +242,12 @@ export default function Method() {
                       vectorEffect="non-scaling-stroke"
                       className="text-white/12"
                     />
-                    {/* Progress. The dash is set imperatively from the same
-                        measured length the dot is positioned from — see the
-                        effect above. No dash props here on purpose: React would
-                        re-apply them on every render and fight the rAF loop. */}
+                    {/* Progress: the full curve, clipped at the dot's x. The
+                        rect's width is written by the rAF loop (see the effect
+                        above), never by React. */}
+                    <clipPath id="method-drawn">
+                      <rect ref={drawn} width="0" height="240" />
+                    </clipPath>
                     <path
                       ref={path}
                       d={CURVE}
@@ -248,6 +256,7 @@ export default function Method() {
                       strokeWidth="3"
                       strokeLinecap="round"
                       vectorEffect="non-scaling-stroke"
+                      clipPath="url(#method-drawn)"
                       className="text-brand"
                     />
                   </svg>
