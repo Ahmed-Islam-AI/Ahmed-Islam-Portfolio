@@ -3,8 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { SERVICES } from '../data/services'
 import { track } from '../analytics'
 
-/** Both real, from the CV. */
-const EMAIL = 'ahmedislam.official@gmail.com'
+/**
+ * hello@ forwards to Ahmed's Gmail (Cloudflare Email Routing) and replies go out
+ * through Brevo; see CLAUDE.md "Domain and email". WHATSAPP is from the CV.
+ */
+const EMAIL = 'hello@ahmedislam.tech'
 
 /**
  * FormSubmit relays each submission to EMAIL — no account, no key. The very first
