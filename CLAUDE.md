@@ -1455,10 +1455,11 @@ These each cost real debugging time. Don't undo them.
   content. The nav is excluded on purpose: both rails are vertically centred so
   they never reach it, and reserving the gutter there squeezed the nav links into
   the logo at 1024px.
-- **Stack shows exactly one category at a time, at every width.** `locked` starts
-  at `STACK[0].id`; filtered-out pills are `hidden`, not dimmed; and clicking the
-  active tab is a no-op rather than a toggle-off, so the field is never empty.
-  `Show all` is the one deliberate route to all 68.
+- **Stack shows all 70 tools by default** (Ahmed, 2026-11-13; it used to open
+  on the first category). `locked` starts at `null`; a tab filters to one group,
+  and filtered-out pills are removed, not dimmed. Clicking the active tab is a
+  no-op rather than a toggle-off, so the field is never empty, and `Show all`
+  returns to the full set.
   - **Five entries from Ahmed's own stack list are deliberately absent**: JSON, YAML,
     Markdown, VS Code and Anaconda. They're file formats and tooling, not things
     anyone hires an AI engineer for, and a stack cloud containing "Markdown" reads
