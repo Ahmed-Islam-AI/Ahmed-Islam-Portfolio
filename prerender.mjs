@@ -1,16 +1,5 @@
-/**
- * Puts each page's rendered HTML into the page itself. Runs last in
- * `npm run build`, after the client build (which wrote one HTML file per route
- * via blog.vite.ts) and an SSR build of src/entry-server.tsx into dist-ssr/.
- *
- * The routes are read off the HTML files the build wrote, so this never needs
- * its own route list: `index.html` → `/`, `projects.html` → `/projects`,
- * `blog/index.html` → `/blog/`, `services/x.html` → `/services/x`.
- * `404.html` is skipped: it is the GitHub Pages redirect shim, not a page.
- *
- * Each root is marked with `data-route` so main.tsx knows which route the
- * markup belongs to and only adopts it on that route.
- */
+/** Fills each built page's root with its rendered HTML; runs last in `npm run build`.
+ *  Routes come from the HTML files in dist/; 404.html is the Pages shim, not a page. */
 import { readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
