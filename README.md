@@ -39,7 +39,7 @@ LangGraph, MCP and RAG on the back end, React and Next.js on the front.
 
 ## The site
 
-This repository is the source of [ahmedislam.tech](https://ahmedislam.tech): my portfolio, a page for each service I offer, and a technical blog.
+This repository is the source of [ahmedislam.tech](https://ahmedislam.tech): my portfolio and a page for each service I offer.
 
 <table>
   <tr>
@@ -54,12 +54,10 @@ This repository is the source of [ahmedislam.tech](https://ahmedislam.tech): my 
 
 <table>
   <tr>
-    <td width="50%" valign="top"><img src="docs/readme/site-service.webp" width="100%" alt="The Agentic AI systems service page, with a diagram of a supervisor agent, its sub-agents and an MCP server."></td>
-    <td width="50%" valign="top"><img src="docs/readme/site-blog.webp" width="100%" alt="A blog post: 'Missing Values and Outliers: A Practical Guide'."></td>
+    <td valign="top"><img src="docs/readme/site-service.webp" width="100%" alt="The Agentic AI systems service page, with a diagram of a supervisor agent, its sub-agents and an MCP server."></td>
   </tr>
   <tr>
     <td align="center"><sub>A service page</sub></td>
-    <td align="center"><sub>The blog</sub></td>
   </tr>
 </table>
 
@@ -238,7 +236,6 @@ The fastest way to reach me is the [contact form](https://ahmedislam.tech/#conta
 | Hosting | GitHub Pages, deployed by GitHub Actions on every push to `main` |
 
 - **Every page is prerendered.** The build renders each route to HTML, then React hydrates it in the browser. Search engines and link previews read the full text without running JavaScript.
-- **The blog is Markdown.** Posts in `src/content/blog/` compile at build time, code highlighting included, so no Markdown or highlighting library reaches the browser.
 - **One page per service**, each with its own title, description, structured data and sitemap entry.
 - **No animation library.** Motion uses IntersectionObserver, CSS scroll timelines and small `requestAnimationFrame` loops, and all of it respects reduced-motion settings.
 - **Privacy-aware analytics.** Google Analytics 4 with Consent Mode v2, and a consent banner for visitors in Europe. The font is self-hosted, so no request goes to Google Fonts.
@@ -252,34 +249,16 @@ npm run build      # type-check, build, and prerender every page into dist/
 npx vite preview   # serve the production build
 ```
 
-### Write a blog post
-
-1. Create `src/content/blog/<slug>.md`. The file name is the URL.
-2. Start it with frontmatter:
-   ```
-   ---
-   title: Post title
-   description: One sentence, used for the share card and the blog index.
-   date: 2026-11-12
-   tags: [Data Science, pandas]
-   draft: true
-   ---
-   ```
-   `draft: true` shows the post in `npm run dev` and leaves it out of the build.
-3. Write Markdown. Put images in `public/blog-images/<slug>/`.
-4. Push to `main`.
-
 ### Where things are
 
 ```
 src/
-  pages/          Home, /projects, /blog, /blog/:slug, /services/:id, /privacy
+  pages/          Home, /projects, /services/:id, /privacy
   components/     one file per section (Hero, Work, Stack, Services, Method, Projects, ...)
   data/           projects, services, certifications, testimonials, social links
-  content/blog/   the blog posts
   index.css       design tokens and global styles
 public/           CV, project images, fonts, share image
-blog.vite.ts      compiles the blog, writes per-page HTML and the sitemap
+site-pages.vite.ts  writes per-page HTML and the sitemap
 prerender.mjs     fills each built page with its rendered HTML
 ```
 
