@@ -8,11 +8,8 @@
       name="description"
       content="Full-Stack AI Engineer in Islamabad, Pakistan, building agentic AI systems, RAG pipelines, machine learning models and React and Next.js web apps."
     />
-    <!-- Share previews. blog.vite.ts rewrites title, description, og:* and the
-         canonical for every page at build time, the home page included, from
-         src/data/pages.ts (the values here are what `npm run dev` shows; keep
-         them the same). Every tag it touches must stay here; it throws if one
-         goes missing. -->
+    <!-- Share previews, rewritten per page at build from src/data/pages.ts (keep these equal to it).
+         Keep every tag: site-pages.vite.ts throws if one is missing (HISTORY.md › SEO and prerendering) -->
     <link rel="canonical" href="https://ahmedislam.tech/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ahmed Islam" />
@@ -27,10 +24,8 @@
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Structured data: who this site is about, for search engines. Every
-         copied page (blog posts, /projects) inherits it. `sameAs` must match
-         the profile links in src/data/socials.ts (WhatsApp is a chat link, not
-         a profile, so it stays out); a DEV check there warns if they drift. -->
+    <!-- Person + WebSite JSON-LD, inherited by every built page. `sameAs` must match the profile
+         links in src/data/socials.ts (not WhatsApp); a DEV check there warns if they drift. -->
     <script type="application/ld+json" id="person-ld">
       {
         "@context": "https://schema.org",
@@ -92,10 +87,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <script>
-      // Decoder half of the GitHub Pages SPA shim in public/404.html — puts the
-      // real path back before React Router reads the URL. No-op on every other
-      // host, and on Pages for any URL that didn't come through 404.html,
-      // because nothing else produces a `?/` query.
+      // Decoder half of the Pages SPA shim; must match public/404.html (HISTORY.md › Hosting and domain)
       if (location.search[1] === '/') {
         var decoded = location.search
           .slice(1)
@@ -108,16 +100,13 @@
       }
     </script>
 
-    <!-- Archivo is self-hosted (src/index.css). Preloading the Latin file starts
-         it with the HTML instead of after the stylesheet has been read. A font
-         preload needs `crossorigin` even on the same origin, or it is fetched
-         twice. -->
+    <!-- Starts the self-hosted Archivo font with the HTML. A font preload needs `crossorigin`
+         even on the same origin, or it is fetched twice. -->
     <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <!-- Keep the root div below empty and written exactly as it is:
-         prerender.mjs finds it by that exact text and fills it with each
-         page's rendered HTML at build. Don't quote it in a comment either. -->
+    <!-- prerender.mjs finds the root div below by its exact text: keep it empty and unchanged,
+         and never quote it in a comment (HISTORY.md › SEO and prerendering) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
