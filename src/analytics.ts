@@ -1,33 +1,8 @@
-/**
- * Google Analytics 4, chosen by Ahmed 2026-11-11, with Consent Mode v2.
- *
- * Consent: visitors in the EEA, the UK and Switzerland are `denied` until they
- * accept (Google then sends only cookieless pings); everyone else is
- * `granted`. Google applies that by its own geolocation. The banner
- * (ConsentBanner.tsx) asks only visitors whose time zone is in Europe, since
- * a static site has no server to ask for a country. Ads storage is denied for
- * everyone: the site runs no ads. A choice is kept in localStorage and can be
- * changed from the footer's "Cookie settings".
- *
- * Page views, including in-app navigation (Enhanced Measurement's "browser
- * history events"), outbound clicks (projects, profiles, WhatsApp) and file
- * downloads (the CV) GA4 records by itself. Ours, for "which visits become
- * enquiries":
- *
- *   generate_lead   the contact form went through. GA4's own name for it.
- *                   Params: services, budget, timeline. Never the name, email
- *                   or message.
- *   contact_failed  it didn't
- *   contact_cta     a click towards the form. `from`: nav, about,
- *                   service_hero, service_faq, talk_panel
- *   email_click     a mailto link. `from`: hero, contact, footer
- *
- * GA4 records each event's page, so `from` only separates buttons on one page.
- * Nothing loads outside ahmedislam.tech, so dev and preview never count.
- */
+/** GA4 with Consent Mode v2, only on ahmedislam.tech. Events: generate_lead, contact_failed,
+ *  contact_cta, email_click; consent rules and params in (HISTORY.md › Analytics and privacy) */
 
-/** GA4 → Admin → Data streams → (web stream) → Measurement ID, `G-…`.
- *  Public, not a secret: it ends up in every visitor's page. */
+/** GA4 → Admin → Data streams → Measurement ID; public, not a secret.
+ *  Typed `string` on purpose, not as a literal (HISTORY.md › Analytics and privacy) */
 const MEASUREMENT_ID: string = 'G-QFPNV9V4Q4'
 
 export const analyticsOn = MEASUREMENT_ID !== ''
@@ -57,9 +32,8 @@ export function storedChoice(): Choice | null {
   }
 }
 
-/** Who the banner is for. Europe/* time zones, plus the Atlantic ones that
- *  are in the EEA (Canaries, Madeira, Azores, Iceland, Faroes). It errs wide:
- *  asking a few extra people is fine, missing someone is not. */
+/** Who the banner is for: Europe/* time zones plus the EEA's Atlantic ones (Canaries, Madeira,
+ *  Azores, Iceland, Faroes). Errs wide: asking a few extra people is fine, missing one is not. */
 export function inConsentRegion() {
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? ''
   return tz.startsWith('Europe/') || /^Atlantic\/(Canary|Madeira|Azores|Reykjavik|Faroe)$/.test(tz)
@@ -104,10 +78,8 @@ export function startAnalytics() {
   script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`
   document.head.append(script)
 
-  // Clicks: any element with data-track="<event>", plus data-track-<key>="…"
-  // for its params. One listener for the whole site; it only listens, never
-  // holds or redirects the click. gtag sends with sendBeacon, so an event
-  // survives a click that leaves the page.
+  // Clicks: data-track="<event>" plus data-track-<key>="…" params. One listener that never holds
+  // or redirects the click; gtag sends with sendBeacon, so an event survives leaving the page.
   document.addEventListener(
     'click',
     (e) => {
