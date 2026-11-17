@@ -329,6 +329,9 @@ Things that would make this site look generic. Avoid all of them:
 
 ## The blog (reading surfaces)
 
+The blog is its own site now (blog.ahmedislam.tech, repo `my-blogs`, which keeps a copy
+of this file). These rules apply there; here, `.prose` styles only /privacy.
+
 - **Paper, not ink.** Projects is a gallery and sits on ink; posts are long
   reading and sit on the same light ground as the site's prose.
 - **Post titles are mixed case** at `text-display` (`text-h2` on the index),
