@@ -1,37 +1,8 @@
 import { useState } from 'react'
 import { TESTIMONIALS } from '../data/testimonials'
 
-/**
- * Reviews as ONE running paragraph of praise, not five cards.
- *
- * The unit of design here is the sentence, not the card — deliberately, because
- * Work, Projects and Certifications are all card sets already and STYLE.md asks
- * the next new section to find its own form. Five recommendations sit end to end
- * as one block of endorsement; picking a run pulls that voice out of the composite
- * and lights up its source in the ledger below.
- *
- * **The composite is an index of pull-quotes, and the ledger holds the originals.**
- * That split is what makes the section survive real testimonials: the supplied
- * LinkedIn recommendations run from 11 to 140 words, and five of those set end to
- * end is an essay, not a paragraph. Each `pull` is a verbatim contiguous excerpt
- * (see the interface note in `data/testimonials.ts`), so the paragraph stays ~90
- * words whatever the sources do, and the full text is one tap away in the row.
- *
- * Three things this is careful about:
- *
- * - **Inactive runs are `text-muted`, not the `heading/25` ghost.** The ghost tone
- *   is for display text; at body scale it fails the contrast floor in STYLE.md,
- *   and four unreadable quotes is not a design. So the whole composite is legible
- *   at rest and the active state is purely an enhancement — which is also what
- *   makes this work on touch, where there is no hover at all.
- * - **Each run is an `<a>`, not a `<button>`.** A button is atomic inline-level and
- *   cannot break across lines, which would destroy the running paragraph. An
- *   anchor wraps normally, is focusable for free, and jumping to its own source is
- *   exactly what a footnote reference should do when tapped.
- * - **Hover only ever changes colour; expanding is a click.** Sweeping the mouse
- *   across the composite must not open and close rows underneath it — that thrashes
- *   the page height and moves content out from under the cursor.
- */
+/** One paragraph of verbatim pull-quotes; the ledger below holds each full text.
+ *  Runs are <a> so they wrap; hover only recolours, a click expands (HISTORY.md › Reviews) */
 export default function Reviews() {
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState<number | null>(null)
@@ -63,9 +34,7 @@ export default function Reviews() {
                     href={`#review-note-${i + 1}`}
                     onMouseEnter={() => setActive(i)}
                     onFocus={() => setActive(i)}
-                    // Tapping a run lands you on its source with the full text
-                    // already open — the jump on its own would leave you looking
-                    // at a collapsed row.
+                    // also opens the source row, or the jump would land on it collapsed
                     onClick={() => {
                       setActive(i)
                       setOpen(i)
@@ -78,8 +47,7 @@ export default function Reviews() {
                   >
                     <q>{testimonial.pull}</q>
                     <sup
-                      // no-underline so the active run's rule stops at the quote
-                      // rather than leaving a stray dash under the marker
+                      // no-underline: the active run's rule stops at the quote, not the marker
                       className={`ms-1 text-[0.5em] font-semibold no-underline tabular-nums transition-colors duration-200 ${
                         on ? 'text-brand' : 'text-muted'
                       }`}
@@ -148,8 +116,7 @@ export default function Reviews() {
                         {testimonial.relation} &middot; {testimonial.location}
                       </span>
                       <span
-                        // ms-auto only from sm: below that the row wraps to three
-                        // lines and a right-flung chip reads as detached from its row
+                        // ms-auto only from sm: on a wrapped phone row it reads as detached
                         className={`rounded-full px-3 py-1 text-[0.6875rem] font-semibold tracking-[0.12em] whitespace-nowrap uppercase transition-colors duration-200 sm:ms-auto ${
                           on
                             ? 'bg-white text-heading ring-1 ring-hairline'
@@ -160,8 +127,7 @@ export default function Reviews() {
                       </span>
                     </span>
 
-                    {/* A plus that becomes a minus — same control Services uses, so
-                        "this opens" reads the same way in both places. */}
+                    {/* A plus that becomes a minus, the same control Services uses. */}
                     <span
                       aria-hidden
                       className={`relative grid size-8 shrink-0 place-items-center rounded-full transition-colors ${
@@ -177,9 +143,7 @@ export default function Reviews() {
                     </span>
                   </button>
 
-                  {/* Grid-rows trick, same as Services: animating grid-template-rows
-                      from 0fr to 1fr transitions to the content's natural height
-                      without measuring it, which `height: auto` can't do. */}
+                  {/* 0fr → 1fr rows animate to natural height, which height: auto can't. */}
                   <div
                     id={`review-full-${i + 1}`}
                     role="region"
