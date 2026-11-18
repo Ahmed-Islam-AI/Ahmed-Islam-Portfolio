@@ -3,19 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { SERVICES } from '../data/services'
 import { track } from '../analytics'
 
-/**
- * hello@ forwards to Ahmed's Gmail (Cloudflare Email Routing) and replies go out
- * through Brevo; see CLAUDE.md "Domain and email". WHATSAPP is from the CV.
- */
+/** Forwards to Gmail via Cloudflare Email Routing (HISTORY.md › Contact) */
 const EMAIL = 'hello@ahmedislam.tech'
 
-/**
- * FormSubmit relays each submission to EMAIL — no account, no key. The very first
- * submission instead sends EMAIL a one-time "Activate Form" link; until that is
- * clicked, submissions are not delivered and the form shows the error state.
- */
+/** Nothing is delivered until FormSubmit's activation email is clicked (HISTORY.md › Contact) */
 const ENDPOINT = `https://formsubmit.co/ajax/${EMAIL}`
-const WHATSAPP = '923008760724'
+const WHATSAPP = '923008760724' // from the CV
 
 /** Client-side options, not a price list — edit freely. */
 const BUDGETS = ['Under $1k', '$1k – $5k', '$5k – $15k', '$15k+', 'Not sure yet']
@@ -28,33 +21,12 @@ const fieldClass =
 
 const labelClass = 'text-eyebrow mb-2 block text-dark-muted uppercase'
 
-/**
- * One chip. Shared verbatim by the service checkboxes and the two radio groups,
- * so "an option you can pick" looks identical everywhere in this form.
- */
+/** Shared by the service checkboxes and both radio groups, so every pickable option matches. */
 const chipClass =
   'block cursor-pointer rounded-full bg-white/[0.04] px-3.5 py-2 text-[0.75rem] font-semibold tracking-[0.06em] text-dark-muted ring-1 ring-white/12 press hover:text-white peer-checked:bg-brand peer-checked:text-white peer-checked:ring-brand peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-brand peer-focus-visible:outline-offset-2'
 
-/**
- * Budget and Timeline as radio chips, NOT a `<select>`.
- *
- * They were styled native selects, and that was the right instinct for the closed
- * control — `appearance-none` matches it to the inputs beside it perfectly. The
- * problem is the popup list, which the OS draws: Windows rendered it white with a
- * blue highlight regardless of `color-scheme: dark` and regardless of styling the
- * `<option>`s. There is no CSS that reliably wins that argument on every
- * browser/OS pair, so the fix is to not open a popup at all.
- *
- * A custom `div` listbox would also solve it and was rejected: that means
- * hand-writing arrow keys, type-ahead, Escape, click-outside and
- * `aria-activedescendant`, and losing the native picker sheet on mobile. Radios
- * cost none of that — arrow-key navigation within a group is free, they serialise
- * into `FormData` under `name` exactly like the select did, and the value is still
- * the human-readable string so submissions read without a lookup table.
- *
- * Same construction as the service checkboxes above: a real input made `sr-only`,
- * with its label styled off `peer-checked:`.
- */
+/** Radio chips, not a <select>: the OS draws a select's popup and ignores dark styling.
+ *  Same sr-only input + `peer-checked:` label as the checkboxes (HISTORY.md › Contact) */
 function ChipGroup({
   name,
   legend,
@@ -96,15 +68,8 @@ export default function Contact() {
   const { pathname, search, hash } = useLocation()
   const navigate = useNavigate()
 
-  // A service page's "Start a project" links here with `?service=<id>`, so
-  // that service arrives ticked. Done after mount, not as `defaultChecked`:
-  // the page is HTML rendered at build time, which has no query string, and
-  // React keeps the build-time attributes when the first render disagrees.
-  //
-  // Then the param is dropped from the address: its job is done, and left
-  // there it rode along for the rest of the visit (`/?service=x#top` after
-  // clicking the logo) and into any bookmark or shared link. `replace`, so
-  // Back doesn't return to it; the hash is kept and nothing scrolls.
+  // Ticks `?service=<id>` after mount (prerendered HTML has no query), then drops
+  // the param so it doesn't ride along for the rest of the visit (HISTORY.md › Contact)
   useEffect(() => {
     const id = new URLSearchParams(search).get('service')
     if (!id) return
@@ -164,9 +129,8 @@ export default function Contact() {
             data-reveal
             className="text-lead mt-9 max-w-[52ch] text-dark-muted [--reveal-delay:120ms]"
           >
-            {/* No "on the left / on the right" — the two halves stack below lg,
-                where that reads as nonsense. TODO(ahmed): the reply-time promise
-                is yours to keep or cut. */}
+            {/* Never "on the left/right": the two halves stack below lg.
+                TODO(Ahmed): the reply-time promise is yours to keep or cut. */}
             Pick what you need, tell me what you&rsquo;re building, and I&rsquo;ll come back with a
             scope. I reply to everything within a day or two.
           </p>
@@ -211,10 +175,9 @@ export default function Contact() {
             onSubmit={onSubmit}
             className="mt-12 grid gap-8 rounded-[1.75rem] bg-ink-raised p-6 ring-1 ring-white/10 [--reveal-delay:200ms] sm:p-9 lg:grid-cols-2 lg:gap-10"
           >
-            {/* ── Side one: what the project is ───────────────── */}
+            {/* Side one: what the project is */}
             <div>
-              {/* fieldset/legend rather than a bare heading, so the checkboxes are
-                  announced as one named group instead of six loose controls. */}
+              {/* fieldset/legend so the checkboxes are announced as one named group. */}
               <fieldset>
                 <legend className="text-eyebrow text-brand-bright uppercase">
                   What do you need?
@@ -224,8 +187,7 @@ export default function Contact() {
                 <ul className="mt-5 flex flex-wrap gap-2">
                   {SERVICES.map((service) => (
                     <li key={service.id}>
-                      {/* Real checkbox, visually replaced by its own label — keeps
-                          keyboard, screen-reader and form-data behaviour for free. */}
+                      {/* Real checkbox behind its label: keyboard, a11y and FormData for free. */}
                       <input
                         type="checkbox"
                         id={`svc-${service.id}`}
@@ -257,7 +219,7 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* ── Side two: who you are ──────────────────────── */}
+            {/* Side two: who you are */}
             <div className="grid content-start gap-5 lg:border-l lg:border-white/10 lg:pl-10">
               <div>
                 <label htmlFor="name" className={labelClass}>
