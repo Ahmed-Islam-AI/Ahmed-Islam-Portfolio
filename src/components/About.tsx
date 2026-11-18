@@ -54,9 +54,7 @@ export default function About() {
             data-reveal
             className="mt-9 max-w-[50ch] border-l-2 border-brand pl-6 [--reveal-delay:180ms]"
           >
-            {/* `scroll-read` lights the sentence up in reading order as it scrolls
-                in. It has to be an inline span: the sweep relies on the
-                background running across the line fragments as one strip. */}
+            {/* scroll-read sweeps a background across the lines, so it must be an inline span. */}
             <p className="text-lead text-heading">
               <span className="scroll-read">
                 I believe that AI is about more than just complex algorithms, it&rsquo;s about
