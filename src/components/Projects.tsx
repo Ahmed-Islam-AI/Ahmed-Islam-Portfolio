@@ -13,48 +13,10 @@ import {
 import TechIcon from './TechIcon'
 import ProjectMark from './ProjectMark'
 
-/**
- * Projects — section 08.
- *
- * Rebuilt 2026-08-30. This was a pinned, scroll-scrubbed horizontal gallery of
- * all seven projects: a `PACE * 7` = 5.95 viewport-height runway driving a
- * `translate` on a card row, with a drifting background word. All of that is
- * gone. What it delivered was seven identical `ink-raised` rectangles at
- * identical size — the one live SaaS product rendered exactly like a scraper —
- * so the section spent six screens of scrolling to present what was structurally
- * a flat list. Big effect over undifferentiated content is what read as gimmick,
- * and it sat between two other pinned bands (Method, Certifications), closing
- * the page on ~14 viewport heights of back-to-back scroll-jacking.
- *
- * What replaced it is hierarchy: one featured project at real scale, two peers
- * beside it, and a door to the rest. Three projects here, seven on `/projects`.
- *
- * Deliberately NOT reintroduced, all deleted with the runway — don't bring any
- * of it back without a reason that isn't "it looked dynamic":
- *   - the rAF loop and its IntersectionObserver gate
- *   - `focusCard`, which only existed because a transformed row can't be
- *     scrolled into view by the browser
- *   - `PACE`, `REPEAT`, `WORD_DRIFT`, the `active` index
- *   - the separate reduced-motion branch: `[data-reveal]` is already gated on
- *     `prefers-reduced-motion` in index.css, so one render path covers both
- *   - the `lg:short:` overrides on the card. `short` exists to defend a pinned
- *     panel's fold budget; with nothing pinned there is no fold to defend.
- */
+/** Projects, section 08: a featured project, two peers and a door to /projects.
+ *  Deliberately not a pinned scroll effect (HISTORY.md › Projects). */
 
-/**
- * There is deliberately NO background watermark here any more.
- *
- * The old seven-row `SHIPPED` block existed to fill a 100vh pinned panel and to
- * carry the per-project `accentColor` tint as the cards travelled. Both of those
- * jobs are gone. A single-line version was tried on the rebuild and measured at
- * both widths: at `top-1/2` it landed in the gap between the featured panel and
- * the two cards, where brand-on-ink at 0.045 reads as a maroon smudge rather
- * than texture — clearly visible on a phone, and neither legible enough to be a
- * word nor faint enough to be ground. Worst of both, so it was cut.
- *
- * If this band ever needs texture again, it needs to be designed against the new
- * layout rather than inherited from the old one.
- */
+// No background watermark: a `SHIPPED` word was tried here and cut (HISTORY.md › Projects).
 
 export default function Projects() {
   const [lead, ...peers] = FEATURED_PROJECTS
@@ -62,19 +24,10 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      // Takes normal `section-y` rhythm now. The three pinned bands skip it
-      // because their child is exactly one viewport tall and pins to it, so
-      // outer padding would only buy dead scroll — that reasoning stopped
-      // applying to this section the moment the runway came out.
       className="section-y scroll-mt-28 bg-ink px-4 sm:px-6 lg:px-20"
     >
       <div className="mx-auto max-w-6xl">
-        {/* ── Header ─────────────────────────────────────────────
-            One exit, not three. `All repositories →` used to sit up here beside
-            the count; it now closes `/projects` instead. Users satisfice — they
-            take the first reasonable option — so a top-right link straight to
-            raw GitHub siphoned clicks before the visitor had seen a single
-            project. The only way out of this section is the CTA at the bottom. */}
+        {/* ── Header ── no exit link here: the CTA at the bottom is the only one */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
           <div>
             <h2
@@ -111,13 +64,7 @@ export default function Projects() {
             <div
               key={project.slug}
               data-reveal
-              // `min-w-0` is load-bearing, not tidiness — the same trap as the
-              // Work grid column. Grid items default to `min-width: auto`, so
-              // the card's min-content width wins over the track: the longest
-              // repo path (`PPE-Detection-for-Construction-site-workers`) pushed
-              // each card to 379.5px inside a 358px track and put the page 6px
-              // past a 390px viewport. `truncate` on the path doesn't help —
-              // the min-content width propagates up before it ever applies.
+              // min-w-0: the longest repo path overflowed a 390px phone (HISTORY.md › Projects)
               className="flex min-w-0"
               style={{ '--reveal-delay': `${240 + i * 70}ms` } as CSSProperties}
             >
@@ -144,30 +91,7 @@ export default function Projects() {
   )
 }
 
-/**
- * The featured project: a two-column panel, taller than the two cards beside it.
- *
- * **The visual is the anchor, and the name sits beside it at `text-h2`.**
- *
- * This changed once, deliberately. When no project had any imagery the anchor was
- * the project's own name at `text-display` in the left column — the site's
- * type-led move, and the right answer for a card with nothing to look at. Now
- * every card carries a visual (a real capture, or a drawn mark — see `Visual`),
- * so a display-scale name *beside* one gives the panel two things competing to be
- * looked at first. Measured at 1440 that also left ~150px of dead space in the
- * right column, because the left column had grown taller than the copy.
- *
- * So: visual anchors, name drops a step, and `lg:items-center` balances the
- * shorter copy column against the taller visual instead of stranding it at the
- * top. If a future project has no visual at all, the display-scale name is the
- * right fallback to bring back — the reasoning above is about competition, not
- * about the name being wrong.
- *
- * An earlier draft used an oversized ghosted numeral as the anchor. Rejected:
- * every giant-faded-text precedent here (About's watermark, the footer's
- * `AHMED.`) is *section-scale background*, never in-card, so it would have been
- * a new pattern dressed as an existing one — decoration carrying no information.
- */
+/** The featured panel: visual first, name beside it at `text-h2` (HISTORY.md › Projects). */
 function Featured({ project, index }: { project: Project; index: number }) {
   return (
     <a
@@ -208,11 +132,7 @@ function Featured({ project, index }: { project: Project; index: number }) {
   )
 }
 
-/**
- * A peer project, beside the featured one. Unchanged from the card the old
- * travelling row used, minus the scroll-driven `on` ring (there is no active
- * index any more) and minus the `lg:short:` steps.
- */
+/** A peer project card, beside the featured one. */
 function Card({
   project,
   index,
@@ -261,22 +181,7 @@ function Card({
   )
 }
 
-/**
- * The card visual: a real capture where one exists, a drawn schematic where none
- * does.
- *
- * Only `ppe-safety` has real imagery — genuine YOLOv8 output from Ahmed's own
- * model. Every repo was checked on 2026-08-30 and none of the other six carries
- * a screenshot; `padelos.co` is live but shows no product UI and never uses the
- * name PadelGPT, so a capture of it would be a marketing page rather than his
- * work.
- *
- * The marks are deliberately diagrams and not pictures — see `ProjectMark.tsx`
- * for why that distinction is what keeps this from repeating the generated-poster
- * failure. **Setting `image` on a project makes its photo win automatically**, so
- * each mark disappears the moment a real capture arrives. That is the intended
- * direction of travel; don't treat the marks as the finished state.
- */
+/** The card visual: `project.image` if set, otherwise a drawn `ProjectMark`. */
 export function Visual({ project, className = '' }: { project: Project; className?: string }) {
   return (
     <div
@@ -301,10 +206,7 @@ export function Visual({ project, className = '' }: { project: Project; classNam
   )
 }
 
-/**
- * Stack chips. Markup lifted verbatim from the Work switcher's stack-tag list so
- * "a technology" looks identical in both sections — change it in both places.
- */
+/** Stack chips. Markup copied verbatim from Work.tsx's stack-tag list: change both together. */
 export function StackChips({ stack, className = '' }: { stack: string[]; className?: string }) {
   return (
     <ul className={`flex flex-wrap gap-2 ${className}`}>
@@ -321,7 +223,7 @@ export function StackChips({ stack, className = '' }: { stack: string[]; classNa
   )
 }
 
-/** Where the card goes: repo name for GitHub, host for the one live site. */
+/** Where the card goes: repo name for GitHub, host for anything else. */
 export function Destination({ href, className = '' }: { href: string; className?: string }) {
   return (
     <div className={`flex shrink-0 items-center gap-2.5 border-t border-white/10 pt-4 ${className}`}>
