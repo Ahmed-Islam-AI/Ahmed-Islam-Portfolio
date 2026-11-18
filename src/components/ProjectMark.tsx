@@ -1,31 +1,7 @@
 import type { ReactNode } from 'react'
 
-/**
- * A drawn schematic per project, for the cards that have no real screenshot.
- *
- * **These are diagrams, not pictures, and the distinction is the whole point.**
- * The seven AI-generated posters this section shipped with in 2026-08 failed
- * because they *impersonated* product screenshots — fake browser chrome around
- * fake UI, with hallucinated text baked into the pixels ("BeautifulSooup",
- * "TenFolox") and an invented "97% Confidence" that appears in no repo. A
- * viewer could reasonably believe they were looking at the real thing.
- *
- * These can't be mistaken for that. They carry no text, no chrome, no UI, no
- * numbers; they're flat geometry in the one accent colour, the same category as
- * the hand-drawn `CONCEPT` glyphs already in `TechIcon.tsx` — just at card
- * scale. Each one abstracts the project's actual mechanism, so it's carrying
- * real information about the build rather than filling a hole.
- *
- * **They are placeholders with a defined exit.** The moment a project gets a
- * real capture, set `image` on it in `data/projects.ts` and the photo replaces
- * the mark automatically — see `Visual` in `Projects.tsx`. `ppe-safety` already
- * works this way: it has genuine YOLOv8 detection output, so it never renders a
- * mark. Prefer a real screenshot every single time.
- *
- * Rules if you add one: no text, no numbers, no UI chrome, single accent,
- * stroke-led geometry on the 160x100 viewBox, and it must abstract something
- * true about the project.
- */
+/** A drawn diagram for a project with no image: no text, numbers or UI chrome, one accent,
+ *  stroke-led on the 160x100 viewBox, abstracting the real build (HISTORY.md › Projects). */
 
 const S = { stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
 
@@ -45,7 +21,7 @@ const MARKS: Record<string, ReactNode> = {
   ),
 
   // Detection boxes nesting around a figure — what the model actually emits.
-  // Only a fallback: ppe-safety ships a real capture.
+  // Only a fallback: ppe-safety ships an image.
   'ppe-safety': (
     <g {...S} fill="none">
       <rect x="54" y="16" width="52" height="72" rx="4" />
@@ -82,9 +58,8 @@ const MARKS: Record<string, ReactNode> = {
   // A field of content with two items pulled out — the moderation decision.
   'content-moderation': (
     <g {...S} fill="none">
-      {/* 3 x 26 cells + 2 x 10 gaps = 98 wide, so x starts at 31 to centre on
-          the 160 viewBox; 2 x 26 + 10 = 62 tall, so y starts at 19. Recompute
-          both if you change the cell count, or the block drifts off-centre. */}
+      {/* 3x26 cells + 2x10 gaps = 98 wide, so x starts at 31 to centre on the 160 viewBox;
+          2x26 + 10 = 62 tall, so y starts at 19. Recompute both if the cell count changes. */}
       <rect x="31" y="19" width="26" height="26" rx="4" opacity="0.45" />
       <rect x="67" y="19" width="26" height="26" rx="4" opacity="0.45" />
       <rect x="103" y="19" width="26" height="26" rx="4" />
