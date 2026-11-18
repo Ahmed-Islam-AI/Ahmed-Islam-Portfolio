@@ -27,8 +27,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # The build writes projects.html, blog/*.html and sitemap.xml itself
-      # (blog.vite.ts), each with its own title, description and canonical.
+      # The build writes projects.html, services/*.html, privacy.html and sitemap.xml
+      # itself (site-pages.vite.ts), each with its own head tags.
       # Don't copy index.html over projects.html here: it would replace that
       # page's tags with the home page's.
       - run: npm run build
