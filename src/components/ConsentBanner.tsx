@@ -10,24 +10,8 @@ const SETTLE = 1300
 
 type Phase = 'ask' | Choice
 
-/**
- * The cookie question, asked only of visitors in Europe (see analytics.ts).
- *
- * **The concept: consent as a connection.** The site's language is its
- * system diagrams (ServiceDiagram), so the question is one: You → This site
- * ┄┄ Analytics, the last link dashed because it isn't made yet. The diagram
- * previews each answer while the pointer or focus is on its button (Accept
- * lights the link, Decline fades it), then shows the answer itself — a
- * solid, pulsing link and "Connected", or a cut one and "Declined" — before
- * the card leaves. The visitor sees what the choice does, not just a policy
- * sentence.
- *
- * Opens after mount, never during render: the page HTML is built ahead of
- * time and has no idea who is visiting, so it holds no banner, and the first
- * render must match it. Bottom-left, clear of SocialRail. Not a modal and it
- * takes no focus. Accept and Decline weigh the same: a choice nudged by
- * button size isn't consent. Under reduced motion the card leaves at once.
- */
+/** The cookie question for visitors in Europe, drawn as a link: You → This site ┄┄ Analytics.
+ *  Opens after mount, never during render (HISTORY.md › Analytics and privacy) */
 export default function ConsentBanner() {
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<Phase>('ask')
