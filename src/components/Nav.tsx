@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const LINKS = [
   { label: 'About', href: '#about' },
@@ -18,17 +18,8 @@ export default function Nav({ active }: { active?: string }) {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
 
-  /**
-   * Every link in this nav is a bare hash (`#about`), which is correct on `/`
-   * and dead anywhere else — on `/projects` the browser resolves it to
-   * `/projects#about`, an anchor that doesn't exist, and the click does nothing.
-   *
-   * So off the home route the hash gets a leading `/`, which navigates home and
-   * then jumps to the section. On `/` it stays bare, keeping the native smooth
-   * scroll that `scroll-behavior` in index.css already provides.
-   */
+  /** Bare hashes are dead off `/`, so prefix `/` there; on `/` they keep native smooth scroll. */
   const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
-  const onBlog = pathname.startsWith('/blog')
 
   const header = useRef<HTMLElement>(null)
   const toggle = useRef<HTMLButtonElement>(null)
@@ -57,9 +48,7 @@ export default function Nav({ active }: { active?: string }) {
     }
   }, [open])
 
-  // Measured, not computed from the index: the links are different widths.
-  // Re-measured on resize because the row reflows at xl, and once the web font
-  // lands (it changes every link's width).
+  // Measured, since the links differ in width; again on resize and once the web font lands.
   useLayoutEffect(() => {
     const measure = () => {
       const el = links.current?.querySelector<HTMLElement>('[aria-current]')
@@ -71,20 +60,13 @@ export default function Nav({ active }: { active?: string }) {
     return () => window.removeEventListener('resize', measure)
   }, [active])
 
-  // Fixed, not sticky — it overlays the hero background instead of sitting above
-  // it in flow, which is what left the white strip behind the pill.
-  // No `lg:px-20` on the header: both gutter rails are vertically centred, so the
-  // nav never collides with them, and reserving that gutter squeezed the links
-  // into the logo at 1024px.
+  // Fixed, not sticky, and no lg:px-20 gutter (HISTORY.md › Nav)
   return (
-    // `pointer-events-none` on the header, `auto` on the pill and the sheet:
-    // the header is a full-width fixed box, and its empty padding must not
-    // catch taps meant for the page under it.
+    // pointer-events-none so the fixed header never eats taps on the page (HISTORY.md › Nav)
     <header ref={header} className="pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
       <nav
         aria-label="Main"
-        // ring keeps the pill defined over the dark Method band, where an ink
-        // pill on an ink background would have no visible edge
+        // the ring gives the ink pill an edge over the ink bands (Method and others)
         className="pointer-events-auto mx-auto flex max-w-7xl items-center rounded-2xl bg-ink/95 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md sm:px-5"
       >
         <a href={to('#top')} className="flex shrink-0 items-center gap-2.5">
@@ -96,13 +78,10 @@ export default function Nav({ active }: { active?: string }) {
           </span>
         </a>
 
-        {/* Right-hand group. The CTA sits in normal flow, so it can no longer
-            overlap the Contact link the way it did in the mockup. */}
+        {/* Right-hand group; the CTA stays in normal flow so it can't overlap the links. */}
         <div className="ml-auto flex items-center gap-3 sm:gap-4 xl:gap-7">
           <ul ref={links} className="relative hidden items-center gap-4 lg:flex xl:gap-7">
-            {/* The active-link marker: one dot that slides between links rather
-                than a colour change alone, so "where am I" isn't carried by hue.
-                Springs on the same curve as the press feedback. */}
+            {/* A sliding dot marks the active link, so position isn't carried by hue alone. */}
             <span
               aria-hidden
               className={`absolute -bottom-2 left-0 size-1 rounded-full bg-brand-bright transition-[translate,opacity] duration-500 ease-spring ${
@@ -130,30 +109,13 @@ export default function Nav({ active }: { active?: string }) {
             })}
           </ul>
 
-          {/* Blog is a button, not an eighth link in the row: the links jump to
-              places on this page, Blog goes to another page, and the shape says
-              so. It also had to be — at 1024px the row had 16px to spare. One
-              element at every width; below lg it sits beside the menu toggle. */}
-          <Link
-            to="/blog"
-            aria-current={onBlog ? 'page' : undefined}
-            className={`press inline-flex shrink-0 items-center rounded-full px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase lg:py-2.5 ${
-              onBlog ? 'bg-white text-ink' : 'text-white ring-1 ring-white/25 hover:bg-white/10'
-            }`}
-          >
-            Blog
-          </Link>
-
           <a
             href={to('#contact')}
             data-track="contact_cta"
             data-track-from="nav"
             className="hidden shrink-0 rounded-full bg-gradient-to-b from-brand to-brand-deep px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.12em] whitespace-nowrap text-white uppercase press hover:brightness-110 lg:block"
           >
-            {/* Short label below xl: with the Blog button beside it, the full
-                label pushed the row 60px past the pill at 1024 (measured). */}
-            <span className="xl:hidden">Let&rsquo;s talk</span>
-            <span className="hidden xl:inline">Let&rsquo;s work together</span>
+            Let&rsquo;s work together
           </a>
 
           <button
@@ -165,8 +127,7 @@ export default function Nav({ active }: { active?: string }) {
             aria-label={open ? 'Close menu' : 'Open menu'}
             className="press grid size-11 place-items-center rounded-full text-white hover:bg-white/10 lg:hidden"
           >
-            {/* Three bars that fold into an X rather than an icon swap, so the
-                control visibly turns into its own undo. */}
+            {/* Three bars fold into an X, so the control visibly turns into its own undo. */}
             <span aria-hidden className="relative block h-3.5 w-[1.125rem]">
               {['top-0', 'top-1/2 -translate-y-1/2', 'bottom-0'].map((pos, i) => (
                 <span
@@ -187,17 +148,8 @@ export default function Nav({ active }: { active?: string }) {
         </div>
       </nav>
 
-      {/* Always mounted so it can animate both ways. `invisible` when closed
-          takes it out of the tab order and the a11y tree, not just out of
-          sight; visibility is in the transition list so that only flips after
-          the fade-out has finished.
-
-          **Absolute, below the pill — not in flow.** In flow, its ~400px of
-          height made the fixed header that tall even while the sheet was
-          invisible, and the header's box caught every tap on the top half of
-          a phone screen: company tabs, skill tabs, Services rows and the
-          blog's contents only worked when scrolled into the lower half
-          (measured: `elementFromPoint` returned the header at y≈460). */}
+      {/* Always mounted so it animates both ways; `invisible` drops it from the tab order.
+          Absolute, not in flow, or the header box blocks taps (HISTORY.md › Nav) */}
       <div
         id="mobile-menu"
         className={`pointer-events-auto absolute inset-x-4 top-full mx-auto mt-2 max-w-7xl origin-top rounded-2xl bg-ink/98 p-3 backdrop-blur-md transition-[opacity,translate,scale,visibility] sm:inset-x-6 lg:hidden ${
