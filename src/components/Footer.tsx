@@ -13,40 +13,22 @@ const NAV = SECTIONS.filter((section) => section.id !== 'hero')
 const linkClass =
   'text-sm text-dark-muted transition-colors hover:text-white focus-visible:text-white'
 
-/**
- * Page footer. Not a section: no index number, not in SECTIONS, and outside
- * <main> — the rail tracks content, and a footer isn't content.
- *
- * `ink-deep` rather than `ink`, because Contact directly above it is already
- * `ink`; without the step down and the rounded top edge the two merge into one
- * unbroken slab. Keeps `lg:px-20` like every section so the two fixed gutter
- * rails still land in empty margin.
- */
+/** Not a section: it sits outside <main> and SECTIONS, so the rail never tracks it. */
 export default function Footer() {
   const { pathname } = useLocation()
 
-  /**
-   * Same route-aware hash fix as Nav.tsx. These are bare `#about` anchors,
-   * which are correct on `/` and dead on `/projects` -- the browser resolves
-   * them against the current path and the click does nothing.
-   */
+  /** Bare hashes are dead off `/`, so prefix `/` there (same fix as Nav.tsx). */
   const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
 
   return (
-    // The negative margin is load-bearing, not decoration. `rounded-t` reveals
-    // whatever sits *behind* the footer, and that's the body — `paper` — so the
-    // two top corners rendered as white notches. Pulling the footer up over
-    // Contact puts that section's `ink` behind the curve instead, which is the
-    // subtle step the rounding was meant to read as. `z-10` keeps it on top.
+    // -mt pulls the footer over Contact so its rounded corners show ink (HISTORY.md › Footer)
     <footer
       id="site-footer"
-      // The hairline is what makes the curve legible: ink-deep on ink is only a
-      // 7-value step, so without it the rounded edge is invisible and the overlap
-      // just looks like a flat join.
+      // The hairline makes the curve visible: ink-deep on ink is too small a step alone.
       className="relative z-10 -mt-10 overflow-hidden rounded-t-[2.5rem] border-t border-white/[0.08] bg-ink-deep lg:-mt-14"
     >
       <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6 lg:px-20 lg:pt-20">
-        {/* ── Top line: who, where, and whether he's free ─────── */}
+        {/* Name, role and availability */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="type-hero text-h3 text-white">
@@ -57,8 +39,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Green is allowed here and only here — it's the same availability
-              signal as the hero pill. See STYLE.md's single-accent rule. */}
+          {/* Green only for availability, as in the hero pill (STYLE.md single-accent rule). */}
           <p className="inline-flex shrink-0 items-center gap-2.5 self-start rounded-full bg-white/[0.06] px-4 py-2 text-[0.6875rem] font-semibold tracking-[0.14em] text-white uppercase ring-1 ring-white/10">
             <span className="relative flex size-2 shrink-0">
               <span className="absolute inline-flex size-full rounded-full bg-success opacity-60 motion-safe:animate-ping" />
@@ -68,15 +49,11 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* ── Columns ──────────────────────────────────────────────
-            Navigate and Services sit side by side at *every* width. Stacked full
-            width on a phone, the three lists ran to nearly three screens of
-            scrolling before you reached the wordmark. */}
+        {/* Navigate and Services stay side by side even on a phone (HISTORY.md › Footer) */}
         <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 lg:mt-14 lg:grid-cols-[1fr_1fr_auto] lg:gap-16">
           <nav aria-label="Sections">
             <p className="text-eyebrow text-brand-bright uppercase">Navigate</p>
-            {/* Two sub-columns only from lg — at 390px the parent column is ~163px
-                wide, and splitting that again cannot hold "Certifications". */}
+            {/* Two sub-columns only from lg: a phone column is too narrow to split. */}
             <ul className="mt-5 grid gap-3 lg:grid-cols-2 lg:gap-y-3.5">
               {NAV.map((section) => (
                 <li key={section.id}>
@@ -88,16 +65,6 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
-              {/* Not a section, so no index number: an arrow in its slot says
-                  "this leaves the page" the way the numbers say "this scrolls". */}
-              <li>
-                <Link to="/blog" className={linkClass}>
-                  <span aria-hidden className="mr-2 text-[0.6875rem] text-brand-bright">
-                    &rarr;
-                  </span>
-                  Blog
-                </Link>
-              </li>
             </ul>
           </nav>
 
@@ -114,10 +81,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Spans both columns below lg, where it's a row of bare icon buttons
-              rather than a fifth list of names — the names were what made this
-              column as tall as the other two combined. `aria-label` carries the
-              name at every width, so nothing is lost when the text is hidden. */}
+          {/* Icon-only below lg; aria-label keeps each name for screen readers. */}
           <div className="col-span-2 lg:col-span-1">
             <p className="text-eyebrow text-brand-bright uppercase">Elsewhere</p>
             <ul className="mt-5 flex flex-wrap gap-2.5 lg:grid lg:gap-3.5">
@@ -152,7 +116,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Email, given the weight it deserves ──────────────── */}
+        {/* Email */}
         <a
           href={`mailto:${EMAIL}`}
           data-track="email_click"
@@ -178,48 +142,29 @@ export default function Footer() {
         </a>
       </div>
 
-      {/* ── The wordmark ─────────────────────────────────────────
-          Sized in `vw` so it spans the viewport at every width rather than
-          sitting in the content column — that full-bleed scale is the whole
-          point. `leading-[0.72]` crops the font's built-in shoulder so the
-          letters sit tight to the bottom bar instead of floating above it.
-
-          The fill is a gradient clipped to the glyphs, so the word dissolves
-          downward instead of being a flat grey slab. The full stop stays solid
-          brand: it's this site's signature gesture (every section heading ends on
-          an orange period) blown up to footer scale, and it's the one thing here
-          that shouldn't fade. */}
+      {/* Full-bleed wordmark; leading-[0.72] crops the font's built-in shoulder. */}
       <p
         aria-hidden
         className="type-hero mt-12 flex select-none justify-center text-[21.5vw] leading-[0.72] tracking-[-0.045em] whitespace-nowrap uppercase lg:mt-16"
       >
-        {/* 21.5vw is measured, not guessed: "AHMED." renders 4.238x its font size
-            in Archivo at this tracking, so 21.5 x 4.238 = 91vw — wide enough to
-            read as full-bleed, narrow enough to clear both gutter rails at 1440.
-            At 27vw the A and the full stop were clipped clean off. */}
+        {/* "AHMED." is 4.238em wide, so 21.5vw spans ~91vw (HISTORY.md › Footer) */}
         <span className="bg-gradient-to-b from-white/[0.18] to-white/[0.06] bg-clip-text text-transparent">
           Ahmed
         </span>
         <span className="text-brand/80">.</span>
       </p>
 
-      {/* ── Bottom bar ───────────────────────────────────────── */}
+      {/* Bottom bar */}
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-20">
         {/* Centred while stacked, split left/right once there's room for one line. */}
         <div className="flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-center text-[0.6875rem] font-semibold tracking-[0.12em] text-white/60 uppercase sm:flex-row sm:justify-between sm:text-left">
-          {/* Computed, so it can't silently go stale. The page HTML carries
-              the build's year; after New Year, until the next deploy, the
-              browser's differs, and that one text node may keep the old one
-              rather than fail the whole page's hydration. */}
+          {/* The prerendered year can lag the browser's after New Year; one stale node is fine. */}
           <div className="flex flex-wrap items-center justify-center gap-x-3">
             <p suppressHydrationWarning>© {new Date().getFullYear()} Ahmed Islam</p>
             <span aria-hidden className="text-white/25">
               ·
             </span>
-            {/* Privacy and Cookie settings: required once the site uses Google
-                Analytics (its terms, and EU consent law: a choice has to be
-                as easy to change as to make). -my/py keep the 44px target
-                without growing the bar. */}
+            {/* Required by GA's terms and EU consent law; -my/py keep 44px targets. */}
             <Link to="/privacy" className="-my-3 py-3 transition-colors hover:text-white">
               Privacy policy
             </Link>
@@ -238,11 +183,7 @@ export default function Footer() {
               </>
             )}
           </div>
-          {/* The emoji is here by request. It's the one exception to STYLE.md's
-              "no emoji as icons" rule, and its red is the one non-palette colour
-              on the page — swap in an SVG heart in `text-brand` to undo both.
-              role/aria-label so it's announced as "love", not read as punctuation
-              or skipped entirely. */}
+          {/* Deliberate exception to STYLE.md's no-emoji rule (HISTORY.md › Footer) */}
           <p className="flex items-center gap-1.5">
             Built with
             <span role="img" aria-label="love" className="text-[0.875rem] leading-none">
