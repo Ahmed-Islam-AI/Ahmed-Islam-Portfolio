@@ -1,16 +1,11 @@
 import portrait from '../assets/ahmed.webp'
 
-/** Floating capability chips. Positions are hand-tuned so they clear each other
- *  and the portrait caption — in the mockup "Production observability" landed on
- *  top of the caption and "Multi-agent systems" was clipped by the ring. */
+/** Floating capability chips; positions are hand-tuned to clear each other and the ring. */
 const CAPABILITIES = [
   { label: 'Multi-agent systems', tone: 'light', pos: 'top-[13%] -left-[9%]' },
   { label: 'MCP + integrations', tone: 'brand', pos: 'top-[31%] -right-[3%]' },
   { label: 'RAG pipelines', tone: 'light', pos: 'top-[55%] -left-[11%]' },
-  // Took the slot "Production observability" held, as part of the full-stack
-  // reframe. It stays four chips, not five — the positions are hand-tuned to
-  // clear each other, and a fifth has nowhere to go. Shorter than the label it
-  // replaced, so the right-hand overhang only got smaller.
+  // Four chips is the limit: a fifth has no free slot among the hand-tuned positions.
   { label: 'React & Next.js', tone: 'light', pos: 'top-[69%] -right-[2%]' },
 ] as const
 
@@ -25,42 +20,24 @@ const chipClass =
 export default function Hero() {
   return (
     <section id="hero" className="px-4 pt-12 pb-16 sm:px-6 lg:px-20 lg:pt-16 lg:pb-20">
-      {/* max-w-6xl, like every other section — at 7xl the hero column started
-          128px wider than the rest of the page and nothing lined up down the
-          left edge. The nav keeps 7xl on purpose; see Nav.tsx. */}
-      {/* FOUR grid children, not two: headline, closing line, portrait, pitch.
-          The copy had to be broken apart because the portrait sits *inside* it on
-          a phone (heading → tagline → face → pitch → buttons), and `order` can't
-          express that while they're nested — the portrait has to be their
-          sibling. At lg all four are placed explicitly: column 1 holds headline
-          (row 1), pitch (row 2) and closing line (row 3), column 2 holds the
-          portrait spanning all three. That reproduces the old two-column layout
-          exactly, including the closing line staying at the foot of the column.
-          DOM order and lg visual order therefore differ by one block, which is
-          fine here because nothing reordered is focusable. */}
+      {/* Four grid siblings so the portrait can sit mid-copy on a phone; lg places
+          them in two columns explicitly (HISTORY.md › Hero) */}
       <div className="mx-auto grid max-w-6xl gap-y-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:grid-rows-[auto_auto_1fr] lg:items-start lg:gap-x-20 lg:gap-y-0">
-        {/* ── Headline ─────────────────────────────────────────── */}
-        {/* `scroll-recede` (here and on the portrait) eases the hero back as it
-            leaves through the top, so the stats card reads as the next thing. */}
+        {/* Headline. scroll-recede (here and on the portrait) eases it back as it leaves. */}
         <div className="scroll-recede lg:col-start-1 lg:row-start-1">
-          {/* The pill is the H1's first line. The role words people search
-              for ("Full-Stack AI Engineer") were in a <p> above a heading that
-              names no skill at all, so the one H1 on the page said nothing a
-              search engine could match. Same pixels: the pill and the line
-              keep their own reveals, and the `{' '}` between the two blocks
-              renders as nothing but keeps them two phrases in the text. */}
+          {/* The role pill is the H1's first line, so the heading names the role.
+              The {' '} keeps the two blocks two phrases in the text (HISTORY.md › Hero) */}
           <h1>
             <span data-reveal className="block">
               <span className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-white to-paper-2 py-2 pr-4 pl-3 shadow-[0_10px_30px_-18px_rgb(20_19_18/0.5)] ring-1 ring-hairline">
-                {/* live dot — green reads "available"; orange is the brand accent
-                    and would read as decoration rather than status */}
+                {/* Green, not brand orange: this dot is a status, not decoration. */}
                 <span className="relative flex size-2.5 shrink-0" title="Available for new work">
                   <span className="absolute inline-flex size-full rounded-full bg-success opacity-60 motion-safe:animate-ping" />
                   <span className="relative inline-flex size-2.5 rounded-full bg-success" />
                 </span>
                 <span className="text-eyebrow text-heading uppercase">
                   Full-Stack AI Engineer
-                  {/* the tail wrapped to a second line at 390px */}
+                  {/* hidden on phones, where it wraps to a second line */}
                   <span className="max-sm:hidden">
                     {' '}
                     <span className="text-brand">·</span> Web &amp; Agentic
@@ -72,43 +49,23 @@ export default function Hero() {
               data-reveal
               className="type-hero text-display mt-6 block max-w-[16ch] text-heading uppercase [--reveal-delay:80ms]"
             >
-              {/* "systems" -> "products" so the line covers a website as well as an
-                  agent. "Beyond the demo" is the sharpest phrase on the page and
-                  stays; the pill above and the lead below carry the specifics. */}
               I build products that work beyond the demo.
             </span>
           </h1>
-          {/* Was inside the pill; it's a status, not part of the heading. */}
+          {/* A status, not part of the heading, so it sits outside the H1. */}
           <p className="sr-only">Available for new work.</p>
         </div>
 
-        {/* ── The closing line ─────────────────────────────────────
-            DOM position 2, so on a phone it lands between the headline and the
-            portrait. At lg it is placed into row 3 instead, which is still the
-            foot of the copy column — the signature under the CTAs it has always
-            been. Grid placement is what lets one element be second on a phone
-            and last on a desktop without a second copy of it in the markup; the
-            reorder is safe here because nothing in this block is focusable, so
-            tab order is unaffected. */}
+        {/* Closing line: second in the DOM for phones, row 3 at lg. Nothing here is focusable. */}
         <p
           data-reveal
-          // No rule above it: the CTA row already ends the copy block, so a
-          // hairline separated something that was already separate. 58ch keeps
-          // it to two lines from lg; at three lines of wide-tracked caps it read
-          // as a paragraph, which an eyebrow-style line shouldn't be. Phones and
-          // 1024 still need three; `text-balance` evens them out instead of
-          // stranding "LAUNCH." alone on the last line.
+          // 58ch keeps two lines from lg; text-balance evens out the three it needs below that.
           className="text-eyebrow max-w-[58ch] text-balance text-heading/80 uppercase lg:col-start-1 lg:row-start-3 lg:mt-10 [--reveal-delay:140ms]"
         >
           Full-stack engineering for software that needs to keep working after launch.
         </p>
 
-        {/* ── Portrait ─────────────────────────────────────────────
-            Third in the DOM so it reads (and is announced) after the headline
-            and its tagline. `self-center` rather than `items-center` on the
-            grid: the copy is the taller column at every lg width, so the
-            portrait centres against it while the copy blocks stay stacked tight
-            in column 1. */}
+        {/* Portrait. self-center, not grid items-center, so the copy blocks stay stacked tight. */}
         <div
           data-reveal="right"
           className="relative lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-center [--reveal-delay:200ms]"
@@ -143,9 +100,7 @@ export default function Hero() {
                 aria-hidden
                 className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink-deep via-ink-deep/75 to-transparent"
               />
-              {/* Chips overlaid on the portrait below lg, over the existing scrim.
-                  They used to sit in a row *under* the card, which read as a
-                  detached list rather than part of the portrait. */}
+              {/* Below lg the chips sit on the portrait, over its bottom scrim. */}
               <ul className="absolute inset-x-3 bottom-3 z-20 flex flex-wrap gap-1.5 lg:hidden">
                 {CAPABILITIES.map((cap) => (
                   <li
@@ -170,10 +125,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── Pitch and CTAs ─────────────────────────────────────
-            `lg:mt-7` restores the gap the lead paragraph used to carry as its
-            own `mt-7`; below lg the grid's `gap-y-10` spaces it off the
-            portrait instead. */}
+        {/* Pitch and CTAs. Below lg the grid's gap-y-10 spaces this, so mt-7 is lg-only. */}
         <div className="lg:col-start-1 lg:row-start-2 lg:mt-7">
           <p
             data-reveal
@@ -183,8 +135,6 @@ export default function Hero() {
             LangGraph, MCP and RAG on the back end, React and Next.js on the front.
           </p>
 
-          {/* The mockup's two icon-only circles gave no hint what they do, so the
-              primary CTA now carries a label. The mail button keeps the circle. */}
           <div data-reveal className="mt-9 flex flex-wrap items-center gap-3 [--reveal-delay:240ms]">
             <a
               href="#projects"
