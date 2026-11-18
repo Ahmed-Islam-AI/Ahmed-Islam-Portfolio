@@ -23,9 +23,7 @@ export default function Home() {
   // One observer, shared by the nav and both gutter rails, so they can never
   // disagree about which section you're in.
   const active = useActiveSection(SECTION_IDS)
-  // Which band the gutter rails are over. Computed once and handed to both, so
-  // they can never disagree. `brand` is its own case: the surface there IS the
-  // accent, so orange signals have to become ink — see RailSurface.
+  // The band under the gutter rails, handed to both so they agree (see RailSurface).
   const surface: RailSurface =
     active === 'certifications'
       ? 'brand'
@@ -33,10 +31,7 @@ export default function Home() {
         ? 'dark'
         : 'light'
 
-  // The footer lists every social link already, so the fixed rail is redundant
-  // there — and it sits right on top of that column. Same centre-line rootMargin
-  // as useActiveSection, so it hands over at exactly the point the rest of the
-  // page considers you to have left the last section.
+  // SocialRail hides over the footer, which lists every link; same centre line as useActiveSection.
   const [inFooter, setInFooter] = useState(false)
   useEffect(() => {
     const el = document.getElementById('site-footer')
@@ -48,18 +43,13 @@ export default function Home() {
     return () => observer.disconnect()
   }, [])
 
-  // Land on the section the address names (`/#contact` from another page).
-  // The browser only does this itself when the section is in the HTML it
-  // parsed: the built pages have it, but in dev, and on any URL the app draws
-  // from scratch, it doesn't exist yet when the browser looks, and the visit
-  // stayed at the top. `instant`, or html's smooth scrolling would glide
-  // through the whole page; on the built pages it's a no-op or a small nudge.
-  // Arriving by an in-app link, the tab would otherwise keep the last page's
-  // title: those pages restore whatever was there when they mounted.
+  // Arriving by an in-app link, the tab would otherwise keep the last page's title.
   useEffect(() => {
     document.title = PAGES.home.title
   }, [])
 
+  // Land on the address's #section: on a page drawn from scratch it didn't exist when the
+  // browser looked. `instant`, or html's smooth scrolling glides through the whole page.
   useEffect(() => {
     const id = decodeURIComponent(location.hash.slice(1))
     if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
@@ -72,11 +62,7 @@ export default function Home() {
       <SocialRail surface={surface} hidden={inFooter} />
 
       <main id="top">
-        {/* Hero zone — nav, hero and stats bar all sit on one grid background.
-            pt clears the fixed nav; the bg layer spans that padding too, so
-            there's no white strip behind the pill. */}
-        {/* pt-nav is the shared fixed-nav clearance, so the hero can't drift out
-            of step with the pinned panels that use the same token. */}
+        {/* Hero zone: nav, hero and stats bar share one background, which spans the pt-nav too. */}
         <div className="pt-nav relative isolate overflow-x-clip">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
             <div className="hero-grid absolute inset-0" />
