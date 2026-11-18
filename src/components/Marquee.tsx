@@ -41,19 +41,12 @@ const BASE_SPEED = 42 // px/sec at rest
 const MAX_BOOST = 7 // ceiling so a flick can't turn it into a blur
 const DECAY = 2.6 // how fast the boost eases back to 1
 
-/**
- * Infinite icon band. Position is driven by requestAnimationFrame rather than a
- * CSS animation: scroll speed feeds a boost multiplier, and changing a CSS
- * `animation-duration` mid-flight makes the track visibly jump, whereas
- * integrating position by hand stays smooth.
- */
+/** Infinite icon band, moved by rAF: changing a CSS `animation-duration` mid-flight to apply
+ *  the scroll boost makes the track jump (HISTORY.md › Stack and marquee). */
 export default function Marquee({ direction = 1 }: { direction?: 1 | -1 }) {
   const track = useRef<HTMLDivElement>(null)
 
-  // The icons fill in after mount, so they are not in the build-time HTML.
-  // Both bands draw every icon twice, and those 128 brand paths were 224 kB
-  // of the home page's 427 kB, for a decoration that is aria-hidden and well
-  // below the fold. `h-12` on the track holds the row's height meanwhile.
+  // Filled after mount, so the icon SVG stays out of the prerendered HTML; h-12 holds the row.
   const [items, setItems] = useState<string[]>([])
   useEffect(() => setItems([...MARQUEE_ITEMS, ...MARQUEE_ITEMS]), [])
 
@@ -94,10 +87,7 @@ export default function Marquee({ direction = 1 }: { direction?: 1 | -1 }) {
 
     window.addEventListener('scroll', onScroll, { passive: true })
 
-    // Run only while the band is on screen. This loop used to start on mount and
-    // never stop, so both marquees kept animating off-screen icons for the entire
-    // life of the page — competing for frames with whichever pinned section you
-    // were actually scrolling through. `lastFrame` is re-stamped on resume so the
+    // Run only while the band is on screen. `lastFrame` is re-stamped on resume so the
     // clamped `dt` doesn't have to absorb the whole gap.
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
