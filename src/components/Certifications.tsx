@@ -2,21 +2,11 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { CERTIFICATIONS, type Certification } from '../data/certifications'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
-/**
- * Viewport heights of runway per card, plus one for the settle at each end.
- *
- * Dropped 0.6 -> 0.4 when the deck went from 5 cards to 11: at 0.6 the section
- * alone was 7.6 viewport heights of scrolling, which is a long time to spend in
- * one band. 0.4 puts it at 5.4 and each card still gets a visible hold.
- */
+/** Viewport heights of runway per card, plus one for the settle at each end. */
 const PACE = 0.4
 
-/**
- * Fraction of each card's slot spent fully settled, at each end. 0.35 means a
- * card holds still for the first and last 35% of its slot and swaps across the
- * middle 30% — that hold is what makes it read as a deck being dealt rather than
- * a continuous slide. 0 removes the hold entirely.
- */
+/** Fraction of each slot a card holds still at each end (0.35: it swaps in the middle 30%).
+ *  The hold is what makes it read as a deck being dealt; 0 removes it. */
 const HOLD = 0.35
 
 const ISSUERS = new Set(CERTIFICATIONS.map((c) => c.issuer)).size
@@ -50,11 +40,8 @@ export default function Certifications({
       const scrollable = rect.height - window.innerHeight
       const p = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0
 
-      // Progress -> a continuous "card index" t, where t === i means card i is
-      // exactly on top. One slot per card, offset by half a slot so the first
-      // and last cards get a settle at the ends instead of being on top for a
-      // single instant. Within a slot, HOLD flattens both ends and a smoothstep
-      // eases the swap between them, so t moves in steps rather than linearly.
+      // Progress -> card index t (t === i: card i on top), offset half a slot so the ends
+      // settle. HOLD flattens each slot's ends and a smoothstep eases the swap between.
       const raw = Math.min(CERTIFICATIONS.length - 1, Math.max(0, p * CERTIFICATIONS.length - 0.5))
       const index = Math.floor(raw)
       const f = raw - index
@@ -63,9 +50,7 @@ export default function Certifications({
 
       for (let i = 0; i < cards.length; i++) {
         const card = cards[i] as HTMLElement
-        // Signed distance from the top of the deck. Negative = already dealt
-        // (slides up and out), positive = still to come (waits below, scaled
-        // down). Both fade, so only the card at d ~ 0 is fully opaque.
+        // Signed distance from the top: negative = dealt (slides up), positive = still to come.
         const d = i - t
         const abs = Math.abs(d)
         card.style.opacity = String(Math.max(0, 1 - abs * 0.9))
@@ -82,9 +67,7 @@ export default function Certifications({
       setActive(Math.round(t))
     }
 
-    // Run only while the runway is on screen. Below `lg` it's display:none, so
-    // the observer never fires and the loop never starts — that's the mobile
-    // guard as well as the idle guard.
+    // Run only while the runway is on screen.
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         if (!raf) frame()
@@ -130,10 +113,7 @@ export default function Certifications({
       className="relative scroll-mt-28 bg-[var(--cert-bg)]"
       style={{ '--cert-bg': background } as CSSProperties}
     >
-      {/* ── Pinned card-swap deck, every width ───────────────────
-          One card dealt over the last, on a phone as well as the desktop. It used
-          to fall back to a plain list of five cards below lg, which lost the
-          effect entirely. */}
+      {/* ── Pinned card-swap deck, every width ─────────────────── */}
       {!reduced && (
         <div
           ref={track}
@@ -148,9 +128,7 @@ export default function Certifications({
             {/* mt-auto drops the deck into the lower portion of the panel */}
             <div className="mx-auto mt-auto w-full max-w-6xl">
               <div className="max-w-[46rem]">
-                {/* Fixed height: the cards are absolutely positioned, so the
-                    container has to carry the height itself, and a uniform one
-                    keeps the underline from moving as the deck swaps. */}
+                {/* Absolute cards, so this holds a fixed, uniform height: the bar never moves. */}
                 <div ref={deck} className="relative h-[19rem] sm:h-[17.5rem] xl:h-[18.5rem]">
                   {CERTIFICATIONS.map((cert, i) => (
                     <Card key={cert.id} cert={cert} on={i === active} />
@@ -180,9 +158,7 @@ export default function Certifications({
         </div>
       )}
 
-      {/* ── Reduced motion only: plain stacked list ─────────────
-          Rendered instead of the runway, so there's no scroll-driven transform and
-          no duplicate set of cards sitting hidden in the DOM. */}
+      {/* ── Reduced motion only: a plain list instead of the runway ─── */}
       {reduced && (
       <div className="section-y px-4 sm:px-6 lg:px-20">
         <div className="mx-auto max-w-6xl">
@@ -208,13 +184,8 @@ export default function Certifications({
   )
 }
 
-/**
- * In the deck every card is stacked on top of the others, so the inactive ones
- * are transparent but still in the layout. They therefore have to be inert:
- * `aria-hidden` and `pointer-events-none` keep them off the a11y tree and stop a
- * click landing on an invisible card, and a card that is a link also needs
- * `tabIndex={-1}` or keyboard users tab into something they cannot see.
- */
+/** Inactive deck cards are transparent but still laid out, so they must be inert:
+ *  `aria-hidden`, `pointer-events-none`, and `tabIndex={-1}` on a link. */
 function Card({
   cert,
   on,
@@ -246,9 +217,7 @@ function Card({
             {badge}
           </li>
         ))}
-        {/* "View", not "Verify" — the hrefs point at a LinkedIn certifications
-            list rather than a per-credential page, so claiming verification would
-            be overstating what the link does. */}
+        {/* "View", not "Verify": the hrefs open a LinkedIn list, not per-credential pages. */}
         {cert.href && (
           <li className="ml-auto self-center text-[0.6875rem] font-semibold tracking-[0.14em] text-brand uppercase group-hover:text-brand-deep">
             View &rarr;
